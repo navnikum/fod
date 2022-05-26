@@ -1,0 +1,133 @@
+{
+  "layoutTypes": {
+    "rraOrders": {
+      "kind": "operationRef",
+      "serviceId": "oracle_atf_rwdrefUI:rraOrders",
+      "operations": [
+        "getall_rraOrders-RraOrderLines"
+      ]
+    }
+  },
+  "layouts": {
+    "isDefault": {
+      "description": "Default Rule",
+      "type": "rraOrders",
+      "expression": "default"
+    },
+    "orderLinesTable": {
+      "type": "rraOrders",
+      "layoutType": "table",
+      "label": "Order Lines Table",
+      "rules": [
+        "isDefault"
+      ],
+      "layouts": {
+        "default": {
+          "layoutType": "table",
+          "layout": {
+            "displayProperties": [
+              {
+                "ProductName": {
+                  "sortable": "disabled"
+                }
+              },
+              "productLink",
+              {
+                "ImageUrl": {
+                  "sortable": "disabled"
+                }
+              },
+              {
+                "priceWithCurrency": {
+                  "sortable": "disabled"
+                }
+              },
+              {
+                "Quantity": {
+                  "sortable": "disabled"
+                }
+              },
+              {
+                "amountWithCurrency": {
+                  "sortable": "disabled"
+                }
+              },
+              "{{ false  ? {'OrderId':{'sortable':'disabled'}} : null }}"
+            ]
+          },
+          "usedIn": [
+            "isDefault"
+          ]
+        }
+      },
+      "fieldTemplateMap": {
+        "amountWithCurrency": "currency",
+        "ImageUrl": "productImage",
+        "priceWithCurrency": "currency",
+        "productLink": "productLink"
+      }
+    }
+  },
+  "templates": {
+    "currency": {
+      "title": "Currency",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-currency/loader",
+        "ojs/ojinputtext"
+      ]
+    },
+    "productImage": {
+      "title": "ProductImage",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "ojs/ojavatar",
+        "ojs/ojinputtext"
+      ]
+    },
+    "productLink": {
+      "title": "ProductLink",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "ojs/ojinputtext"
+      ]
+    }
+  },
+  "imports": {},
+  "interface": {
+    "events": {
+      "productNumberClick": {
+        "propagationBehavior": "container",
+        "description": "Emits to page",
+        "payloadType": {
+          "productId": "string",
+          "index": "number"
+        }
+      }
+    }
+  },
+  "eventListeners": {
+    "productNumberClick": {
+      "chains": [
+        {
+          "chainId": "productNumberClickHandler",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    }
+  }
+}

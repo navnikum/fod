@@ -1,0 +1,12 @@
+{
+  "layoutTypes": {
+    "fa-fod-order": {
+      "kind": "operationRef",
+      "serviceId": "oracle_atf_rwdrefUI:fndRraOrderFilters",
+      "operations": [
+        "SmartSearchFilters_rraOrderSearch"
+      ]
+    }
+  },
+  "layouts": {}
+}

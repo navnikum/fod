@@ -1,0 +1,9 @@
+<!-- Contains Dynamic UI layout templates -->
+<template id="unitPriceTmpl">
+  <oj-sp-input-currency id="product-unit-price"
+    currency="[[ $value.CurrencyCode() || 'USD' ]]"
+    value="[[ $value.UnitPrice() ]]"
+    label-hint="[[ $layout.translations.format('layout', 'ORDER_LINE_PRICE') ]]"
+    currency-display="symbol" currency-format="standard" readonly="true">
+  </oj-sp-input-currency>
+</template>

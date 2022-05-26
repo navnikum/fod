@@ -1,0 +1,22 @@
+{
+  "id": "oracle_atf_rwdrefUI",
+  "name": "Redwood Reference Application",
+  "description": "",
+  "features": {
+    "extensionEnabled": true
+  },
+  "extensionFrameworkVersion": "2.0.0",
+  "source.version": "2207",
+  "version": "0.1",
+  "frameworkVersion": "1.0.0",
+  "migration": {
+    "2207": [
+      "NavigateActionMigrator",
+      "ActionsJsonMigrator",
+      "ACTJsSpecsMigrator",
+      "AppUIRootPageMigrator",
+      "RemoveReadOnlyAttrDynamicFormMigrator",
+      "RemoveMetadataPathAttrMigrator"
+    ]
+  }
+}

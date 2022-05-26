@@ -1,0 +1,96 @@
+{
+  "addField": {
+    "billingAddressVirtual": {
+      "type": "object",
+      "labelHint": "[[ $translations.metadata.ORDER_BILLING_ADDRESS ]]",
+      "readonly": true,
+      "properties": {
+        "AddressLine1": {
+            "value": "{{ $fields.RraCustomerBillingAddresses.AddressLine1.value }}",
+            "metadata": "[[ $fields.RraCustomerBillingAddresses.AddressLine1.metadata ]]"
+        },
+        "AddressLine2": {
+            "value": "{{ $fields.RraCustomerBillingAddresses.AddressLine2.value }}",
+            "metadata": "[[ $fields.RraCustomerBillingAddresses.AddressLine2.metadata ]]"
+        },
+        "City": {
+            "value": "{{ $fields.RraCustomerBillingAddresses.City.value }}",
+            "metadata": "[[ $fields.RraCustomerBillingAddresses.City.metadata ]]"
+        },
+        "State": {
+            "value": "{{ $fields.RraCustomerBillingAddresses.State.value }}",
+            "metadata": "[[ $fields.RraCustomerBillingAddresses.State.metadata ]]"
+        },
+        "PostalCode": {
+            "value": "{{ $fields.RraCustomerBillingAddresses.PostalCode.value }}",
+            "metadata": "[[ $fields.RraCustomerBillingAddresses.PostalCode.metadata ]]"
+        },
+        "Country": {
+          "value": "{{ $fields.RraCustomerBillingAddresses.Country.value }}",
+          "metadata": "[[ $fields.RraCustomerBillingAddresses.Country.metadata ]]"
+        }
+      },
+      "referencedFields": [
+        "RraCustomerBillingAddresses.AddressLine1",
+        "RraCustomerBillingAddresses.AddressLine2",
+        "RraCustomerBillingAddresses.City",
+        "RraCustomerBillingAddresses.State",
+        "RraCustomerBillingAddresses.PostalCode",
+        "RraCustomerBillingAddresses.Country"
+      ]
+    },
+    "shippingAddressVirtual": {
+      "type": "object",
+      "labelHint": "[[ $translations.metadata.ORDER_SHIPPING_ADDRESS ]]",
+      "readonly": true,
+      "properties": {
+        "AddressLine1": {
+            "value": "{{ $fields.RraCustomerShippingAddresses.AddressLine1.value }}",
+            "metadata": "[[ $fields.RraCustomerShippingAddresses.AddressLine1.metadata ]]"
+        },
+        "AddressLine2": {
+            "value": "{{ $fields.RraCustomerShippingAddresses.AddressLine2.value }}",
+            "metadata": "[[ $fields.RraCustomerShippingAddresses.AddressLine2.metadata ]]"
+        },
+        "City": {
+            "value": "{{ $fields.RraCustomerShippingAddresses.City.value }}",
+            "metadata": "[[ $fields.RraCustomerShippingAddresses.City.metadata ]]"
+        },
+        "State": {
+            "value": "{{ $fields.RraCustomerShippingAddresses.State.value }}",
+            "metadata": "[[ $fields.RraCustomerShippingAddresses.State.metadata ]]"
+        },
+        "PostalCode": {
+            "value": "{{ $fields.RraCustomerShippingAddresses.PostalCode.value }}",
+            "metadata": "[[ $fields.RraCustomerShippingAddresses.PostalCode.metadata ]]"
+        },
+        "Country": {
+          "value": "{{ $fields.RraCustomerShippingAddresses.Country.value }}",
+          "metadata": "[[ $fields.RraCustomerShippingAddresses.Country.metadata ]]"
+        }
+      },
+      "referencedFields": [
+        "RraCustomerShippingAddresses.AddressLine1",
+        "RraCustomerShippingAddresses.AddressLine2",
+        "RraCustomerShippingAddresses.City",
+        "RraCustomerShippingAddresses.State",
+        "RraCustomerShippingAddresses.PostalCode",
+        "RraCustomerShippingAddresses.Country"
+      ]
+    }
+
+  },
+  "translations": {
+    "metadata": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  },
+  "replaceMetadata": {
+    "CustomerName": {
+      "labelHint": "[[ $translations.metadata.ORDER_CUSTOMER_NAME ]]"
+    },
+    "EmailAddress": {
+      "labelHint": "[[ $translations.metadata.ORDER_CUSTOMER_EMAIL ]]"
+    }
+  }
+}

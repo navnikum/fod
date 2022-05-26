@@ -1,0 +1,70 @@
+{
+  "layoutTypes": {
+    "rraProducts": {
+      "kind": "operationRef",
+      "serviceId": "oracle_atf_rwdrefUI:rraProducts",
+      "operations": [
+        "get_rraProducts"
+      ]
+    }
+  },
+  "layouts": {
+    "isDefault": {
+      "description": "Default Rule",
+      "type": "rraProducts",
+      "expression": "default"
+    },
+    "viewProductLayout": {
+      "type": "rraProducts",
+      "layoutType": "form",
+      "label": "viewProductLayout",
+      "description": "dynamic form for product detail with extensions",
+      "rules": [
+        "isDefault"
+      ],
+      "layouts": {
+        "default": {
+          "layoutType": "form",
+          "layout": {
+            "displayProperties": [
+              "Description",
+              "BrandName",
+              "CategoryName",
+              "unitPriceWithCurrency",
+              "Weight",
+              "Dimensions"
+            ],
+            "readonly": true
+          },
+          "usedIn": [
+            "isDefault"
+          ]
+        }
+      },
+      "extensible": "full",
+      "fieldTemplateMap": {
+        "UnitPrice": "unitPriceTmpl",
+        "unitPriceWithCurrency": "unitPriceTmpl"
+      }
+    }
+  },
+  "templates": {
+    "unitPriceTmpl": {
+      "title": "Unit Price Template",
+      "description": "Display using the Input Current component",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-currency/loader"
+      ]
+    }
+  },
+  "imports": {},
+  "translations": {
+    "layout": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  }
+}

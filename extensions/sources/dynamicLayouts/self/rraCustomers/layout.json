@@ -1,0 +1,192 @@
+{
+  "translations": {
+    "layout": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  },
+  "layoutTypes": {
+    "rraCustomers": {
+      "kind": "operationRef",
+      "serviceId": "oracle_atf_rwdrefUI:rraCustomers",
+      "operations": [
+        "get_rraCustomers"
+      ]
+    }
+  },
+  "layouts": {
+    "isDefault": {
+      "description": "Default Rule",
+      "type": "rraCustomers",
+      "expression": "default"
+    },
+    "customerDetailsLayout": {
+      "type": "rraCustomers",
+      "layoutType": "form",
+      "label": "Customer Details Layout",
+      "rules": [
+        "isDefault"
+      ],
+      "layouts": {
+        "default": {
+          "layoutType": "form",
+          "layout": {
+            "displayProperties": [
+              "CustomerName",
+              "Phone",
+              "EmailAddress",
+              "billingAddressVirtual",
+              "shippingAddressVirtual"
+            ],
+            "readonly": true
+          },
+          "usedIn": [
+            "isDefault"
+          ]
+        }
+      },
+      "fieldTemplateMap": {
+        "EmailAddress": "emailTemplate",
+        "Phone": "phoneNumberTemplate",
+        "billingAddressVirtual": "billingAddressTemplate",
+        "shippingAddressVirtual": "shippingAddressTemplate"
+      }
+    }
+  },
+  "templates": {
+    "emailTemplate": {
+      "title": "Email Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-email/loader",
+        "ojs/ojinputtext"
+      ]
+    },
+    "shippingAddressTemplate": {
+      "title": "Shipping Address Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-address/loader",
+        "ojs/ojlabel"
+      ]
+    },
+    "billingAddressTemplate": {
+      "title": "Billing Address Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-address/loader",
+        "ojs/ojlabel"
+      ]
+    },
+    "phoneNumberTemplate": {
+      "title": "Phone NumberTemplate",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-phone-number/loader",
+        "ojs/ojlabel"
+      ]
+    }
+  },
+  "variables": {
+    "itemText": {
+      "type": "object",
+      "defaultValue": {
+        "searchApi": [
+          "Text",
+          "Description"
+        ],
+        "countriesApi": "TerritoryShortName"
+      }
+    },
+    "countriesLovSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:territoriesLOV/getall_territoriesLOV",
+        "itemsPath": "items",
+        "responseType": "getall_territoriesLOV",
+        "keyAttributes": "TerritoryCode",
+        "uriParameters": {
+          "fields": "TerritoryCode,TerritoryShortName"
+        }
+      }
+    },
+    "addressStyleFormatSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:addressStyleFormats/getall_addressStyleFormats",
+        "itemsPath": "items",
+        "keyAttributes": "CountryCode",
+        "transforms": {
+          "response": {
+            "body": "{{ $functions.getFormattedAddressStyle }}"
+          }
+        },
+        "uriParameters": {
+          "expand": "AddressStyleFormatLayout",
+          "onlyData": true
+        }
+      }
+    }
+  },
+  "types": {
+    "@decorators.getall_territoriesLOV": {
+      "endpoint": "getall_territoriesLOV",
+      "service": "oracle_atf_rwdrefUI:territoriesLOV",
+      "path": "response"
+    },
+    "getall_territoriesLOV": {
+      "count": "number",
+      "hasMore": "boolean",
+      "items": [
+        {
+          "Description": "string",
+          "EnabledFlag": "string",
+          "links": [
+            {
+              "href": "string",
+              "kind": "string",
+              "name": "string",
+              "properties": {
+                "changeIndicator": "string"
+              },
+              "rel": "string"
+            }
+          ],
+          "ObsoleteFlag": "string",
+          "TerritoryCode": "string",
+          "TerritoryShortName": "string"
+        }
+      ],
+      "limit": "number",
+      "links": [
+        {
+          "href": "string",
+          "kind": "string",
+          "name": "string",
+          "properties": {
+            "changeIndicator": "string"
+          },
+          "rel": "string"
+        }
+      ],
+      "offset": "number",
+      "totalResults": "number"
+    }
+  },
+  "imports": {}
+}

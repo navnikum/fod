@@ -1,0 +1,35 @@
+{
+    "addField": {
+        "unitPriceWithCurrency": {
+            "type": "object",
+            "properties": {
+                "CurrencyCode": {
+                    "value": "{{ $fields.CurrencyCode.value }}",
+                    "metadata": "[[ $fields.CurrencyCode.metadata ]]"
+                },
+                "UnitPrice": {
+                    "value": "{{ $fields.UnitPrice.value }}",
+                    "metadata": "[[ $fields.UnitPrice.metadata ]]"
+                }
+            },
+            "referencedFields": [
+                "CurrencyCode",
+                "UnitPrice"
+            ]
+        }
+    },
+    "replaceMetadata": {
+        "BrandName": {
+            "labelHint": "[[ $translations.fields.BRAND_NAME ]]"
+        },
+        "CategoryName": {
+            "labelHint": "[[ $translations.fields.ADD_PRODUCT_CATEGORY ]]"
+        }
+
+    },
+    "translations": {
+      "fields": {
+        "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+      }
+    }
+}

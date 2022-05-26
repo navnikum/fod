@@ -1,0 +1,37 @@
+<!-- Contains Dynamic UI layout templates -->
+<template id="shippingAddressTemplate">
+    <oj-sp-input-address
+        label-hint="[[ $layout.translations.layout.ORDER_SHIPPING_ADDRESS ]]"
+        address-data="[[ $functions.getFormattedAddress($value.AddressLine1(), $value.AddressLine2(), $value.City(), $value.State(), $value.PostalCode(), $value.Country()) ]]"
+        item-text="[[ $variables.itemText ]]"
+        style-formats="[[ $variables.addressStyleFormatSDP ]]"
+        countries="[[ $variables.countriesLovSDP ]]"
+    >
+    </oj-sp-input-address>
+</template>
+<template id="billingAddressTemplate">
+    <oj-sp-input-address
+        label-hint="[[ $layout.translations.layout.ORDER_BILLING_ADDRESS ]]"
+        address-data="[[ $functions.getFormattedAddress($value.AddressLine1(), $value.AddressLine2(), $value.City(), $value.State(), $value.PostalCode(), $value.Country()) ]]"
+        item-text="[[ $variables.itemText ]]"
+        style-formats="[[ $variables.addressStyleFormatSDP ]]"
+        countries="[[ $variables.countriesLovSDP ]]"
+    >
+    </oj-sp-input-address>
+</template>
+<template id="phoneNumberTemplate">
+    <oj-sp-input-phone-number
+        value="[[ { subscriberNumber: $value() || '' } ]]"
+        label-hint="[[ $layout.translations.layout.ORDER_CUSTOMER_PHONE ]]"
+        readonly="true">
+    </oj-sp-input-phone-number>
+</template>
+
+<template id="emailTemplate">
+  <oj-sp-input-email
+    label-hint="[[ $metadata.labelHint ]]"
+    readonly="true"
+    value="[[ $value ]]">
+  </oj-sp-input-email>
+</template>
+

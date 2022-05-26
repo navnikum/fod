@@ -1,0 +1,244 @@
+{
+  "translations": {
+    "layout": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  },
+  "layoutTypes": {
+    "rraOrders": {
+      "kind": "operationRef",
+      "serviceId": "oracle_atf_rwdrefUI:rraOrders",
+      "operations": [
+        "get_rraOrders"
+      ]
+    }
+  },
+  "layouts": {
+    "isDefault": {
+      "description": "Default Rule",
+      "type": "rraOrders",
+      "expression": "default"
+    },
+    "viewOrderLayout": {
+      "type": "rraOrders",
+      "layoutType": "form",
+      "label": "View Order Layout",
+      "rules": [
+        "isDefault"
+      ],
+      "layouts": {
+        "default": {
+          "layoutType": "form",
+          "layout": {
+            "displayProperties": [
+              {
+                "CustomerInfo": {
+                  "description": "",
+                  "layout": {
+                    "labelHint": "[[ $translations.layout.ORDER_CUSTOMER_INFO ]]",
+                    "displayProperties": [
+                      "RraCustomers.CustomerName",
+                      "RraCustomers.Phone",
+                      "RraCustomers.EmailAddress"
+                    ],
+                    "colspan": 3,
+                    "maxColumns": 3,
+                    "direction": "row"
+                  }
+                }
+              },
+              "shippingAddressVirtual",
+              {
+                "Comments": {
+                  "colspan": 3
+                }
+              },
+              {
+                "AttachementsGroup": {
+                  "description": "",
+                  "layout": {
+                    "labelHint": "[[ $translations.layout.ORDER_ATTACHMENTS ]]",
+                    "displayProperties": [
+                      "attachmentsInfo"
+                    ],
+                    "direction": "row",
+                    "colspan": 3,
+                    "maxColumns": 3
+                  }
+                }
+              }
+            ],
+            "fieldTemplateMap": {},
+            "readonly": true
+          },
+          "usedIn": [
+            "isDefault"
+          ]
+        }
+      },
+      "fieldTemplateMap": {
+        "attachmentsInfo": "attachmentsTemplate",
+        "Comments": "commentsTemplate",
+        "RraCustomers.EmailAddress": "emailTemplate",
+        "RraCustomers.Phone": "phoneNumberTemplate",
+        "shippingAddressVirtual": "shippingAddressTemplate"
+      }
+    },
+    "isDefault2": {
+      "description": "Default Rule",
+      "type": "rraOrders",
+      "expression": "default"
+    }
+  },
+  "templates": {
+    "attachmentsTemplate": {
+      "title": "Attachments Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/attachments/loader"
+      ]
+    },
+    "commentsTemplate": {
+      "title": "Comments Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "ojs/ojinputtext"
+      ]
+    },
+    "emailTemplate": {
+      "title": "Email Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-email/loader",
+        "ojs/ojinputtext"
+      ]
+    },
+    "shippingAddressTemplate": {
+      "title": "Shipping Address Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-address/loader",
+        "ojs/ojinputtext"
+      ]
+    },
+    "phoneNumberTemplate": {
+      "title": "Phone Number Template",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "field"
+      },
+      "dependencies": [
+        "oj-sp/input-phone-number/loader",
+        "ojs/ojinputtext"
+      ]
+    }
+  },
+  "imports": {},
+  "eventListeners": {},
+  "interface": {
+    "events": {}
+  },
+  "variables": {
+    "itemText": {
+      "type": "object",
+      "defaultValue": {
+        "searchApi": [
+          "Text",
+          "Description"
+        ],
+        "countriesApi": "TerritoryShortName"
+      }
+    },
+    "countriesLovSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:territoriesLOV/getall_territoriesLOV",
+        "itemsPath": "items",
+        "responseType": "getall_territoriesLOV",
+        "keyAttributes": "TerritoryCode",
+        "uriParameters": {
+          "fields": "TerritoryCode,TerritoryShortName"
+        }
+      }
+    },
+    "addressStyleFormatSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:addressStyleFormats/getall_addressStyleFormats",
+        "itemsPath": "items",
+        "keyAttributes": "CountryCode",
+        "transforms": {
+          "response": {
+            "body": "{{ $functions.getFormattedAddressStyle }}"
+          }
+        },
+        "uriParameters": {
+          "expand": "AddressStyleFormatLayout",
+          "onlyData": true
+        }
+      }
+    }
+  },
+  "types": {
+    "@decorators.getall_territoriesLOV": {
+      "endpoint": "getall_territoriesLOV",
+      "service": "oracle_atf_rwdrefUI:territoriesLOV",
+      "path": "response"
+    },
+    "getall_territoriesLOV": {
+      "count": "number",
+      "hasMore": "boolean",
+      "items": [
+        {
+          "Description": "string",
+          "EnabledFlag": "string",
+          "links": [
+            {
+              "href": "string",
+              "kind": "string",
+              "name": "string",
+              "properties": {
+                "changeIndicator": "string"
+              },
+              "rel": "string"
+            }
+          ],
+          "ObsoleteFlag": "string",
+          "TerritoryCode": "string",
+          "TerritoryShortName": "string"
+        }
+      ],
+      "limit": "number",
+      "links": [
+        {
+          "href": "string",
+          "kind": "string",
+          "name": "string",
+          "properties": {
+            "changeIndicator": "string"
+          },
+          "rel": "string"
+        }
+      ],
+      "offset": "number",
+      "totalResults": "number"
+    }
+  }
+}

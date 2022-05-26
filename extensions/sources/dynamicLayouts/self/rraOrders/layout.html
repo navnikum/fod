@@ -1,0 +1,53 @@
+<!-- Contains Dynamic UI layout templates -->
+<template id="commentsTemplate">
+  <oj-text-area id="order-comments"
+    label-hint="[[ $metadata.labelHint ]]"
+    value="[[ $value() ]]"
+    rows="3" max-rows="3"></oj-text-area>
+</template>
+
+<template id="attachmentsTemplate">
+  <oj-bind-if test="[[ $value.OrderId() !== undefined ]]">
+    <oj-sp-attachments id="order-attachments" class="oj-flex-item oj-sm-12 oj-md-12"
+      :aria-label="[[ $metadata.labelHint ]]"
+      view="[[ { endpoint: 'oracle_atf_rwdrefUI:rraOrders/getall_rraOrders-Attachments', endpointParams: { rraOrders_Id: $value.OrderId() }} ]]"
+      download="[[ { endpoint: 'oracle_atf_rwdrefUI:rraOrders/get_rraOrders-Attachments-FileContents', endpointParams: { rraOrders_Id: $value.OrderId() }, endpointAttachmentParamName: 'rraOrders_Attachments_Id'} ]]"
+      preview="[[ { endpoint: 'oracle_atf_rwdrefUI:rraOrders/getall_rraOrders-Attachments-AttachmentsPreview', endpointParams: { rraOrders_Id: $value.OrderId() }, endpointAttachmentParamName: 'rraOrders_Attachments_Id' } ]]"
+      background-tracker.endpoint="oracle_atf_rwdrefUI:attachments/postAttachDocTracker"
+      background-download.endpoint="oracle_atf_rwdrefUI:attachments/downloadFile"
+      background-download.endpoint-tracker-param-name="trackerId"
+      display-options.update-visibility="hidden"
+      display-options.remove-visibility="hidden"
+      display-options.add-visibility="hidden">
+    </oj-sp-attachments>
+  </oj-bind-if>
+</template>
+
+<template id="shippingAddressTemplate">
+    <oj-sp-input-address
+        id="customer-shipping-address"
+        label-hint="[[ $layout.translations.layout.ORDER_SHIPPING_ADDRESS ]]"
+        address-data="[[ $functions.getFormattedAddress($value.AddressLine1(), $value.AddressLine2(), $value.City(), $value.State(), $value.PostalCode(), $value.Country()) ]]"
+        item-text="[[ $variables.itemText ]]"
+        style-formats="[[ $variables.addressStyleFormatSDP ]]"
+        countries="[[ $variables.countriesLovSDP ]]"
+    >
+    </oj-sp-input-address>
+</template>
+
+<template id="phoneNumberTemplate">
+    <oj-sp-input-phone-number
+        id="customer-phone"
+        label-hint="[[ $metadata.labelHint ]]"
+        value="[[ { subscriberNumber: $value() || '' } ]]"
+        readonly="true">
+    </oj-sp-input-phone-number>
+</template>
+
+<template id="emailTemplate">
+  <oj-sp-input-email
+    label-hint="[[ $metadata.labelHint ]]"
+    readonly="true"
+    value="[[ $value ]]">
+  </oj-sp-input-email>
+</template>

@@ -1,0 +1,1110 @@
+{
+  "backends": {
+    "vbprocess": {
+      "serviceType": "vbprocess",
+      "servers": [
+        {
+          "url": "vb-catalog://backends.tenant/vbprocess",
+          "description": "Player Target Server",
+          "x-vb": {
+            "headers": {
+              "pcs_mode": "dev"
+            }
+          }
+        },
+        {
+          "url": "vb-catalog://backends.tenant/vbprocess",
+          "description": "Default Target Server",
+          "x-vb": {}
+        }
+      ]
+    }
+  },
+  "services": {
+    "rraOrders": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "",
+        "x-vb": {
+          "headers": {
+            "REST-Framework-Version": "9"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "rraOrders"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraCustomers": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "",
+        "x-vb": {
+          "headers": {
+            "REST-Framework-Version": "9"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "rraCustomers"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraProducts": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "",
+        "x-vb": {
+          "headers": {
+            "REST-Framework-Version": "9"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "rraProducts"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraSuppliers": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "",
+        "x-vb": {
+          "headers": {
+            "REST-Framework-Version": "9"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "rraSuppliers"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraSupplierProducts": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "",
+        "x-vb": {
+          "headers": {
+            "REST-Framework-Version": "9"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "rraSupplierProducts"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraOrder": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": ""
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/v1"
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "fnd-rra-order"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraOrderFilters": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Suggestion filters search on typeahead and applied filters"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-order"
+            },
+            "smartSearchName": {
+              "default": "rraOrderSearch"
+            },
+            "searchType": {
+              "default": "filters"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraOrderAggregate": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Aggregate search on selected filter and applied filter chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-order"
+            },
+            "smartSearchName": {
+              "default": "rraOrderSearch"
+            },
+            "searchType": {
+              "default": "aggregate"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraOrderAutocomplete": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Autocomplete search on typeahead text filter and applied filters chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-order"
+            },
+            "smartSearchName": {
+              "default": "rraOrderSearch"
+            },
+            "searchType": {
+              "default": "autocomplete"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraOrderSearch": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Search on applied filter chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-order"
+            },
+            "smartSearchName": {
+              "default": "rraOrderSearch"
+            },
+            "searchType": {
+              "default": "search"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraOrderRecent": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Search and save recent searches"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/recentsearches/{version}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraProduct": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": ""
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/v1"
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "fnd-rra-product"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraProductFilters": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Suggestion filters search on typeahead and applied filters"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-product"
+            },
+            "smartSearchName": {
+              "default": "rraProductSearch"
+            },
+            "searchType": {
+              "default": "filters"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraProductAggregate": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Aggregate search on selected filter and applied filter chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-product"
+            },
+            "smartSearchName": {
+              "default": "rraProductSearch"
+            },
+            "searchType": {
+              "default": "aggregate"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraProductAutocomplete": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Autocomplete search on typeahead text filter and applied filters chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-product"
+            },
+            "smartSearchName": {
+              "default": "rraProductSearch"
+            },
+            "searchType": {
+              "default": "autocomplete"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraProductSearch": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Search on applied filter chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-product"
+            },
+            "smartSearchName": {
+              "default": "rraProductSearch"
+            },
+            "searchType": {
+              "default": "search"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraProductRecent": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Search and save recent searches"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fndRestApi/search/recentsearches/{version}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraUserTraining": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": ""
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:crmRest/11.13.18.05:{REST-Framework-Version}/v1",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              },
+              "queryParameters": {
+                "resources": "fnd-rra-user-training"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraUserTrainingAutocomplete": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Autocomplete search on typeahead text filter and applied filters chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:crmRest/11.13.18.05:{REST-Framework-Version}/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-user-training"
+            },
+            "REST-Framework-Version": {
+              "default": "9"
+            },
+            "smartSearchName": {
+              "default": "fndRraUserTrainingAutocomplete"
+            },
+            "searchType": {
+              "default": "autocomplete"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraUserTrainingSearch": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Search on applied filter chips"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:crmRest/11.13.18.05:{REST-Framework-Version}/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-user-training"
+            },
+            "REST-Framework-Version": {
+              "default": "9"
+            },
+            "smartSearchName": {
+              "default": "fndRraUserTrainingSearch"
+            },
+            "searchType": {
+              "default": "search"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraUserTrainingRecent": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Search and save recent searches"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:crmRest/11.13.18.05:{REST-Framework-Version}/recentsearches/{version}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fndRraUserTrainingFilters": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Suggestion filters search on typeahead and applied filters"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:crmRest/11.13.18.05:{REST-Framework-Version}/search/{version}/{indexName}/{smartSearchName}/{searchType}",
+          "variables": {
+            "version": {
+              "default": "v1"
+            },
+            "indexName": {
+              "default": "fnd-rra-user-training"
+            },
+            "REST-Framework-Version": {
+              "default": "9"
+            },
+            "smartSearchName": {
+              "default": "fndRraUserTrainingFilters"
+            },
+            "searchType": {
+              "default": "filters"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            },
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraUserTrainings": {
+      "openapi": "3.0.0",
+      "info": {
+        "x-vb": {
+          "serviceType": "adf-describe",
+          "headers": {
+            "REST-Framework-Version": "9"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "x-vb": {
+              "queryParameters": {
+                "resources": "rraUserTrainings"
+              },
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json",
+                "REST-Framework-Version": "9"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraProductCategories": {
+      "openapi": "3.0.0",
+      "info": {
+        "x-vb": {
+          "serviceType": "adf-describe",
+          "headers": {
+            "REST-Framework-Version": "4"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "x-vb": {
+              "queryParameters": {
+                "metadataMode": "minimal",
+                "resources": "rraProductCategories"
+              },
+              "headers": {
+                "REST-Pretty-Print": "false",
+                "Accept": "application/vnd.oracle.openapi3+json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraSupplierInventory": {
+      "openapi": "3.0.0",
+      "info": {
+        "x-vb": {
+          "serviceType": "adf-describe",
+          "headers": {
+            "REST-Framework-Version": "4"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "x-vb": {
+              "queryParameters": {
+                "metadataMode": "minimal",
+                "resources": "rraSupplierInventory"
+              },
+              "headers": {
+                "REST-Pretty-Print": "false",
+                "Accept": "application/vnd.oracle.openapi3+json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "rraGuidedProcess": {
+      "openapi": "3.0.0",
+      "info": {
+        "x-vb": {
+          "serviceType": "adf-describe",
+          "headers": {
+            "REST-Framework-Version": "4"
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          }
+        }
+      ],
+      "paths": {
+        "/describe": {
+          "get": {
+            "x-vb": {
+              "queryParameters": {
+                "metadataMode": "minimal",
+                "resources": "rraGuidedProcess"
+              },
+              "headers": {
+                "REST-Pretty-Print": "false",
+                "Accept": "application/vnd.oracle.openapi3+json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "territoriesLOV": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "Territories LOV"
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:fscmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          },
+          "x-vb": {
+            "headers": {}
+          }
+        }
+      ],
+      "paths": {
+        "/describe?metadataMode=minimal&resources=territoriesLOV": {
+          "get": {
+            "responses": {},
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "addressStyleFormats": {
+      "openapi": "3.0.0",
+      "info": {
+        "title": ""
+      },
+      "servers": [
+        {
+          "url": "vb-catalog://backends/base:crmRest/11.13.18.05:{REST-Framework-Version}",
+          "variables": {
+            "REST-Framework-Version": {
+              "default": "9"
+            }
+          },
+          "x-vb": {
+            "headers": {}
+          }
+        }
+      ],
+      "paths": {
+        "/describe?metadataMode=minimal&resources=addressStyleFormats": {
+          "get": {
+            "responses": {},
+            "x-vb": {
+              "headers": {
+                "Accept": "application/vnd.oracle.openapi3+json"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

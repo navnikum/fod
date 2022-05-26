@@ -1,0 +1,41 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AttachmentsAPI",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "vb-catalog://backends/fndRestApi/v1"
+    }
+  ],
+  "paths": {
+    "/attachDocTracker": {
+      "post": {
+        "operationId": "postAttachDocTracker",
+        "responses": {},
+        "x-vb": {
+          "actionHint": "create"
+        }
+      }
+    },
+    "/attachUpload": {
+      "post": {
+        "operationId": "postAttachUpload",
+        "responses": {},
+        "x-vb": {
+          "actionHint": "create"
+        }
+      }
+    },
+    "/attachUpload/{trackerId}": {
+      "get": {
+        "operationId": "downloadFile",
+        "responses": {},
+        "x-vb": {
+          "actionHint": "download"
+        }
+      }
+    }
+  }
+}

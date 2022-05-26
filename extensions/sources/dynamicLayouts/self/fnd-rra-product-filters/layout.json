@@ -1,0 +1,12 @@
+{
+  "layoutTypes": {
+    "fnd-rra-product": {
+      "kind": "operationRef",
+      "serviceId": "oracle_atf_rwdrefUI:fndRraProductFilters",
+      "operations": [
+        "SmartSearchFilters_rraProductSearch"
+      ]
+    }
+  },
+  "layouts": {}
+}

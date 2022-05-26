@@ -1,0 +1,22 @@
+{
+  "root": "fireEventProductNumberClick",
+  "description": "",
+  "variables": {
+    "event": {
+      "type": "any",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+
+    "fireEventProductNumberClick": {
+      "module": "vb/action/builtin/fireCustomEventAction",
+      "parameters": {
+        "name": "productNumberClick",
+        "payload": {
+          "productId": "{{ $variables.event.target.getAttribute('data-product-id') }}"
+        }
+      }
+    }
+  }
+}

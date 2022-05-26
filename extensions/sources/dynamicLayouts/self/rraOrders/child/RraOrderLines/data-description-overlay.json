@@ -1,0 +1,75 @@
+{
+    "addField": {
+        "amountWithCurrency": {
+            "type": "object",
+            "labelHint": "[[ $fields.Amount.metadata.labelHint ]]",
+            "properties": {
+                "Value": {
+                    "value": "{{ $fields.Amount.value }}",
+                    "metadata": "[[ $fields.Amount.metadata ]]"
+                },
+                "CurrencyCode": {
+                    "value": "{{ $fields.CurrencyCode.value }}",
+                    "metadata": "[[ $fields.CurrencyCode.metadata ]]"
+                }
+            },
+            "referencedFields": [
+                "Amount",
+                "CurrencyCode"
+            ]
+        },
+        "priceWithCurrency": {
+            "type": "object",
+            "labelHint": "[[ $translations.metadata.ORDER_LINE_PRICE ]]",
+            "properties": {
+                "CurrencyCode": {
+                    "value": "{{ $fields.CurrencyCode.value }}",
+                    "metadata": "[[ $fields.CurrencyCode.metadata ]]"
+                },
+                "Value": {
+                    "value": "{{ $fields.ListPrice.value }}",
+                    "metadata": "[[ $fields.ListPrice.metadata ]]"
+                }
+            },
+            "referencedFields": [
+                "CurrencyCode",
+                "ListPrice"
+            ]
+        },
+        "productLink": {
+            "type": "object",
+            "labelHint": "[[ $translations.metadata.ADD_PRODUCT_PRODUCT_NUMBER ]]",
+            "properties": {
+                "ProductId": {
+                    "value": "{{ $fields.ProductId.value }}",
+                    "metadata": "[[ $fields.ProductId.metadata ]]"
+                },
+                "ProductNumber": {
+                    "value": "{{ $fields.ProductNumber.value }}",
+                    "metadata": "[[ $fields.ProductNumber.metadata ]]"
+                }
+            },
+            "referencedFields": [
+                "ProductId",
+                "ProductNumber"
+            ]
+        }
+
+    },
+    "translations": {
+      "metadata": {
+        "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+      }
+    },
+    "replaceMetadata": {
+        "ImageUrl": {
+            "labelHint": "[[ $translations.metadata.ORDER_LINE_IMAGE ]]"
+        },
+        "ProductName": {
+            "labelHint": "[[ $translations.metadata.ADD_PRODUCT_PRODUCT_NAME ]]"
+        },
+        "ProductNumber": {
+            "labelHint": "[[ $translations.metadata.ADD_PRODUCT_PRODUCT_NAME ]]"
+        }
+    }
+}

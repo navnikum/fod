@@ -1,0 +1,20 @@
+<!-- Contains Dynamic UI layout templates -->
+<template id="productImage">
+  <oj-avatar class="oj-flex-item oj-sm-flex-initial" size="xs" src="[[ $componentContext.toResourceUrl($value()) ]]"></oj-avatar>
+</template>
+
+<template id="currency">
+  <oj-sp-input-currency
+    currency="[[ $value.CurrencyCode() ||  $componentContext.currency]]"
+    value="[[ $value.Value() ]]" 
+    currency-display="symbol" currency-format="standard"
+    text-align="end" label-edge="none" readonly="true">
+  </oj-sp-input-currency>
+</template>
+
+<template id="productLink">
+  <a class="orderline-productId" :data-product-id="[[ $value.ProductId() ]]"
+    on-click="[[ $listeners.productNumberClick ]]">
+    <oj-bind-text value="[[ $value.ProductNumber() ]]"></oj-bind-text>
+  </a>
+</template>

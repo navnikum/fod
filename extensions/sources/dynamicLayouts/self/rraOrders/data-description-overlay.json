@@ -1,0 +1,97 @@
+{
+  "addField": {
+    "shippingAddressVirtual": {
+      "type": "object",
+      "labelHint": "[[ $translations.metadata.ORDER_SHIPPING_ADDRESS ]]",
+      "readonly": true,
+      "properties": {
+        "AddressLine1": {
+            "value": "{{ $fields.RraShippingAddress.AddressLine1.value }}",
+            "metadata": "[[ $fields.RraShippingAddress.AddressLine1.metadata ]]"
+        },
+        "AddressLine2": {
+            "value": "{{ $fields.RraShippingAddress.AddressLine2.value }}",
+            "metadata": "[[ $fields.RraShippingAddress.AddressLine2.metadata ]]"
+        },
+        "City": {
+            "value": "{{ $fields.RraShippingAddress.City.value }}",
+            "metadata": "[[ $fields.RraShippingAddress.City.metadata ]]"
+        },
+        "State": {
+            "value": "{{ $fields.RraShippingAddress.State.value }}",
+            "metadata": "[[ $fields.RraShippingAddress.State.metadata ]]"
+        },
+        "PostalCode": {
+            "value": "{{ $fields.RraShippingAddress.PostalCode.value }}",
+            "metadata": "[[ $fields.RraShippingAddress.PostalCode.metadata ]]"
+        },
+        "Country": {
+          "value": "{{ $fields.RraShippingAddress.Country.value }}",
+          "metadata": "[[ $fields.RraShippingAddress.Country.metadata ]]"
+        }
+      },
+      "referencedFields": [
+        "RraShippingAddress.AddressLine1",
+        "RraShippingAddress.AddressLine2",
+        "RraShippingAddress.City",
+        "RraShippingAddress.State",
+        "RraShippingAddress.PostalCode",
+        "RraShippingAddress.Country"
+      ]
+    },
+    "attachmentsInfo": {
+      "type": "object",
+      "labelHint": "[[ $translations.metadata.ORDER_ATTACHMENTS ]]",
+      "properties": {
+        "AttachmentEntityName": {
+          "value": "{{ $fields.AttachmentEntityName.value }}",
+          "metadata": "[[ $fields.AttachmentEntityName.metadata ]]"
+        },
+        "OrderId": {
+          "value": "{{ $fields.OrderId.value }}",
+          "metadata": "[[ $fields.OrderId.metadata ]]"
+        }
+      },
+      "referencedFields": [
+        "AttachmentEntityName",
+        "OrderId"
+      ]
+    }
+
+  },
+  "translations": {
+    "metadata": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  },
+  "addMetadata": {},
+  "replaceMetadata": {
+    "RraCustomers.EmailAddress": {
+      "labelHint": "[[ $translations.metadata.ORDER_CUSTOMER_EMAIL ]]"
+    },
+    "RraCustomers.Phone": {
+      "labelHint": "[[ $translations.metadata.ORDER_CUSTOMER_PHONE ]]"
+    },
+    "RraCustomers.CustomerName": {
+      "labelHint": "[[ $translations.metadata.ORDER_CUSTOMER_NAME ]]"
+    },
+    "RraOrderLines.ProductName": {
+      "labelHint": "[[ $translations.metadata.ADD_PRODUCT_SELECT_PRODUCT]]"
+    },
+    "RraOrderLines.ProductNumber": {
+      "labelHint": "[[ $translations.metadata.ADD_PRODUCT_PRODUCT_NUMBER]]"
+    },
+    "RraOrderLines.ImageUrl": {
+      "labelHint": "[[ $translations.metadata.ORDER_LINE_IMAGE]]"
+    },
+    "RraOrderLines.ListPrice": {
+      "labelHint": "[[ $translations.metadata.ADD_PRODUCT_PRICE]]"
+    },
+    "RraOrderLines.Quantity": {
+      "labelHint": "[[ $translations.metadata.ORDER_LINE_QTY]]"
+    },
+    "RraOrderLines.Amount": {
+      "labelHint": "[[ $translations.metadata.ORDER_LINE_AMT]]"
+    }
+  }
+}
