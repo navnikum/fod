@@ -1,0 +1,11 @@
+{
+  "reporterEnabled": "mochawesome",
+  "mochawesomeReporterOptions": {
+    "reportDir": "reports/integ-tests/html",
+    "reportFilename": "index",
+    "reportTitle": "Spectra UI Integration Tests",
+    "reportPageTitle": "Spectra UI Integration Tests",
+    "charts": true,
+    "showSkipped": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "applicationName": "Unified Application",
+  "baseApplication": "redwood",
+  "dependencies": {
+    "oj-dynamic": "https://static-stage.oracle.com/cdn/jet/packs/oj-dynamic/12.1.0-rc.2/min",
+    "gallery": "2207.2.0",
+    "trace": "https://static-stage.oracle.com/cdn/trace/7.0.0-alpha.1.1",
+    "vb": "https://static-stage.oracle.com/cdn/vb/2210.0.0-alpha.2",
+    "jet": "https://static-stage.oracle.com/cdn/jet/12.1.1-rc.2",
+    "oj-sp": "https://static-stage.oracle.com/cdn/spectra-ui/oj-sp/2210.0.0-alpha.2.3/debug",
+    "oda": "21.12.0",
+    "oars": "https://static-stage.oracle.com/cdn/oars/2.0.0-alpha.2",
+    "ogl": "https://static.oracle.com/cdn/ogl/1.0.04041"
+  },
+  "sourceUrl": "https://static-stage.oracle.com/cdn/spectra-ui/redwood/2210.0.0-alpha.2.2"
+}

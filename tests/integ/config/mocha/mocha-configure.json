@@ -1,0 +1,8 @@
+{
+    "timeout": 240000,
+    "reporter": "mocha-multi-reporters",
+    "reporter-options": "configFile=./test/config/report-config.json",
+    "package": "../../package.json",
+    "extension": ["ts"],
+    "recursive": true
+  }

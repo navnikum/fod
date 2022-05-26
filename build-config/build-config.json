@@ -1,0 +1,37 @@
+{
+  "sslEnabled": false,
+  "servicesHost": "fuscdrmsmc23-fa-ext.us.oracle.com",
+  "servicesAuth": "helpadmin:Welcome1",
+  "vb": {
+    "version": "2210.0.0-alpha.2",
+    "cdn": "https://static-stage.oracle.com/cdn/vb/",
+    "debug": false
+  },
+  "jet": {
+    "version": "12.1.1-rc.2",
+    "cdn": "https://static-stage.oracle.com/cdn/jet/",
+    "debug": false,
+    "debug3rdParty": false
+  },
+  "ojsp": {
+    "path": "https://static-stage.oracle.com/cdn/",
+    "version": "2210.0.0-alpha.2.2"
+  },
+  "ojdyn": {
+    "path": "https://static-stage.oracle.com/cdn/jet/packs/oj-dynamic/",
+    "version": "12.1.0-rc.2"
+  },
+  "telemetry": {
+    "cdn": "https://static-stage.oracle.com/cdn/trace/",
+    "version": "7.0.0-alpha.1.1"
+  },
+  "deploy": {
+    "target": "webApps/rwdref",
+    "port": 4000
+  },
+  "app": {
+    "version": "2210.0.0",
+    "id": "rwdref",
+    "fa-ver-prefix": "11.13"
+  }
+}

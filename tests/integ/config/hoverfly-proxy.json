@@ -1,0 +1,18 @@
+{
+    "PROXY_URL": "http://$PROXY_HOST_AND_PORT",
+    "NO_PROXY_HOSTS": "localhost,127.0.0.1,100.96.188.222,.oraclecorp.com,.us.oracle.com,.oc9qadev.com,.oc-test.com",
+    "http_proxy": "http://www-proxy-brmdc.us.oracle.com:80/",
+    "HTTP_PROXY": "http://www-proxy-brmdc.us.oracle.com:80/",
+    "https_proxy": "http://www-proxy-brmdc.us.oracle.com:80/",
+    "HTTPS_PROXY": "http://www-proxy-brmdc.us.oracle.com:80/",
+    "rsync_proxy": "http://www-proxy-brmdc.us.oracle.com:80/",
+    "RSYNC_PROXY": "http://www-proxy-brmdc.us.oracle.com:80/",
+    "no_proxy": "localhost,127.0.0.1,100.96.188.222,.oraclecorp.com,.us.oracle.com,.oc9qadev.com,.oc-test.com",
+    "NO_PROXY": "localhost,127.0.0.1,100.96.188.222,.oraclecorp.com,.us.oracle.com,.oc9qadev.com,.oc-test.com"
+  }
+  
+     
+
+
+
+

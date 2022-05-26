@@ -1,0 +1,24 @@
+{
+  "reportDir": "./test/report/html",
+  "screenShotDir": "./test/report/screen-shot",
+  "hoverflyProxyPath": "tests/integ/config/hoverfly-proxy.json",
+  "hoverflyDestination": "(fscm|crm|hcm)RestApi",
+  "hoverflyDir": "./tests/hoverfly",
+  "hoverflyLevel": "root",
+  "logDir": "./test/logs",
+  "logConfigFile": "./test/config/log-config.json",
+  "baseURL" :"https://fuscdrmsmc280-fa-ext.us.oracle.com/fscmUI/redwood/rwdref",
+  "gat": {
+    "product": "Redwood Reference App",
+    "release": "2207.0.0-rc.1.1",
+    "accessKey": "d0b5496b67689566978cc15199fc21ff",
+    "browser": "chrome",
+    "a11yCheck": "true",
+    "g11nCheck": "false",
+    "layoutCheck": "false",
+    "securityCheck": "false",
+    "component": "",
+    "resolution": "1680x1440x24",
+    "locales": ""
+  }
+}

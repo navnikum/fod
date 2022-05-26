@@ -1,0 +1,5 @@
+{
+  "certificatePath": "./build-config/ssl/cert.pem",
+  "privateKeyPath": "./build-config/ssl/key.pem",
+  "sslPort": 3999
+}

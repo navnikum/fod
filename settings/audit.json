@@ -1,0 +1,14 @@
+{
+  "paths": {
+    "exclude": [
+      "build-config/**",
+      "service-impls/**",
+      "tests/**"
+    ]
+  },
+  "rules": {},
+  "auditors": {},
+  "customAuditorsManifestUrls": [
+    "https://fre-mockcdn.oraclecorp.com/vbaudits/2104.0.0"
+  ]
+}

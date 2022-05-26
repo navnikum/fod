@@ -1,0 +1,5 @@
+--timeout=240000
+--reporter mocha-multi-reporters
+--reporter-options configFile=./test/config/report-config.json
+./test/config/test-setup.ts
+./test/unit/**/*.spec.

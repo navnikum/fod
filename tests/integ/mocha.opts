@@ -1,0 +1,6 @@
+
+--timeout=900000
+--reporter mocha-multi-reporters
+--reporter-options configFile=./tests/integ/report-config.json
+./tests/integ/config/test-setup.ts
+./tests/integ/**/*.spec.ts
