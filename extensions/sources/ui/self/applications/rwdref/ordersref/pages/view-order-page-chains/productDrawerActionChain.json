@@ -1,0 +1,49 @@
+{
+  "description": "",
+  "root": "assignVariablesIsDrawerPopupOpen",
+  "actions": {
+    "assignVariablesIsDrawerPopupOpen": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "callChainLoadRraProductsChain"
+      },
+      "parameters": {
+        "$flow.variables.isDrawerPopupOpen": {
+          "source": "true"
+        }
+      },
+      "label": "Assign variable IsDrawerPopupOpen"
+    },
+    "callChainUpdateOrderDrawerNavigation": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "flow:updateOrderDrawerNavigation",
+        "params": {
+          "index": "{{ $variables.info.index }}",
+          "indexMove": "{{ $variables.info.indexMove }}",
+          "productId": "{{ $variables.info.productId }}"
+        }
+      }
+    },
+    "callChainLoadRraProductsChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "flow:loadRraProductsActionChain",
+        "params": {
+          "rraProductsId": "{{ $variables.info.productId }}",
+          "fetchedFields": "{{ $flow.variables.productDetail.defaultFields.concat($flow.variables.productDetail.productsDetailFormRenderedFields) }}",
+          "errorMessages": "{{ $page.variables.errorMessages }}"
+        }
+      },
+      "outcomes": {
+        "success": "callChainUpdateOrderDrawerNavigation"
+      }
+    }
+  },
+  "variables": {
+    "info": {
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

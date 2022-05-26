@@ -1,0 +1,51 @@
+{
+  "description": "",
+  "root": "assignVariablesProductDetail",
+  "actions": {
+
+    "callChainProductDrawerActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "productDrawerActionChain",
+        "params": {
+          "info": "{{ { index: $chain.results.callFunctionCalculateProductIndex, indexMove: 0, productId: $variables.payload.productId } }}"
+        }
+      }
+    },
+    "assignVariablesProductDetail": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.productDetail": {
+          "source": {
+            "productCount": "{{ document.querySelectorAll('.orderline-productId').length }}"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "callFunctionCalculateProductIndex"
+      }
+    },
+    "callFunctionCalculateProductIndex": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "calculateProductIndex",
+        "returnType": "any",
+        "params": [
+          "{{ $variables.payload.productId }}"
+        ]
+      },
+      "outcomes": {
+        "success": "callChainProductDrawerActionChain"
+      }
+    }
+  },
+  "variables": {
+    "payload": {
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

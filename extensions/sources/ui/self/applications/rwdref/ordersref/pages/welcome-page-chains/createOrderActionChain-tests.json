@@ -1,0 +1,15 @@
+{
+    "tests": {
+        "Success": {
+            "context": {},
+            "mocks": {},
+            "expectations": [
+                {
+                    "actual": "$actions.navigateToEditOrder.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "edit-order"
+                }
+            ]
+        }
+    }
+   }

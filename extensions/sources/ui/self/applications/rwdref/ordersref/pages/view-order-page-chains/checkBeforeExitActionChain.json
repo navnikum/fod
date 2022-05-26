@@ -1,0 +1,16 @@
+{
+  "root": "assignVariablesIsDrawerPopupOpen",
+  "description": "",
+  "variables": {},
+  "actions": {
+    "assignVariablesIsDrawerPopupOpen": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.isDrawerPopupOpen": {
+          "source": "false"
+        }
+      },
+      "label": "Set isDrawerPopupOpen to false"
+    }
+  }
+}

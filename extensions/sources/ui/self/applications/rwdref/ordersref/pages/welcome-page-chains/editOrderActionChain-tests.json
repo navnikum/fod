@@ -1,0 +1,24 @@
+{
+    "tests": {
+        "Success": {
+            "context": {
+                "$variables.orderId": "123456"
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.navigateToEditOrder.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "edit-order"
+                },
+                {
+                    "actual": "$actions.navigateToEditOrder.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "orderId": "123456",
+                        "parentPage": "welcome"
+                    }
+                }
+            ]
+        }
+    }
+   }

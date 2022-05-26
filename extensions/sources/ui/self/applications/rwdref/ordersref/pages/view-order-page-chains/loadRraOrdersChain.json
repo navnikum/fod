@@ -1,0 +1,111 @@
+{
+  "root": "setPendingFormStatus",
+  "description": "Loads rraOrders record data",
+  "variables": {
+    "fetchedFields": {
+      "type": "any[]",
+      "input": "fromCaller"
+    },
+    "rraOrdersId": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "setPendingFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rraOrdersDetailFormLoadingStatus": {
+          "source": "pending"
+        }
+      },
+      "outcomes": {
+        "success": "resetRraOrdersData"
+      },
+      "description": "Updates form status to Pending.",
+      "label": "Set Form status to Pending"
+    },
+    "resetRraOrdersData": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.rraOrders"
+        ]
+      },
+      "outcomes": {
+        "success": "testValidInput"
+      },
+      "description": "Clears rraOrders data the variable holds",
+      "label": "Reset rraOrders variable"
+    },
+    "testValidInput": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.fetchedFields && $variables.fetchedFields.length && $variables.rraOrdersId !== undefined ]]"
+      },
+      "outcomes": {
+        "true": "loadRraOrders"
+      },
+      "description": "Tests the REST call can be initiated",
+      "label": "Test valid input"
+    },
+    "loadRraOrders": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/get_rraOrders",
+        "responseFields": "[[ $variables.fetchedFields ]]",
+        "uriParams": {
+          "rraOrders_Id": "[[ $variables.rraOrdersId ]]"
+        }
+      },
+      "outcomes": {
+        "success": "assignRraOrdersData",
+        "failure": "assignVariablesErrorMessages"
+      },
+      "description": "Initiates REST call loading rraOrders data",
+      "label": "Load rraOrders record"
+    },
+    "assignRraOrdersData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rraOrders": {
+          "source": "[[ $chain.results.loadRraOrders.body ]]",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "assignVariablesCustomerName"
+      },
+      "description": "Assigns data loaded by the REST call to the rraOrders variable",
+      "label": "Assign rraOrders data"
+    },
+    "setReadyFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rraOrdersDetailFormLoadingStatus": {
+          "source": "ready"
+        }
+      }
+    },
+    "assignVariablesCustomerName": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.customerName": {
+          "source": "{{ $chain.results.loadRraOrders.body.RraCustomers.items[0].CustomerName }}"
+        }
+      },
+      "outcomes": {
+        "success": "setReadyFormStatus"
+      }
+    },
+    "assignVariablesErrorMessages": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.hasApiFetchError": {
+          "source": true,
+          "reset": "empty"
+        }
+      }
+    }
+  }
+}

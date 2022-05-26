@@ -1,0 +1,29 @@
+{
+  "root": "assignVariablesHasApiFetchError",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "severity": "string",
+        "detail": "any",
+        "capability": "object",
+        "fetchParameters": "object",
+        "context": "object",
+        "id": "string",
+        "key": "string"
+      }
+    }
+  },
+  "actions": {
+    "assignVariablesHasApiFetchError": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.hasApiFetchError": {
+          "source": true
+        }
+      }
+    }
+  }
+}

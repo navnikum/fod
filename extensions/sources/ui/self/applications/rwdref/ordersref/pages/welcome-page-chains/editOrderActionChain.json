@@ -1,0 +1,23 @@
+{
+  "root": "navigateToEditOrder",
+  "description": "",
+  "actions": {
+    "navigateToEditOrder": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "edit-order",
+        "params": {
+          "orderId": "{{ $variables.orderId }}",
+          "parentPage": "welcome"
+        }
+      }
+    }
+  },
+  "variables": {
+    "orderId": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    }
+  }
+}
