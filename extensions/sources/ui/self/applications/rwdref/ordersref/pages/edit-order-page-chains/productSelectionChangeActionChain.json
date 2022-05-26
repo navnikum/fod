@@ -1,0 +1,73 @@
+{
+  "description": "",
+  "root": "if1",
+  "actions": {
+    "updateTableRowData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesTableRowData": {
+          "source": {
+            "ProductId": "{{ $variables.data.ProductId }}",
+            "ProductName": "{{ $variables.data.ProductName }}",
+            "ProductNumber": "{{ $variables.data.ProductNumber }}",
+            "ImageUrl": "{{ $variables.data.ImageUrl }}",
+            "ListPrice": "{{ $variables.data.UnitPrice }}",
+            "Quantity": "{{ $page.variables.orderLinesTableRowData.Quantity === 0 ? 1 : $page.variables.orderLinesTableRowData.Quantity  }}"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "setLineItemAmount"
+      }
+    },
+    "if1": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "true": "updateTableRowData"
+      },
+      "parameters": {
+        "condition": "[[ $variables.data ]]"
+      },
+      "label": "Check if data is not null"
+    },
+    "setLineItemAmount": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesTableRowData": {
+          "source": {
+            "Amount": "{{ $page.variables.orderLinesTableRowData.Quantity * $page.variables.orderLinesTableRowData.ListPrice }}"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "callFunctionFocusInputNumber"
+      }
+    },
+    "callFunctionFocusInputNumber": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "focusInputNumber",
+        "params": [
+          "{{ $variables.index }}"
+        ]
+      }
+    }
+  },
+  "variables": {
+    "index": {
+      "required": true,
+      "type": "number",
+      "input": "fromCaller"
+    },
+    "data": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

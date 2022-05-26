@@ -1,0 +1,13 @@
+{
+    "tests": {
+        "Success": {
+            "expectations": [
+                {
+                    "actual": "$page.variables.appliedFilters",
+                    "matcher": "to.deep.equal",
+                    "expected": {}
+                }
+            ]
+        }
+    }
+   }

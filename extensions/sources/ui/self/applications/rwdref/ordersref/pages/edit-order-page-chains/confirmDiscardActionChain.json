@@ -1,0 +1,64 @@
+{
+  "description": "",
+  "variables": {
+    "response": {
+      "type": "string",
+      "required": false,
+      "input": "fromCaller"
+    }
+  },
+  "root": "checkDiscard",
+  "actions": {
+    "checkDiscard": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "$chain.variables.response === 'YES'"
+      },
+      "outcomes": {
+        "false": "return",
+        "true": "resetVariables"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ {\"cancelled\":true} }}"
+      }
+    },
+    "resetVariables": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.dirtyDataFlag",
+          "$page.variables.editOrderToastMessage"
+        ]
+      },
+      "outcomes": {
+        "success": "ifInAppNavigationDestination"
+      }
+    },
+    "callChainNavigationSelectionChangeActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "flow:navigationSelectionChangeActionChain",
+        "params": {
+          "itemId": "{{ $page.variables.inAppNavigationDestination }}"
+        }
+      }
+    },
+    "ifInAppNavigationDestination": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.inAppNavigationDestination === 'BACK']]"
+      },
+      "outcomes": {
+        "false": "callChainNavigationSelectionChangeActionChain",
+        "true": "navigateBack"
+      }
+    },
+    "navigateBack": {
+      "module": "vb/action/builtin/navigateBackAction"
+    }
+  }
+}

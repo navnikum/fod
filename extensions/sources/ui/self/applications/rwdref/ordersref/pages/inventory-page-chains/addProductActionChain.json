@@ -1,0 +1,13 @@
+{
+  "description": "",
+  "root": "navigateToAddProduct",
+  "actions": {
+    "navigateToAddProduct": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "add-product"
+      }
+    }
+  },
+  "variables": {}
+}

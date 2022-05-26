@@ -1,0 +1,81 @@
+{
+  "variables": {
+    "limit": {
+      "type": "number",
+      "input": "fromCaller",
+      "required": true
+    },
+    "offset": {
+      "type": "number",
+      "input": "fromCaller",
+      "required": true
+    }
+  },
+  "root": "fetchAction",
+  "actions": {
+    "fetchAction": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:fndRraProductSearch/SmartSearchSearch_rraProductSearch",
+        "uriParams": {
+          "searchType": "fnd-rra-product",
+          "smartSearchName": "rraProductSearch",
+          "limit": "{{ $variables.limit ? $chain.variables.limit : 25 }}",
+          "offset": "{{ $variables.offset >= 0 ? $chain.variables.offset : 0 }}"
+        },
+        "body": "[[ {\"filters\": $page.variables.appliedFilters} ]]"
+      },
+      "outcomes": {
+        "success": "processResults",
+        "failure": "assignVariablesErrorMessage"
+      }
+    },
+    "processResults": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.nextStep": {
+          "source": "{{ { 'label': ''} }}"
+        },
+        "$page.variables.previousStep": {
+          "source": "{{ {'label': ''} }}"
+        },
+        "$page.variables.productId": {
+          "source": "{{ $chain.results.fetchAction.body.items.length ? $chain.results.fetchAction.body.items[$chain.variables.limit === 2 ? 0 : 1].ProductId : '' }}"
+        },
+        "$page.variables.productNumber": {
+          "source": "{{ $chain.results.fetchAction.body.items.length ? $chain.results.fetchAction.body.items[$chain.variables.limit === 2 ? 0 : 1].ProductNumber : '' }}"
+        }
+      },
+      "outcomes": {
+        "success": "returnSuccessResponse"
+      }
+    },
+    "returnSuccessResponse": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ $chain.results.fetchAction }}"
+      }
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "fodProductSearch",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "[[ $chain.results.fetchAction.error.message ]]",
+                "secondaryText": "[[ $application.translations.format('app','ORDER_DATA_LOADING_ERR') ]]"
+              }
+            ]
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+    "tests": {
+        "Delete-order": {
+            "context": {
+                "$variables.actionId": 53,
+                "$variables.orderId": "55",
+                "$application.currentPage": {
+                    "key": "value"
+                }
+            },
+            "mocks": {
+                "switch1": {
+                    "outcome": "delete-order"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$page.variables.listItemTemplateEventNotificationMessages",
+                    "matcher": "to.deep.equal",
+                    "expected": [
+                        {
+                            "summary": "Secondary Action: 53",
+                            "severity": "confirmation"
+                        }
+                    ]
+                },
+                {
+                    "actual": "$page.variables.currentItem",
+                    "matcher": "to.equal",
+                    "expected": "55"
+                }
+            ]
+        },
+        "Edit-order": {
+            "context": {
+                "$variables.actionId": 53,
+                "$variables.orderId": "55",
+                "$application.currentPage": {
+                    "key": "value"
+                }
+            },
+            "mocks": {
+                "switch1": {
+                    "outcome": "edit-order"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$page.variables.listItemTemplateEventNotificationMessages",
+                    "matcher": "to.deep.equal",
+                    "expected": [
+                        {
+                            "summary": "Secondary Action: 53",
+                            "severity": "confirmation"
+                        }
+                    ]
+                },
+                {
+                    "actual": "$actions.navigateToEditOrder.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "edit-order"
+                },
+                {
+                    "actual": "$actions.navigateToEditOrder.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "parentPage": "",
+                        "orderId": "55"
+                    }
+                }
+            ]
+        },
+        "View-order": {
+            "context": {
+                "$variables.orderId": "54",
+                "$application.currentPage": {
+                    "key": "value"
+                },
+                "$variables.actionId": 34
+            },
+            "mocks": {
+                "switch1": {
+                    "outcome": "view-order"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$page.variables.listItemTemplateEventNotificationMessages",
+                    "matcher": "to.deep.equal",
+                    "expected": [
+                        {
+                            "summary": "Secondary Action: 34",
+                            "severity": "confirmation"
+                        }
+                    ]
+                },
+                {
+                    "actual": "$actions.switch1.outcome",
+                    "matcher": "to.equal",
+                    "expected": "view-order"
+                },
+                {
+                    "actual": "$actions.navigateToViewOrder.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "view-order"
+                },
+                {
+                    "actual": "$actions.navigateToViewOrder.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "parentPage": "",
+                        "orderId": "54"
+                    }
+                }
+            ]
+        }
+    }
+   }

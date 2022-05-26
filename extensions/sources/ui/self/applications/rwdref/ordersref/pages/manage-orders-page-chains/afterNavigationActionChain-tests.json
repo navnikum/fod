@@ -1,0 +1,30 @@
+{
+    "tests": {
+        "Same page, filter change": {
+            "context": {
+                "$variables.event": {
+                    "currentPage": "a",
+                    "previousPage": "a"
+                },
+                "$flow.variables.manageOrdersAppliedFilters": [],
+                "$page.variables.appliedFiltersStr": "[{\"filter\":\"ProductsLOV\", \"value\":\"Laptop\",\"label\":\"Laptop\",\"count\":192069,\"filterLabel\":\"Products\"}]"
+            },
+            "expectations": [
+                {
+                    "actual": "$flow.variables.manageOrdersAppliedFilters",
+                    "matcher": "to.deep.equal",
+                    "expected": [
+                        {
+                            "count": 192069,
+                            "filter": "ProductsLOV",
+                            "filterLabel": "Products",
+                            "label": "Laptop",
+                            "value": "Laptop",
+                            "dependencies": []
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+   }

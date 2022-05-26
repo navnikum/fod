@@ -1,0 +1,63 @@
+{
+  "description": "",
+  "root": "assignVariablesIsDrawerPopupOpen",
+  "variables": {
+    "index": {
+      "required": true,
+      "type": "number",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "assignVariablesIsDrawerPopupOpen": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "callFunctionProductIdClickEvent"
+      },
+      "parameters": {
+        "$flow.variables.isDrawerPopupOpen": {
+          "source": "true"
+        }
+      },
+      "label": "Set isDrawerPopupOpen to true"
+    },
+    "callFunctionProductIdClickEvent": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "propagateProductIdClickEvent",
+        "params": [
+          "{{ $variables.index }}"
+        ]
+      },
+      "outcomes": {
+        "success": "ifAddingLine"
+      }
+    },
+    "assignVariablesProductDetails": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.productDetail": {
+          "source": {
+            "productCount": "[[ $flow.variables.productDetail.productCount + 1 ]]"
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$page.variables.addingLine": {
+          "source": false
+        }
+
+      }
+    },
+    "ifAddingLine": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.addingLine && $page.variables.linesValid === 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesProductDetails"
+      }
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "root": "setPendingFormStatus",
+  "description": "Loads rraCustomers record data",
+  "variables": {
+    "fetchedFields": {
+      "type": "any[]",
+      "input": "fromCaller"
+    },
+    "rraCustomersId": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "setPendingFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rraCustomersDetailFormLoadingStatus": {
+          "source": "pending"
+        }
+      },
+      "outcomes": {
+        "success": "resetRraCustomersData"
+      },
+      "description": "Updates form status to Pending.",
+      "label": "Set Form status to Pending"
+    },
+    "resetRraCustomersData": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.rraCustomers"
+        ]
+      },
+      "outcomes": {
+        "success": "testValidInput"
+      },
+      "description": "Clears rraCustomers data the variable holds",
+      "label": "Reset rraCustomers variable"
+    },
+    "testValidInput": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.fetchedFields && $variables.fetchedFields.length && $variables.rraCustomersId !== undefined ]]"
+      },
+      "outcomes": {
+        "true": "loadRraCustomers"
+      },
+      "description": "Tests the REST call can be initiated",
+      "label": "Test valid input"
+    },
+    "loadRraCustomers": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraCustomers/get_rraCustomers",
+        "responseFields": "[[ $variables.fetchedFields ]]",
+        "uriParams": {
+          "rraCustomers_Id": "[[ $variables.rraCustomersId ]]"
+        }
+      },
+      "outcomes": {
+        "success": "assignRraCustomersData",
+        "failure": "assignVariables"
+      },
+      "description": "Initiates REST call loading rraCustomers data",
+      "label": "Load rraCustomers record"
+    },
+    "assignRraCustomersData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rraCustomers": {
+          "source": "[[ $chain.results.loadRraCustomers.body ]]",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "setReadyFormStatus"
+      },
+      "description": "Assigns data loaded by the REST call to the rraCustomers variable",
+      "label": "Assign rraCustomers data"
+    },
+    "setReadyFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rraCustomersDetailFormLoadingStatus": {
+          "source": "ready"
+        }
+      }
+    },
+    "assignVariables": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "load-fod-customers-error",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "{{ $chain.results.loadRraCustomers.error.message }}",
+                "secondaryText": "[[ $application.translations.format('app','ORDER_DATA_LOADING_ERR') ]]"
+              }
+            ]
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$page.variables.hasCustomersErrorMessages": {
+          "source": true
+        }
+      }
+    }
+  }
+}

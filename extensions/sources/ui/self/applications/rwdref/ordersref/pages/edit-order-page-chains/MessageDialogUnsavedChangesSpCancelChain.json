@@ -1,0 +1,15 @@
+{
+  "description": "",
+  "root": "assignVariablesInAppNavigationSelection",
+  "actions": {
+    "assignVariablesInAppNavigationSelection": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.inAppNavigationSelection": {
+          "source": "manage-orders"
+        }
+      }
+    }
+  },
+  "variables": {}
+}

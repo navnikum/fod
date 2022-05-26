@@ -1,0 +1,11 @@
+{
+    "tests": {
+        "Success": {
+            "mocks": {
+                "closeDeleteConfDialog": {
+                    "outcome": "success"
+                }
+            }
+        }
+    }
+   }

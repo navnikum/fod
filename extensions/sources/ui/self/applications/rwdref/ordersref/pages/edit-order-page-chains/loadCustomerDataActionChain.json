@@ -1,0 +1,42 @@
+{
+  "root": "callRestEndpointCustomer",
+  "description": "",
+  "actions": {
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.hasApiFetchError": {
+          "source": true,
+          "reset": "empty"
+        }
+      }
+    },
+    "callRestEndpointCustomer": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraCustomers/get_rraCustomers",
+        "uriParams": {
+          "rraCustomers_Id": "{{ $page.variables.orders.CustomerId }}",
+          "onlyData": true,
+          "fields": "CustomerId,CustomerNumber,EmailAddress,FirstName,LastName,Phone"
+        }
+      },
+      "outcomes": {
+        "failure": "assignVariablesErrorMessage",
+        "success": "assignVariablesCustomer"
+      }
+    },
+    "assignVariablesCustomer": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.customer": {
+          "source": "{{ $chain.results.callRestEndpointCustomer.body }}",
+          "auto": "always"
+        },
+        "$page.variables.customerName": {
+          "source": "{{ $chain.results.callRestEndpointCustomer.body.FirstName + ' ' + $chain.results.callRestEndpointCustomer.body.LastName }}"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "root": "callActionChain1",
+  "description": "",
+  "variables": {
+    "ordersId": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "callActionChain1": {
+      "module": "vb/action/builtin/callChainAction",
+      "outcomes": {
+        "success": "testValidInput"
+      },
+      "parameters": {
+        "id": "resetDataProvidersActionChain"
+      }
+    },
+    "testValidInput": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.ordersId ]]"
+      },
+      "outcomes": {
+        "true": "callRestGetallRraOrdersRraOrderLines"
+      },
+      "description": "Tests the REST call can be initiated",
+      "label": "Test valid input"
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.hasApiFetchError": {
+          "source": true,
+          "reset": "empty"
+        }
+      }
+    },
+    "assignVariablesOrderLinesADP": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesADP": {
+          "source": {
+            "data": "{{ $chain.results.callRestGetallRraOrdersRraOrderLines.body.items }}"
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$flow.variables.productDetail": {
+          "source": {
+            "productCount": "{{ $chain.results.callRestGetallRraOrdersRraOrderLines.body.totalResults }}"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      }
+    },
+    "callRestGetallRraOrdersRraOrderLines": {
+      "module": "vb/action/builtin/restAction",
+      "outcomes": {
+        "failure": "assignVariablesErrorMessage",
+        "success": "assignVariablesOrderLinesADP"
+      },
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/getall_rraOrders-RraOrderLines",
+        "uriParams": {
+          "rraOrders_Id": "{{ $variables.ordersId }}",
+          "totalResults": true
+        }
+      }
+    }
+  }
+}

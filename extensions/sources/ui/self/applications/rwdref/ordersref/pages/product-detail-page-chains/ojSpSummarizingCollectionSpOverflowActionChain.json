@@ -1,0 +1,22 @@
+{
+  "description": "",
+  "root": "navigateToManageOrders",
+  "actions": {
+    "navigateToManageOrders": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "manage-orders",
+        "params": {
+          "appliedFiltersStr": "{{ JSON.stringify($page.variables.appliedFiltersOrder) }}"
+        }
+      }
+    }
+  },
+  "variables": {
+    "detail": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

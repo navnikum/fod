@@ -1,0 +1,136 @@
+{
+  "description": "",
+  "root": "isFormValid",
+  "variables": {
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "linesValid": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "tableId": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "isFormValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.linesValid === 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "ifEditRow"
+      },
+      "label": "Check if Form is valid",
+      "description": "Check if Form is valid"
+    },
+    "ifEditRow": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.editRow.rowKey ]]"
+      },
+      "outcomes": {
+        "true": "callSaveOrderLineActionChain",
+        "false": "resetTableRowDataAndIsDeletingOrderLine"
+      },
+      "label": "Check if editing row",
+      "description": "Check if editing row"
+    },
+    "callSaveOrderLineActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "saveOrderLineActionChain",
+        "params": {
+          "key": "{{ $variables.key }}",
+          "linesValid": "{{ $variables.linesValid }}"
+        }
+      },
+      "outcomes": {
+        "success": "resetTableRowDataAndIsDeletingOrderLine"
+      }
+    },
+    "callModuleFunctionGetTableIsReady": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "getTableIsReady",
+        "params": [ "{{ $variables.tableId }}" ]
+      },
+      "outcomes": {
+        "success": "ifTableReady"
+      }
+    },
+    "ifTableReady": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $chain.results.callModuleFunctionGetTableIsReady ]]"
+      },
+      "outcomes": {
+        "true": "callModuleFunctionAddItem",
+        "false": "resetTableRowDataAndIsDeletingOrderLine"
+      },
+      "label": "Check if table is ready",
+      "description": "Check if table is ready"
+    },
+    "callModuleFunctionAddItem": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "addItem",
+        "params": [
+          "{{ 'fod-order-line' + $page.variables.orderLineSeq }}",
+          "{{ $page.variables.orderLinesTableRowData }}"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesEditRow"
+      }
+    },
+    "assignVariablesOrderLineSeq": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "callModuleFunctionGetTableIsReady"
+      },
+      "parameters": {
+        "$page.variables.orderLineSeq": {
+          "source": "{{ ($page.variables.orderLineSeq + 1) }}",
+          "reset": "none"
+        }
+      },
+      "label": "Update Line Seq number"
+    },
+    "assignVariablesEditRow": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.editRow": {
+          "source": {
+            "rowKey": "{{ ('fod-order-line' + $page.variables.orderLineSeq) }}"
+          },
+          "auto": "always"
+        },
+        "$page.variables.addingLine": {
+          "source": true
+        }
+      }
+    },
+    "resetTableRowDataAndIsDeletingOrderLine": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "outcomes": {
+        "success": "assignVariablesOrderLineSeq"
+      },
+      "parameters": {
+        "variables": [
+          "$page.variables.orderLinesTableRowData",
+          "$page.variables.forceOrderLineEditExit"
+        ]
+      },
+      "label": "Reset order lines table row data and deleting order line "
+    }
+  }
+}

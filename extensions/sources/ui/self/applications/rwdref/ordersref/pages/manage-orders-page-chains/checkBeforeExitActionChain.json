@@ -1,0 +1,14 @@
+{
+  "root": "resetManageOrderToastMessage",
+  "description": "Show Toast Messages",
+  "variables": {},
+  "actions": {
+    "resetManageOrderToastMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": "$flow.variables.manageOrdersToastMessage"
+      },
+      "auto": "always"
+    }
+  }
+}

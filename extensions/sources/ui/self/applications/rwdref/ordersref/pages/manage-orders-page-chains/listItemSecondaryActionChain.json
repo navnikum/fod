@@ -1,0 +1,101 @@
+{
+  "description": "Notifiy list item secondary action",
+  "variables": {
+    "actionId": {
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "customerId": {
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "orderId": {
+      "type": "string",
+      "input": "fromCaller"
+    },
+    "orderNumber": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "root": "setCurrentItemOrderNumber",
+  "actions": {
+    "switch1": {
+      "module": "vb/action/builtin/switchAction",
+      "parameters": {
+        "possibleValues": [
+          "view-customer",
+          "view-order",
+          "edit-order",
+          "delete-order"
+        ],
+        "caseValue": "[[ $variables.actionId ]]"
+      },
+      "outcomes": {
+        "view-customer": "navigateToViewCustomerPage",
+        "view-order": "navigateToViewOrderPage",
+        "edit-order": "navigateToEditOrderPage",
+        "delete-order": "openDeleteConfDialog"
+      }
+    },
+    "navigateToEditOrderPage": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "edit-order",
+        "params": {
+          "orderId": "{{ $variables.orderId }}",
+          "parentPage": "{{ $application.currentPage.id }}"
+        }
+      }
+    },
+    "navigateToViewOrderPage": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "view-order",
+        "params": {
+          "orderId": "{{ $variables.orderId }}",
+          "parentPage": "{{ $application.currentPage.id }}"
+        }
+      }
+    },
+    "navigateToViewCustomerPage": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "view-customer",
+        "params": {
+          "itemId": "{{ $variables.customerId }}",
+          "parentPage": "{{ $application.currentPage.id }}"
+        }
+      }
+    },
+    "openDeleteConfDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-delete-conf-dialog') }}",
+        "method": "open"
+      }
+    },
+    "setCurrentItemOrderNumber": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.currentItemOrderNumber": {
+          "source": "{{ $variables.orderNumber }}"
+        }
+      },
+      "outcomes": {
+        "success": "setCurrentItemId"
+      }
+    },
+    "setCurrentItemId": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.currentItem": {
+          "source": "{{ $variables.orderId }}"
+        }
+      },
+      "outcomes": {
+        "success": "switch1"
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "tests": {
+        "Success": {
+            "expectations": [
+                {
+                    "actual": "$actions.firePageLayoutEventAction.inputs.name",
+                    "matcher": "to.equal",
+                    "expected": "ojSpRedwoodPageLayout"
+                },
+                {
+                    "actual": "$actions.firePageLayoutEventAction.inputs.payload",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "pageType": "edgeToEdge"
+                    }
+                }
+            ]
+        }
+    }
+   }

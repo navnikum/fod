@@ -1,0 +1,45 @@
+{
+  "description": "",
+  "root": "assignVariablesShippingAddress",
+  "actions": {
+    "assignVariablesShippingAddress": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.shippingAddress": {
+          "source": {
+            "AddressLine1": "[[ $variables.customerData.ShippingAddressLine1 ]]",
+            "AddressLine2": "[[ $variables.customerData.ShippingAddressLine2 ]]",
+            "City": "[[ $variables.customerData.ShippingAddressCity ]]",
+            "Country": "[[ $variables.customerData.ShippingAddressCountry ]]",
+            "PostalCode": "[[ $variables.customerData.ShippingPostalCode ]]",
+            "State": "[[ $variables.customerData.ShippingAddressState ]]"
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$page.variables.orders": {
+          "source": {
+            "CustomerId": "[[ $variables.customerData.CustomerId ]]",
+            "BillToAddressId": "[[ $variables.customerData.PrimaryBillingAddressId ]]",
+            "ShipToAddressId": "[[ $variables.customerData.PrimaryShippingAddressId ]]",
+            "OrderStatus": "'DRAFT'"
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$page.variables.customerName": {
+          "source": "[[ $variables.customerData.FirstName + ' ' + $variables.customerData.LastName ]]"
+        },
+        "$page.variables.customer": {
+          "source": "[[ $variables.customerData ]]"
+        }
+      }
+    }
+  },
+  "variables": {
+    "customerData": {
+      "type": "application:get_rraCustomers",
+      "input": "fromCaller"
+    }
+  }
+}

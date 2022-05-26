@@ -1,0 +1,41 @@
+{
+  "root": "ifOrderId",
+  "description": "",
+  "variables": {
+    "type": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "ifOrderId": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.orderId ]]"
+      },
+      "outcomes": {
+        "true": "callChainSpSaveChangesActionChain",
+        "false": "callChainSpCreateActionChain"
+      }
+    },
+    "callChainSpSaveChangesActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "saveChangesActionChain",
+        "params": {
+          "type": "{{ $variables.type }}"
+        }
+      }
+    },
+    "callChainSpCreateActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "createActionChain",
+        "params": {
+          "type": "{{ $variables.type }}"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "root": "firePageLayoutEventAction",
+  "actions": {
+    "firePageLayoutEventAction": {
+      "module": "vb/action/builtin/fireCustomEventAction",
+      "parameters": {
+        "name": "ojSpRedwoodPageLayout",
+        "payload": {
+          "pageType": "edgeToEdge"
+        }
+      }
+    }
+  }
+}

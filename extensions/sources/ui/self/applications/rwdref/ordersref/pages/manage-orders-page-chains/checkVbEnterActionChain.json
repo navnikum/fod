@@ -1,0 +1,34 @@
+{
+  "root": "ifHasToastMessages",
+  "description": "Show Toast Messages",
+  "variables": {},
+  "actions": {
+    "ifHasToastMessages": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "false": "openToastMessage"
+      },
+      "parameters": {
+        "condition": "[[ $flow.variables.manageOrdersToastMessage === '']]"
+      },
+      "label": "Check for toast messages from create/edit order pages"
+    },
+    "openToastMessage": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "outcomes": {
+        "success": "resetManageOrderToastMessage"
+      },
+      "parameters": {
+        "component": "[[ document.getElementById('manageOrdersMessageToast') ]]",
+        "method": "open"
+      }
+    },
+    "resetManageOrderToastMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": "$flow.variables.manageOrdersToastMessage"
+      },
+      "auto": "always"
+    }
+  }
+}

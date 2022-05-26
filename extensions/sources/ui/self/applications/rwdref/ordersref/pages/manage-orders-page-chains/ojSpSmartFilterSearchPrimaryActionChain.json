@@ -1,0 +1,13 @@
+{
+  "description": "",
+  "root": "navigateToEditOrder",
+  "actions": {
+    "navigateToEditOrder": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "edit-order"
+      }
+    }
+  },
+  "variables": {}
+}

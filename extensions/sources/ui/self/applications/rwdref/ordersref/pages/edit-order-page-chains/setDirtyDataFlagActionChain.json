@@ -1,0 +1,13 @@
+{
+  "root": "setFlag",
+  "actions": {
+    "setFlag": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.dirtyDataFlag": {
+          "source": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "description": "",
+  "root": "closeSubmitConfDialog",
+  "actions": {
+    "closeSubmitConfDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('oj-dialog-submit-confirmation') }}",
+        "method": "close"
+      },
+      "outcomes": {
+        "success": "ifOrderId"
+      },
+      "label": "Close Submit Confirm Dialog"
+    },
+    "callSaveChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "saveChangesActionChain",
+        "params": {
+          "type": "spPrimaryAction"
+        }
+      },
+      "label": "Call Save Action Chain"
+    },
+    "ifOrderId": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.orderId ]]"
+      },
+      "outcomes": {
+        "true": "callSaveChain",
+        "false": "callFunctionGetLineItemsCount"
+      }
+    },
+    "callFunctionGetLineItemsCount": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "getLineItemsCount"
+      },
+      "outcomes": {
+        "success": "if"
+      },
+      "label": "Get number Of Lines"
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $chain.results.callFunctionGetLineItemsCount === 0 ]]"
+      },
+      "outcomes": {
+        "true": "resetVariablesErrorMessages",
+        "false": "callChainCreateActionChain"
+      },
+      "label": "Check if Line count is 0"
+    },
+    "resetVariablesErrorMessages": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.errorMessages"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesErrorMessages"
+      },
+      "label": "Reset Error Messages"
+    },
+    "assignVariablesErrorMessages": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "submit-fod-orders-batch-error",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "[[ $application.translations.app.ORDER_SUBMIT_VALIDATION_ERROR_PRIMARY_TEXT ]]",
+                "secondaryText": "[[ $application.translations.app.ORDER_MIN_LINE_VALIDATION_MSG ]]"
+              }
+            ]
+          },
+          "auto": "always"
+        }
+      },
+      "label": "Assign Error Messages"
+    },
+    "callChainCreateActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "createActionChain",
+        "params": {
+          "type": "spPrimaryAction"
+        }
+      }
+    }
+  },
+  "variables": {
+    "detail": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

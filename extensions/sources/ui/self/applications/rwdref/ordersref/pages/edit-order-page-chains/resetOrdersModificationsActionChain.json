@@ -1,0 +1,17 @@
+{
+  "root": "assignUpdateOrdersData",
+  "description": "Resets edited record to loaded data.",
+  "actions": {
+    "assignUpdateOrdersData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orders": {
+          "source": "[[ $page.variables.fetchedOrders ]]",
+          "auto": "always"
+        }
+      },
+      "description": "Assigns data loaded by the REST call to the orders editable record variable",
+      "label": "Assign editable orders data"
+    }
+  }
+}

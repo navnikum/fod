@@ -1,0 +1,252 @@
+{
+  "description": "",
+  "variables": {
+    "actionType": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "root": "setOrderDataPayload",
+  "actions": {
+    "forEach1": {
+      "module": "vb/action/builtin/forEachAction",
+      "parameters": {
+        "items": "{{ $chain.results.callModuleFunctionGetSubmittable }}",
+        "actionId": "if1"
+      },
+      "label": "Iterate Through Operations",
+      "outcomes": {
+        "success": "forEachInAttachmentsDeferredOperationPayload"
+      }
+    },
+    "switch1": {
+      "module": "vb/action/builtin/switchAction",
+      "parameters": {
+        "caseValue": "[[ $current.data.operation ]]",
+        "possibleValues": [
+          "add",
+          "remove",
+          "update"
+        ]
+      },
+      "outcomes": {
+        "add": "setCreateLinePayload",
+        "remove": "setDeleteBatchPayload",
+        "update": "setUpdateLinePayload"
+      },
+      "label": "Check Operation Type"
+    },
+    "callModuleFunctionGetSubmittable": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "getSubmittableItems",
+        "returnType": "any"
+      },
+      "outcomes": {
+        "success": "forEach1"
+      },
+      "label": "Get All Line Operations"
+    },
+    "setOrderDataPayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "setOrderBatchPayload"
+      },
+      "parameters": {
+        "$page.variables.orderDataPayload": {
+          "source": {
+            "Comments": "{{ $page.variables.orders.Comments }}",
+            "TotalAmount": "{{ $page.variables.totalAmount }}",
+            "OrderStatus": "{{ $variables.actionType === 'spPrimaryAction' ? 'PROCESSING' : 'DRAFT' }}"
+          },
+          "reset": "empty",
+          "auto": "always"
+        }
+      },
+      "label": "Set Order Payload"
+    },
+    "setOrderBatchPayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "callModuleFunctionGetSubmittable"
+      },
+      "parameters": {
+        "$page.variables.batchDataPayload": {
+          "source": {
+            "parts": [
+              {
+                "id": "part0",
+                "operation": "update",
+                "path": "[[ '/rraOrders/' + $page.variables.orders.OrderId ]]",
+                "payload": "[[ $page.variables.orderDataPayload ]]"
+              }
+            ]
+          },
+          "reset": "empty",
+          "auto": "always",
+          "mapping": {
+            "$target.parts": {
+              "source": "$source.parts",
+              "reset": "empty",
+              "auto": "always"
+            }
+          }
+        }
+      },
+      "label": "Add Order Payload to Batch"
+    },
+    "setUpdateLinePayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "setUpdateBatchPayload"
+      },
+      "label": "Build Update Line Payload",
+      "parameters": {
+        "$page.variables.orderLinePayload": {
+          "source": {
+            "Amount": "{{ $current.data.item.data.Amount }}",
+            "ListPrice": "{{ $current.data.item.data.ListPrice }}",
+            "ProductId": "{{ $current.data.item.data.ProductId }}",
+            "Quantity": "{{ $current.data.item.data.Quantity }}",
+            "CurrencyCode": "{{ $current.data.item.data.CurrencyCode }}"
+          },
+          "reset": "empty"
+        }
+      }
+    },
+    "setCreateLinePayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "setCreateBatchPayload"
+      },
+      "label": "Build Create Line Payload",
+      "parameters": {
+        "$page.variables.orderLinePayload": {
+          "source": {
+            "Amount": "{{ $current.data.item.data.Amount }}",
+            "ListPrice": "{{ $current.data.item.data.ListPrice }}",
+            "ProductId": "{{ $current.data.item.data.ProductId }}",
+            "Quantity": "{{ $current.data.item.data.Quantity }}",
+            "CurrencyCode": "{{ $current.data.item.data.CurrencyCode }}"
+          },
+          "reset": "empty"
+        }
+      }
+    },
+    "setCreateBatchPayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.batchDataPayload": {
+          "source": {
+            "parts": [
+              {
+                "operation": "create",
+                "id": "[[ 'part' + ($current.index + 1) ]]",
+                "path": "[[ '/rraOrders/' + $page.variables.orders.OrderId + '/child/RraOrderLines' ]]",
+                "payload": "[[ $page.variables.orderLinePayload ]]"
+              }
+            ]
+          },
+          "reset": "none",
+          "mapping": {
+            "$target.parts": {
+              "source": "$source.parts",
+              "reset": "none",
+              "auto": "always"
+            }
+          }
+        }
+      },
+      "label": "Set Create Batch Payload"
+    },
+    "setDeleteBatchPayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.batchDataPayload": {
+          "source": {
+            "parts": [
+              {
+                "operation": "delete",
+                "id": "[[ 'part' + ($current.index + 1) ]]",
+                "path": "[[ '/rraOrders/' + $page.variables.orders.OrderId + '/child/RraOrderLines/' + $current.data.item.data.OrderLineId ]]"
+              }
+            ]
+          },
+          "reset": "none",
+          "mapping": {
+            "$target.parts": {
+              "source": "$source.parts",
+              "reset": "none",
+              "auto": "always"
+            }
+          }
+        }
+      },
+      "label": "Set Delete Batch Payload"
+    },
+    "setUpdateBatchPayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.batchDataPayload": {
+          "source": {
+            "parts": [
+              {
+                "operation": "update",
+                "id": "[[ 'part' + ($current.index + 1) ]]",
+                "path": "[[ '/rraOrders/' + $page.variables.orders.OrderId + '/child/RraOrderLines/' + $current.data.item.data.OrderLineId ]]",
+                "payload": "[[ $page.variables.orderLinePayload ]]"
+              }
+            ]
+          },
+          "reset": "none",
+          "mapping": {
+            "$target.parts": {
+              "source": "$source.parts",
+              "reset": "none",
+              "auto": "always"
+            }
+          }
+        }
+      },
+      "label": "Set Update Batch Payload"
+    },
+    "if1": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "true": "switch1"
+      },
+      "parameters": {
+        "condition": "[[ $current.data.operation === 'delete' || $current.data.item.data.ProductId ]]"
+      },
+      "label": "Check for empty line"
+    },
+    "forEachInAttachmentsDeferredOperationPayload": {
+      "module": "vb/action/builtin/forEachAction",
+      "parameters": {
+        "items": "{{ $page.variables.attachmentsDeferredOperationPayload?.parts || [] }}",
+        "actionId": "assignVariables"
+      }
+    },
+    "assignVariables": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.batchDataPayload": {
+          "source": {
+            "parts": [
+              {
+                "operation": "[[ $current.data.operation ]]",
+                "id": "[[ 'part' + ($current.index + 1) ]]",
+                "path": "[[ '/rraOrders/' + $page.variables.orders.OrderId + '/child/Attachments/' + $current.data.path ]]",
+                "payload": "[[ $current.data.payload ]]"
+              }
+            ]
+          },
+          "reset": "none"
+        }
+      },
+      "label": "Set Create Batch Payload"
+    }
+  }
+}

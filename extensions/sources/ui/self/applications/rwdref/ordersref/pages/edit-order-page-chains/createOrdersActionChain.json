@@ -1,0 +1,188 @@
+{
+  "variables": {
+    "orders": {
+      "type": "object",
+      "input": "fromCaller",
+      "required": true
+    },
+    "orderNumber": {
+      "type": "string"
+    },
+    "saveFailureResult": {
+      "type": "page:genericServiceErrorResponseType"
+    },
+    "errorMessage": {
+      "type": "string",
+      "input": "none"
+    },
+    "actionType": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    }
+
+  },
+  "root": "saveOrders",
+  "actions": {
+    "isSubmitOrder": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "true": "resetManageOrdersToastMessage",
+        "false": "resetEditOrderToastMessage"
+      },
+      "parameters": {
+        "condition": "[[ $variables.actionType === 'spPrimaryAction' ]]"
+      },
+      "label": "Check if it's Submit Action"
+    },
+    "resetEditOrderToastMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [ "$page.variables.editOrderToastMessage" ]
+      },
+      "outcomes": {
+        "success": "assignVariablesEditOrderToastMessage"
+      }
+    },
+    "assignVariablesEditOrderToastMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.editOrderToastMessage": {
+          "source": "[[ $application.translations.format('app','ORDER_SAVE_CONF_MSG') ]]",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "return"
+      },
+      "description": "Assign variables edit order Toast Message",
+      "label": "Save success message to edit order toast message"
+    },
+    "resetManageOrdersToastMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [ "$flow.variables.manageOrdersToastMessage" ]
+      },
+      "outcomes": {
+        "success": "assignVariablesManageOrdersToastMessage"
+      }
+    },
+    "assignVariablesManageOrdersToastMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.manageOrdersToastMessage": {
+          "source": "[[ $application.translations.format('app','ORDER_SUBMITTED_CONF_MSG', {orderNumber: $chain.variables.orderNumber}) ]]",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "return"
+      },
+      "description": "Assign variables manage orders Toast Message",
+      "label": "Save submit success message to manage orders toast message"
+    },
+    "assignFailureResult": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$chain.variables.saveFailureResult": {
+          "source": "[[ $chain.results.saveOrders.payload ]]"
+        }
+      },
+      "outcomes": {
+        "success": "handleDefaultErrorMessage"
+      },
+      "description": "Assigns REST call failure result to a local variable",
+      "label": "Assign failure result"
+    },
+    "handleDefaultErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "resetErrorMessage"
+      },
+      "parameters": {
+        "$chain.variables.errorMessage": {
+          "source": "[[ 'Could not create new orders: status ' + $chain.variables.saveFailureResult.status ]]"
+        }
+      },
+      "description": "Builds default error message",
+      "label": "Assign default error message"
+    },
+    "resetErrorMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [ "$page.variables.errorMessages" ]
+      },
+      "outcomes": {
+        "success": "assignVariablesErrorMessage"
+      }
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "submit-fod-orders-batch-error",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "[[ $application.translations.app.ORDER_SAVE_VALIDATION_SUMMARY ]]",
+                "secondaryText": "[[ $chain.variables.errorMessage ]]"
+              }
+            ]
+          },
+          "outcomes": {
+            "success": "return2"
+          }
+        }
+      },
+      "outcomes": {
+        "success": "return2"
+      }
+    },
+    "updateOrderIdFromResponse": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "isSubmitOrder"
+      },
+      "parameters": {
+        "$page.variables.orderId": {
+          "source": "{{ $chain.results.saveOrders.body.OrderId }}"
+        },
+        "$variables.orderNumber": {
+          "source": "{{ $chain.results.saveOrders.body.OrderNumber }}"
+        }
+      },
+      "label": "Update Order Id from the Response"
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ $chain.results.saveOrders.body }}"
+      }
+    },
+    "return2": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "failure"
+      }
+    },
+    "saveOrders": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/create_rraOrders",
+        "body": "{{ $variables.orders }}",
+        "responseType": "getRraOrdersResponse"
+      },
+      "description": "Call REST endpoint creating new orders record",
+      "label": "Save orders record",
+      "outcomes": {
+        "success": "updateOrderIdFromResponse",
+        "failure": "assignFailureResult"
+      }
+    }
+  },
+  "description": "Saves changes and creates new orders record.",
+  "returnType": "getRraOrdersResponse"
+}

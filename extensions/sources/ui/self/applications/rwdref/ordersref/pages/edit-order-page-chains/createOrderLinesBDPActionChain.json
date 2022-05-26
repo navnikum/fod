@@ -1,0 +1,15 @@
+{
+  "root": "assignVariables1",
+  "description": "",
+  "variables": {},
+  "actions": {
+    "assignVariables1": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesBDP": {
+          "source": "{{ $page.functions.createBufferingDP($page.variables.orderLinesADP) }}"
+        }
+      }
+    }
+  }
+}

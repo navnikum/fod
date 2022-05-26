@@ -1,0 +1,37 @@
+{
+  "root": "if",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "previousPage": "string",
+        "previousPageParams": "any",
+        "currentPage": "string",
+        "currentPageParams": "any"
+      }
+    }
+  },
+  "actions": {
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $chain.variables.event.previousPage === $chain.variables.event.currentPage && $page.variables.appliedFiltersStr === JSON.stringify($flow.variables.manageOrdersAppliedFilters) ]]"
+      },
+      "description": "Test if we are trying to apply the same filter: this happens after the user changes the filters and we navigate to the same page.",
+      "outcomes": {
+        "false": "assignVariablesAppliedFilters"
+      }
+    },
+    "assignVariablesAppliedFilters": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.manageOrdersAppliedFilters": {
+          "source": "{{ $page.variables.appliedFiltersStr && $page.variables.appliedFiltersStr.length > 0 ? JSON.parse($page.variables.appliedFiltersStr) : [] }}",
+          "reset": "empty"
+        }
+      }
+    }
+  }
+}

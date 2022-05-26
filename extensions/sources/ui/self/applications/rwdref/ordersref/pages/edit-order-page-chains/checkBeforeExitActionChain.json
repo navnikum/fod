@@ -1,0 +1,63 @@
+{
+  "root": "assignVariablesIsDrawerPopupOpen",
+  "description": "",
+  "variables": {},
+  "actions": {
+    "assignVariablesIsDrawerPopupOpen": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.isDrawerPopupOpen": {
+          "source": "false"
+        }
+      },
+      "outcomes": {
+        "success": "checkDirtyDataFlag"
+      },
+      "label": "Set isDrawerPopupOpen to false"
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success"
+      }
+    },
+    "checkDirtyDataFlag": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.dirtyDataFlag ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesInAppNavigationDestination",
+        "false": "return"
+      }
+    },
+    "staySamePage": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ {\"cancelled\":true} }}"
+      }
+    },
+    "assignVariablesInAppNavigationDestination": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.inAppNavigationDestination": {
+          "source": "{{ $page.variables.parentPage }}"
+        }
+      },
+      "outcomes": {
+        "success": "callComponentDirtyDataWarningDialogOpen"
+      }
+    },
+    "callComponentDirtyDataWarningDialogOpen": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('dirtyDataWarningDialog') }}",
+        "method": "open"
+      },
+      "outcomes": {
+        "success": "staySamePage"
+      }
+    }
+  }
+}

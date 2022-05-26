@@ -1,0 +1,23 @@
+{
+  "root": "updateFetchSizeAction",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "fetchSize": "number"
+      }
+    }
+  },
+  "actions": {
+    "updateFetchSizeAction": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.totalOrders": {
+          "source": "{{ $variables.event.fetchSize }}"
+        }
+      }
+    }
+  }
+}

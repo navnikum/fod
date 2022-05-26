@@ -1,0 +1,20 @@
+{
+  "description": "",
+  "root": "callSetDirtyDataFlagChain",
+  "actions": {
+    "callSetDirtyDataFlagChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "setDirtyDataFlagActionChain"
+      },
+      "description": "Call set dirty data flag chain"
+    }
+  },
+  "variables": {
+    "value": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

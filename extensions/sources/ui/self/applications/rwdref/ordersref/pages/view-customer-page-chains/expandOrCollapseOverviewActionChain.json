@@ -1,0 +1,27 @@
+{
+  "description": "Expand or collapse overview to full page display",
+  "root": "updateExpandVariable",
+  "actions": {
+    "updateExpandVariable": {
+      "module": "vb/action/builtin/navigateToPageAction",
+      "parameters": {
+        "page": "{{ $application.currentPage.path }}",
+        "params": {
+          "itemId": "{{ $page.variables.itemId }}",
+          "parentPage": "{{ $page.variables.parentPage }}",
+          "overviewExpanded": "{{ $chain.variables.expand }}",
+          "inFlowBack": "{{ $page.variables.inFlowBack }}",
+          "bidirectionalNavigation": "{{ $page.variables.bidirectionalNavigation }}"
+        },
+        "history": "skip"
+      }
+    }
+  },
+  "variables": {
+    "expand": {
+      "required": true,
+      "type": "boolean",
+      "input": "fromCaller"
+    }
+  }
+}

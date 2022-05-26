@@ -1,0 +1,98 @@
+{
+  "description": "",
+  "root": "callComponentMethodClose",
+  "actions": {
+    "callDeleteRestEndpoint": {
+      "module": "vb/action/builtin/restAction",
+      "outcomes": {
+        "failure": "resetErrorMessage",
+        "success": "refreshDataProvider"
+      },
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/delete_rraOrders",
+        "uriParams": {
+          "rraOrders_Id": "{{ $page.variables.currentItem }}"
+        }
+      },
+      "label": "Call Delete Order Rest API"
+    },
+    "callComponentMethodClose": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "outcomes": {
+        "success": "callDeleteRestEndpoint"
+      },
+      "parameters": {
+        "component": "{{ document.getElementById('order-delete-conf-dialog') }}",
+        "method": "close"
+      },
+      "label": "Close Delete Conf Dialog"
+    },
+    "resetSuccessMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": "$flow.variables.manageOrdersDeleteToastMessage"
+      },
+      "outcomes": {
+        "success": "assignVariablesSuccessMessage"
+      }
+    },
+    "openToastMessage": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "[[ document.getElementById('manageOrdersMessageToast') ]]",
+        "method": "open"
+      }
+    },
+    "assignVariablesSuccessMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.manageOrdersDeleteToastMessage": {
+          "source": "[[ $application.translations.format('app','ORDER_DELETE_SUCCESS_NOTIFY', {orderNumber: $page.variables.currentItemOrderNumber}) ]]",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success-commented-out": "openToastMessage"
+      },
+      "label": "Show Delete Order Success Toast Message"
+    },
+    "resetErrorMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": "$page.variables.errorMessages"
+      },
+      "outcomes": {
+        "success": "assignVariablesErrorMessage"
+      }
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "submit-fod-orders-batch-error",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "[[ $application.translations.app.ERROR ]]",
+                "secondaryText": "[[ 'Order Number: ' + $page.variables.currentItem + ' ' + $chain.results.callDeleteRestEndpoint.message.summary ]]"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "refreshDataProvider": {
+      "module": "vb/action/builtin/fireDataProviderEventAction",
+      "parameters": {
+        "target": "[[ $page.variables.searchResultsDP ]]",
+        "refresh": null
+      },
+      "outcomes": {
+        "success": "resetSuccessMessage"
+      }
+    }
+  },
+  "variables": {}
+}

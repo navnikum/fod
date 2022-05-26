@@ -1,0 +1,47 @@
+{
+  "root": "ifExpand",
+  "description": "",
+  "variables": {
+    "expand": {
+      "type": "boolean",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "itemKey": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "setExpandStatusAction": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById([['task_' + $chain.variables.itemKey ]]) }}",
+        "method": "setExpandStatus",
+        "params": [
+          "[[ $chain.variables.expand ]]"
+        ]
+      }
+    },
+    "ifExpand": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.expand ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesExpandedState",
+        "false": "setExpandStatusAction"
+      }
+    },
+    "assignVariablesExpandedState": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.expandedState": {
+          "source": "{{ (() => { let r = {}; r[$chain.variables.itemKey] = true; return r })() }}",
+          "auto": "always"
+        }
+      }
+    }
+  }
+}

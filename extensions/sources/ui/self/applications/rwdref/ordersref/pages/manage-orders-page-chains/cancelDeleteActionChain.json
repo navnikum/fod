@@ -1,0 +1,15 @@
+{
+  "description": "",
+  "root": "closeDeleteConfDialog",
+  "actions": {
+    "closeDeleteConfDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-delete-conf-dialog') }}",
+        "method": "close"
+      },
+      "label": "Close Conf Dialog"
+    }
+  },
+  "variables": {}
+}

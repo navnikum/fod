@@ -1,0 +1,144 @@
+{
+  "root": "setPendingFormStatus",
+  "description": "Loads orders record data",
+  "variables": {
+    "ordersId": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "setPendingFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.ordersEditFormLoadingStatus": {
+          "source": "pending"
+        }
+      },
+      "outcomes": {
+        "success": "resetOrdersData"
+      },
+      "description": "Updates status of the form to Pending.",
+      "label": "Set Form status to Pending"
+    },
+    "testValidInput": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.ordersId ]]"
+      },
+      "outcomes": {
+        "true": "loadOrders"
+      },
+      "description": "Tests the REST call can be initiated",
+      "label": "Test valid input"
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.hasApiFetchError": {
+          "source": true,
+          "reset": "empty"
+        }
+      }
+    },
+    "callAssignOrdertDataChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "assignFetchedOrdersDataActionChain",
+        "params": {
+          "restCallResult": "[[ $chain.results.loadOrders ]]"
+        }
+      },
+      "description": "Calls action chain assigning loaded orders data",
+      "label": "Assign orders Data",
+      "outcomes": {
+        "success": "assignShippingAddress"
+      }
+    },
+    "resetOrderVariables": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.totalAmount": {
+          "source": "{{ $chain.results.loadOrders.body.TotalAmount }}"
+        }
+      },
+      "label": "Set Total Amount",
+      "outcomes": {
+        "success": "callLoadCustomerDataChain"
+      }
+    },
+    "callLoadCustomerDataChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "loadCustomerDataActionChain"
+      }
+    },
+    "assignShippingAddress": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.shippingAddress": {
+          "source": "{{ {AddressLine1: $chain.results.loadOrders.body.ShippingAddressLine1_1, AddressLine2: $chain.results.loadOrders.body.ShippingAddressLine2_1, PostalCode: $chain.results.loadOrders.body.ShippingAddressPostalCode, Country: $chain.results.loadOrders.body.ShippingAddressCountry, State: $chain.results.loadOrders.body.ShippingAddressState, City: $chain.results.loadOrders.body.ShippingAddressCity} }}",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "resetOrderVariables"
+      }
+    },
+    "resetOrdersData": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.orders",
+          "$page.variables.fetchedOrders",
+          "$page.variables.totalAmount"
+        ]
+      },
+      "outcomes": {
+        "success": "testValidInput"
+      },
+      "description": "Clears orders data the variable holds",
+      "label": "Reset orders variable"
+    },
+    "loadOrders": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/get_rraOrders",
+        "uriParams": {
+          "rraOrders_Id": "{{ $variables.ordersId }}",
+          "onlyData": true
+        },
+        "responseType": "getRraOrdersResponse"
+      },
+      "outcomes": {
+        "failure": "assignVariablesErrorMessage",
+        "success": "ifOrderStatus"
+      },
+      "description": "Initiates REST call loading orders data",
+      "label": "Load orders record"
+    },
+    "navigateToViewOrder": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "view-order",
+        "params": {
+          "orderId": "{{ $variables.ordersId }}"
+        }
+      },
+      "label": "Navigate to view-order page",
+      "description": "Navigate to view-order page"
+    },
+    "ifOrderStatus": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $chain.results.loadOrders.body.OrderStatus === 'DRAFT' ]]"
+      },
+      "outcomes": {
+        "true": "callAssignOrdertDataChain",
+        "false": "navigateToViewOrder"
+      },
+      "label": "Check for order status",
+      "description": "if the status of an order is not draft, then we redirect to view-order page"
+    }
+  }
+}

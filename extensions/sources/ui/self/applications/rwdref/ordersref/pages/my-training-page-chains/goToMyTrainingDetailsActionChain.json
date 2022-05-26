@@ -1,0 +1,27 @@
+{
+  "description": "",
+  "root": "navigateToTrainingDetail",
+  "actions": {
+    "navigateToTrainingDetail": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "training-detail",
+        "params": {
+          "trainingKey": "{{ $variables.itemKey }}",
+          "pageTitle": "{{ $variables.title }}"
+        }
+      }
+    }
+  },
+  "variables": {
+    "itemKey": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "title": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+  }
+}

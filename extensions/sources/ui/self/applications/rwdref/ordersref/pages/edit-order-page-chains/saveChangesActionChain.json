@@ -1,0 +1,159 @@
+{
+  "description": "Save Order Data",
+  "variables": {
+    "type": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "root": "isFormValid",
+  "actions": {
+    "isFormValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.linesValid === 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "saveDataChain",
+        "false": "callComponentOrderLinesValidationTrackerShowMessages"
+      },
+      "label": "Check if Form is valid",
+      "description": "Check if Form is valid"
+    },
+    "saveDataChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "outcomes": {
+        "success": "callModuleFunctionResetChanges"
+      },
+      "parameters": {
+        "id": "saveOrdersBatchDataActionChain",
+        "params": {
+          "actionType": "{{ $variables.type }}"
+        }
+      },
+      "label": "Call saveOrdersBatchDataActionChain Chain"
+    },
+    "resetDirtyDataFlag": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.dirtyDataFlag"
+        ]
+      },
+      "outcomes": {
+        "success": "setVariableIsSaved"
+      },
+      "label": "Reset Dirty data flag "
+    },
+    "setVariableIsSaved": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.isSaved": {
+          "source": true,
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "ifSubmit"
+      }
+    },
+    "callModuleFunctionResetChanges": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "outcomes": {
+        "success": "resetDirtyDataFlag"
+      },
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "resetChanges"
+      },
+      "label": "Reset Line Buffered Data Provider Changes"
+    },
+    "ifSubmit": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.type === 'spPrimaryAction' ]]"
+      },
+      "outcomes": {
+        "true": "ifIsSubmitWithFeedback"
+      },
+      "description": "Verify if the chain is called for the primary action (submit).",
+      "label": "If Submit"
+    },
+    "callComponentOrderLinesValidationTrackerShowMessages": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-lines-validation-tracker') }}",
+        "method": "showMessages"
+      },
+      "outcomes": {
+        "success": "resetVariablesErrorMessages"
+      }
+    },
+    "assignVariablesErrorMessages": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "submit-fod-orders-batch-error",
+                "template": "validation",
+                "severity": "error",
+                "primaryText": "[[ $application.translations.app.ORDER_SAVE_VALIDATION_SUMMARY ]]",
+                "secondaryText": "[[ $application.translations.app.ORDER_SUBMIT_VALIDATION_ERROR_PRIMARY_TEXT ]]"
+              }
+            ]
+          },
+          "auto": "always"
+        }
+      }
+    },
+    "resetVariablesErrorMessages": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.errorMessages"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesErrorMessages"
+      }
+    },
+    "openFeedbackDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById($page.constants.simpleCreateEditId) }}",
+        "method": "openFeedback"
+      }
+    },
+    "callChainFeedbackActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "feedbackActionChain"
+      }
+    },
+    "ifIsSubmitWithFeedback": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.isSubmitWithFeedback ]]"
+      },
+      "outcomes": {
+        "true": "resetVariablesIsSubmitWithFeedback",
+        "false": "callChainFeedbackActionChain"
+      },
+      "label": "If Submit Feedback"
+    },
+    "resetVariablesIsSubmitWithFeedback": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.isSubmitWithFeedback"
+        ]
+      },
+      "outcomes": {
+        "success": "openFeedbackDialog"
+      }
+    }
+  }
+}

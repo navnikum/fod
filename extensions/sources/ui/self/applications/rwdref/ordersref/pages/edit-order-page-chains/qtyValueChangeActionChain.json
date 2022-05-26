@@ -1,0 +1,82 @@
+{
+  "description": "",
+  "root": "assignVariablesCurrentOrderLineQuantity",
+  "actions": {
+
+    "setLineItemAmount": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesTableRowData": {
+          "source": {
+            "Amount": "{{ $variables.quantity * $page.variables.orderLinesTableRowData.ListPrice }}"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      }
+    },
+    "setLineItemAmountToZero": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesTableRowData": {
+          "source": {
+            "Amount": "0"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      }
+    },
+    "assignVariablesCurrentOrderLineQuantity": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.currentOrderLineQuantity": {
+          "source": "{{ $variables.value }}"
+        }
+      },
+      "outcomes": {
+        "success": "assignVariablesQuantity"
+      },
+      "label": "Assign current order line qty"
+    },
+    "assignVariablesQuantity": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.quantity": {
+          "source": "{{ $page.functions.getQuantityFromRawValue($variables.value) }}"
+        }
+      },
+      "outcomes": {
+        "success": "if"
+      },
+      "label": "Parse rawValue to quantity"
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "true": "setLineItemAmount",
+        "false": "setLineItemAmountToZero"
+      },
+      "parameters": {
+        "condition": "[[ !isNaN($variables.quantity) && $variables.quantity > 0 && $page.variables.orderLinesTableRowData.ListPrice ]]"
+      },
+      "label": "If valid quantity"
+    }
+  },
+  "variables": {
+    "quantity": {
+      "type": "number"
+    },
+    "value": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+
+  }
+}

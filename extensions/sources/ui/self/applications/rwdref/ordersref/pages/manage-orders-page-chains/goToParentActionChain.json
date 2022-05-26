@@ -1,0 +1,13 @@
+{
+  "root": "navigateToParentPage",
+  "description": "Go to parent",
+  "actions": {
+    "navigateToParentPage": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "/",
+        "params": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "root": "ifDirtyDataFlag",
+  "description": "",
+  "variables": {
+    "dirtyDataFlag": {
+      "type": "boolean",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "itemId": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "ifDirtyDataFlag": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.dirtyDataFlag ]]"
+      },
+      "outcomes": {
+        "false": "callChainNavigationSelectionChangeActionChain",
+        "true": "assignVariablesInAppNavigationDestination"
+      }
+    },
+    "callChainNavigationSelectionChangeActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "flow:navigationSelectionChangeActionChain",
+        "params": {
+          "itemId": "{{ $variables.itemId }}"
+        }
+      }
+    },
+    "callComponentDirtyDataWarningDialogOpen": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('dirtyDataWarningDialog') }}",
+        "method": "open"
+      }
+    },
+    "assignVariablesInAppNavigationDestination": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.inAppNavigationDestination": {
+          "source": "{{ $variables.itemId }}"
+        }
+      },
+      "outcomes": {
+        "success": "callComponentDirtyDataWarningDialogOpen"
+      }
+    }
+  }
+}

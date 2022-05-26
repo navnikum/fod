@@ -1,0 +1,35 @@
+{
+  "root": "ifAddProductMessage",
+  "description": "",
+  "actions": {
+
+    "ifAddProductMessage": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $flow.variables.addProductMessage !== '' ]]"
+      },
+      "outcomes": {
+        "true": "openToastMessage"
+      },
+      "label": "Check for toast messages from addProduct page"
+    },
+    "openToastMessage": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('submitProductMessageToast') }}",
+        "method": "open"
+      },
+      "outcomes": {
+        "success": "resetVariablesAddProductMessage"
+      }
+    },
+    "resetVariablesAddProductMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$flow.variables.addProductMessage"
+        ]
+      }
+    }
+  }
+}

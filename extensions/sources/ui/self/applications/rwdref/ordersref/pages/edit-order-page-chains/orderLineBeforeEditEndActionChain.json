@@ -1,0 +1,60 @@
+{
+  "root": "if",
+  "description": "",
+  "variables": {
+
+    "key": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "linesValid": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "previousRowData": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "rowData": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    }
+
+  },
+  "actions": {
+    "callChainSaveOrderLineActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "saveOrderLineActionChain",
+        "params": {
+          "key": "{{ $variables.key }}",
+          "linesValid": "{{ $variables.linesValid }}",
+          "previousRowData": "{{ $variables.previousRowData }}",
+          "rowData": "{{ $variables.rowData }}"
+        }
+      }
+    },
+    "resetVariablesOrderLinesTableRowSaveNeeded": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.orderLinesTableRowSaveNeeded"
+        ]
+      }
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.orderLinesTableRowSaveNeeded && !$page.variables.forceOrderLineEditExit ]]"
+      },
+      "outcomes": {
+        "true": "callChainSaveOrderLineActionChain",
+        "false": "resetVariablesOrderLinesTableRowSaveNeeded"
+      }
+    }
+  }
+}

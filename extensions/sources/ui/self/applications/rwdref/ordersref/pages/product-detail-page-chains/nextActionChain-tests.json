@@ -1,0 +1,13 @@
+{
+    "tests": {
+        "Success": {
+            "expectations": [
+                {
+                    "actual": "$page.variables.rowIndex",
+                    "matcher": "to.equal",
+                    "expected": 1
+                }
+            ]
+        }
+    }
+   }

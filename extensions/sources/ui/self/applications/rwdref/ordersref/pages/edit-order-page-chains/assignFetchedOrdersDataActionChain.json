@@ -1,0 +1,51 @@
+{
+  "root": "assignFetchedOrdersData",
+  "description": "Assigns loaded orders data to local variables",
+  "variables": {
+    "restCallResult": {
+      "type": {
+        "body": "object",
+        "headers": "any"
+      },
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+
+    "setReadyFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.ordersEditFormLoadingStatus": {
+          "source": "ready"
+        }
+      },
+      "description": "Updates status of the form to Ready.",
+      "label": "Set Form status to Ready"
+    },
+    "callResetModificationsChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "resetOrdersModificationsActionChain"
+      },
+      "outcomes": {
+        "success": "setReadyFormStatus"
+      },
+      "description": "Calls action chain resetting edited record to loaded data",
+      "label": "Call Reset Modifications action chain"
+    },
+    "assignFetchedOrdersData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.fetchedOrders": {
+          "source": "{{ $chain.variables.restCallResult.body }}",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "callResetModificationsChain"
+      },
+      "description": "Assigns data loaded by the REST call to the orders variable",
+      "label": "Assign orders data"
+    }
+  }
+}

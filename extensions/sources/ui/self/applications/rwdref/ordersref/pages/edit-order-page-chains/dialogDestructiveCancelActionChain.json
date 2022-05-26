@@ -1,0 +1,51 @@
+{
+  "description": "Handle cancel on destructive dialog",
+  "root": "assignVariablesOriginalOrderLineQuantity",
+  "variables": {
+    "index": {
+      "required": true,
+      "type": "number",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "callFunctionFocusInputNumber": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "focusInputNumber",
+        "params": [
+          "{{ $variables.index }}"
+        ]
+      }
+    },
+    "resetVariablesOriginalProductQuantity": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.originalProductQuantity"
+        ]
+      },
+      "outcomes": {
+        "success": "callFunctionFocusInputNumber"
+      },
+      "label": "Reset originalProductQuantity variable"
+    },
+    "assignVariablesOriginalOrderLineQuantity": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesTableRowData": {
+          "source": {
+            "Quantity": "{{ $page.variables.originalProductQuantity === 0 ? 1 : $page.variables.originalProductQuantity }}"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "resetVariablesOriginalProductQuantity"
+      },
+      "label": "Restores the original product quantity on cancel event"
+    }
+  }
+}

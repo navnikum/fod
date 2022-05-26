@@ -1,0 +1,14 @@
+{
+  "root": "updatAppliedFiltersAction",
+  "actions": {
+    "updatAppliedFiltersAction": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.appliedFilters": {
+          "source": "{{ $page.variables.appliedFiltersStr && $page.variables.appliedFiltersStr.length > 0 ? JSON.parse($page.variables.appliedFiltersStr) : [] }}",
+          "reset": "empty"
+        }
+      }
+    }
+  }
+}

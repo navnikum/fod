@@ -1,0 +1,101 @@
+{
+  "root": "callRestEndpoint1",
+  "actions": {
+    "callRestEndpoint1": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "requestType": "json",
+        "endpoint": "oracle_atf_rwdrefUI:rraUserTrainings/getall_rraUserTrainings-RraTrainingTasks",
+        "uriParams": {
+          "rraUserTrainings_Id": "{{ $page.variables.trainingKey }}",
+          "onlyData": "{{ true }}",
+          "orderBy": "TrainingTaskId"
+        },
+        "responseType": "getall_rraUserTrainings_RraTrainingTasks",
+        "requestTransformOptions": {
+          "filter": {
+            "op": "$eq",
+            "attribute": "Username",
+            "value": "{{ $application.user.userName.toLowerCase() }}"
+          }
+        },
+        "hookHandler": "{{ $variables.configuration.hookHandler }}"
+      },
+      "outcomes": {
+        "success": "if"
+      }
+    },
+    "return1": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ $chain.results.callRestEndpoint1 }}"
+      }
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $chain.results.callRestEndpoint1.body.items && $chain.results.callRestEndpoint1.body.items.length > 0 ]]"
+      },
+      "outcomes": {
+        "false": "return1",
+        "true": "callFunctionCreateTaskResponse"
+      }
+    },
+    "callFunctionCreateTaskResponse": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "createTaskResponse",
+        "params": [
+          "{{ $chain.results.callRestEndpoint1 }}"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariables"
+      }
+    },
+    "assignVariables": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.completedTasksCount": {
+          "source": "{{ $chain.results.callRestEndpoint1.body.items.reduce((accumulator, elt) => elt.UserTrainingTaskStatus === 'Completed' ? accumulator+1 : accumulator, 0) }}"
+        },
+        "$page.variables.tasksCount": {
+          "source": "{{ $chain.results.callRestEndpoint1.body.items[0].TotalTasks }}"
+        }
+      },
+      "outcomes": {
+        "success": "callChainExpandFirstPendingTaskActionChain"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ $chain.results.callFunctionCreateTaskResponse }}"
+      }
+    },
+    "callChainExpandFirstPendingTaskActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "expandFirstPendingTaskActionChain",
+        "params": {
+          "tasksData": "{{ $chain.results.callFunctionCreateTaskResponse.body.items }}"
+        }
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    }
+  },
+  "variables": {
+    "configuration": {
+      "type": {
+        "hookHandler": "vb/RestHookHandler"
+      },
+      "input": "fromCaller",
+      "required": true
+    }
+  }
+}

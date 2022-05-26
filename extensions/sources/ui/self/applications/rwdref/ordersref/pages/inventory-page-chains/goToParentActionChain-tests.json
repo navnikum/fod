@@ -1,0 +1,18 @@
+{
+    "tests": {
+        "Success": {
+            "expectations": [
+                {
+                    "actual": "$actions.navigateToParentPage.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "/"
+                },
+                {
+                    "actual": "$actions.navigateToParentPage.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {}
+                }
+            ]
+        }
+    }
+   }

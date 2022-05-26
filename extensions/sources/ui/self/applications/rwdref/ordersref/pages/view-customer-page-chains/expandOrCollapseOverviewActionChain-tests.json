@@ -1,0 +1,26 @@
+{
+    "tests": {
+        "Success": {
+            "expectations": [
+                {
+                    "actual": "$actions.updateExpandVariable.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": ""
+                },
+                {
+                    "actual": "$actions.updateExpandVariable.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "inFlowBack": false,
+                        "bidirectionalNavigation": false
+                    }
+                },
+                {
+                    "actual": "$actions.updateExpandVariable.inputs.history",
+                    "matcher": "to.equal",
+                    "expected": "skip"
+                }
+            ]
+        }
+    }
+   }

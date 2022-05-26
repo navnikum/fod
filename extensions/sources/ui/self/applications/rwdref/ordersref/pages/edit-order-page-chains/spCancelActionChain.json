@@ -1,0 +1,16 @@
+{
+  "description": "Cancel",
+  "variables": {
+    "detail": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  },
+  "root": "navigateBack",
+  "actions": {
+    "navigateBack": {
+      "module": "vb/action/builtin/navigateBackAction"
+    }
+  }
+}

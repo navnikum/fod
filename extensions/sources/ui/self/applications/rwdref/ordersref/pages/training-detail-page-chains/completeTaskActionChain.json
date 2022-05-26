@@ -1,0 +1,132 @@
+{
+  "description": "",
+  "root": "callRestUpdateRraUserTrainingsRraTrainingTasksRraUserTrainingTasks",
+  "actions": {
+
+    "fireNotification2": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestUpdateRraUserTrainingsRraTrainingTasksRraUserTrainingTasks.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "callRestUpdateRraUserTrainingsRraTrainingTasksRraUserTrainingTasks": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraUserTrainings/update_rraUserTrainings-RraTrainingTasks-RraUserTrainingTasks",
+        "uriParams": {
+          "rraUserTrainings_Id": "{{ $variables.data.TrainingId }}",
+          "rraUserTrainings_RraTrainingTasks_Id": "{{ $variables.data.TrainingTaskId }}",
+          "rraUserTrainings_RraTrainingTasks_RraUserTrainingTasks_Id": "{{ $variables.data.UserTrainingTaskId }}"
+        },
+        "body": "{{ {\n \"UserTrainingTaskStatus\": $variables.taskStatus\n} }}"
+      },
+      "outcomes": {
+        "failure": "fireNotification2",
+        "success": "fireDataProviderEventTasksSDP"
+      }
+    },
+    "fireDataProviderEventTasksSDP": {
+      "module": "vb/action/builtin/fireDataProviderEventAction",
+      "parameters": {
+        "target": "[[ $page.variables.tasksSDP ]]",
+        "update": {
+          "keys": "{{ [ $variables.data.TrainingTaskId ] }}",
+          "data": "{{ { items: [ Object.assign({}, $variables.data, {UserTrainingTaskStatus: $variables.taskStatus }) ] } }}"
+        }
+      },
+      "outcomes": {
+        "success": "assignVariablesCompletedTasksCount"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success"
+      }
+    },
+    "assignVariablesExpandedState": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.expandedState": {
+          "source": "{{ {} }}",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "callFunctionOpenNextIncompleteTask"
+      }
+    },
+    "callFunctionOpenNextIncompleteTask": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "openNextIncompleteTask"
+      },
+      "outcomes": {
+        "success": "if"
+      }
+    },
+    "assignVariablesCompletedTasksCount": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.completedTasksCount": {
+          "source": "{{ $page.variables.completedTasksCount + 1 }}"
+        }
+      },
+      "outcomes": {
+        "success": "assignVariablesExpandedState"
+      }
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.completedTasksCount === $page.variables.tasksCount ]]"
+      },
+      "outcomes": {
+        "true": "callRestUpdateRraUserTrainingsRraUserTraining",
+        "false": "return"
+      }
+    },
+    "fireNotification": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestUpdateRraUserTrainingsRraUserTraining.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "callRestUpdateRraUserTrainingsRraUserTraining": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraUserTrainings/update_rraUserTrainings-RraUserTraining",
+        "uriParams": {
+          "rraUserTrainings_Id": "{{ $variables.data.TrainingId }}",
+          "rraUserTrainings_RraUserTraining_Id": "{{ $variables.data.UserTrainingId }}"
+        },
+        "body": {
+          "UserTrainingStatus": "{{ $variables.taskStatus }}"
+        }
+      },
+      "outcomes": {
+        "failure": "fireNotification",
+        "success": "return"
+      }
+    }
+  },
+  "variables": {
+    "data": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "taskStatus": {
+      "type": "string",
+      "defaultValue": "Completed",
+      "input": "fromCaller"
+    }
+  }
+}

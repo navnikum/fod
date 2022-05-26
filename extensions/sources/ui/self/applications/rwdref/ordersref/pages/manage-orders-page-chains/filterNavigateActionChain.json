@@ -1,0 +1,32 @@
+{
+  "root": "ifChangeContext",
+  "actions": {
+    "navigateToApplicationCurrentPageId": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "[[ $application.currentPage.id ]]",
+        "params": {
+          "appliedFiltersStr": "{{ $chain.variables.changeContext.value.value &&  $chain.variables.changeContext.value.value.length ? JSON.stringify($chain.variables.changeContext.value.value) : undefined }}"
+        }
+      }
+    },
+    "ifChangeContext": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.changeContext.updatedFrom === 'internal' ]]"
+      },
+      "outcomes": {
+        "true": "navigateToApplicationCurrentPageId"
+      },
+      "description": "Navigate only for internal changes coming from the smart search component )i.e. user actions, not model updates)"
+    }
+  },
+  "variables": {
+    "changeContext": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    }
+  },
+  "description": "Navigate to the same page to update the URL with the current filter configuration."
+}

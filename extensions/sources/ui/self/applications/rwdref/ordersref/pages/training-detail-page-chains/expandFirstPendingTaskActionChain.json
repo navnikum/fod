@@ -1,0 +1,80 @@
+{
+  "root": "callFunctionGetFirstPendindTaskId",
+  "description": "",
+  "variables": {
+    "firstPendingTaskId": {
+      "type": "string"
+    },
+    "tasksData": {
+      "type": "any",
+      "input": "fromCaller"
+    }
+
+  },
+  "actions": {
+    "callFunctionGetFirstPendindTaskId": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "getFirstPendindTaskId",
+        "params": [
+          "{{ $variables.tasksData }}"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesFirstPendingTaskId"
+      }
+    },
+    "ifFirstPendingTaskId": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.firstPendingTaskId !== undefined ]]"
+      },
+      "outcomes": {
+        "true": "assignVariables",
+        "false": "assignVariablesExpandedState"
+      }
+    },
+    "assignVariables": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.expandedState": {
+          "source": "{{ (() => { let r = {}; r[$chain.variables.firstPendingTaskId] = true; return r })() }}",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "assignVariablesFirstPendingTaskId": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.firstPendingTaskId": {
+          "source": "{{ $chain.results.callFunctionGetFirstPendindTaskId }}"
+        }
+      },
+      "outcomes": {
+        "success": "ifFirstPendingTaskId"
+      }
+    },
+    "assignVariablesExpandedState": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.expandedState": {
+          "source": "{{ {} }}",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success"
+      }
+    }
+  }
+}

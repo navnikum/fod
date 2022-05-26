@@ -1,0 +1,253 @@
+{
+  "description": "Submit form data",
+  "variables": {
+    "type": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "root": "isFormValid",
+  "actions": {
+    "isFormValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.customerValid === 'valid' && $page.variables.linesValid === 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "callActionChainCreateLinesPayload",
+        "false": "ifCustomerValid"
+      },
+      "label": "Check if Form is valid",
+      "description": "Check if Form is valid"
+    },
+    "createOrderPayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "saveDataChain"
+      },
+      "parameters": {
+        "$page.variables.orders": {
+          "source": {
+            "Attachments": "{{ $page.variables.attachmentsCreatePayload !== undefined ? $page.variables.attachmentsCreatePayload : [] }}",
+            "OrderStatus": "{{ $variables.type === 'spPrimaryAction' ? 'PROCESSING' : 'DRAFT' }}",
+            "TotalAmount": "{{ $page.variables.totalAmount }}",
+            "CurrencyCode": "{{ $flow.constants.defaultCurrencyCode }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.Attachments.items": {
+              "source": "$source.Attachments",
+              "reset": "empty"
+            }
+          }
+        }
+      },
+      "description": "Create Order Payload for REST API",
+      "label": "Create Order Payload for REST API"
+    },
+    "saveDataChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "createOrdersActionChain",
+        "params": {
+          "actionType": "{{ $variables.type }}",
+          "orders": "{{ $page.variables.orders }}"
+        }
+      },
+      "outcomes": {
+        "success": "resetDirtyDataFlag"
+      },
+      "label": "Call Save Order Data Chain",
+      "description": "Call Save Order Data Chain"
+    },
+    "resetDirtyDataFlag": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.dirtyDataFlag"
+        ]
+      },
+      "outcomes": {
+        "success": "setVariableIsSaved"
+      },
+      "label": "Reset Dirty Data Flag",
+      "description": "Reset Dirty Data Flag"
+    },
+    "setVariableIsSaved": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.isSaved": {
+          "source": true,
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "ifSubmit"
+      }
+    },
+    "callActionChainCreateLinesPayload": {
+      "module": "vb/action/builtin/callChainAction",
+      "outcomes": {
+        "success": "createOrderPayload"
+      },
+      "parameters": {
+        "id": "createOrderLinesPayloadActionChain"
+      },
+      "label": "Create Order Lines Payload"
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "submit-fod-orders-batch-error",
+                "template": "validation",
+                "severity": "error",
+                "primaryText": "[[ $application.translations.app.ORDER_SAVE_VALIDATION_SUMMARY ]]",
+                "secondaryText": "[[ $page.variables.customerValid !== 'valid' ? $application.translations.app.CUSTOMER_REQUIRED_VALIDATION_MSG : $application.translations.app.ORDER_SUBMIT_VALIDATION_ERROR_PRIMARY_TEXT ]]"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "callChainHandleToastMessageActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "handleToastMessageActionChain"
+      },
+      "outcomes": {
+      }
+    },
+    "assignResults": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesADP": {
+          "source": "{{ { data: $chain.results.saveDataChain.RraOrderLines.items } }}",
+          "auto": "always",
+          "reset": "none"
+        },
+        "$page.variables.orders": {
+          "source": "{{ $chain.results.saveDataChain }}",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "callChainHandleToastMessageActionChain"
+      }
+    },
+    "callFunctionResetChanges": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "resetChanges"
+      },
+      "outcomes": {
+        "success": "assignResults"
+      }
+    },
+    "ifSubmit": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.type === 'spPrimaryAction' ]]"
+      },
+      "outcomes": {
+        "true": "ifIsSubmitWithFeedback",
+        "false": "callFunctionResetChanges"
+      },
+      "description": "Verify if the chain is called for the primary action (submit).",
+      "label": "If Submit"
+    },
+    "ifCustomerValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.customerValid !== 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "callComponentOrderCustomerValidationTrackerShowMessages",
+        "false": "ifLinesValid"
+      },
+      "label": "if customer invalid"
+    },
+    "callComponentOrderCustomerValidationTrackerShowMessages": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-customer-validation-tracker') }}",
+        "method": "showMessages"
+      },
+      "outcomes": {
+        "success": "ifLinesValid"
+      }
+    },
+    "ifLinesValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.linesValid !== 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "callComponentOrderLinesValidationTrackerShowMessages",
+        "false": "resetVariablesErrorMessages"
+      }
+    },
+    "callComponentOrderLinesValidationTrackerShowMessages": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-lines-validation-tracker') }}",
+        "method": "showMessages"
+      },
+      "outcomes": {
+        "success": "resetVariablesErrorMessages"
+      }
+    },
+    "resetVariablesErrorMessages": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.errorMessages"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesErrorMessage"
+      }
+    },
+    "openFeedbackDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById($page.constants.simpleCreateEditId) }}",
+        "method": "openFeedback"
+      }
+    },
+    "callChainFeedbackActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "feedbackActionChain"
+      }
+    },
+    "ifIsSubmitWithFeedback": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.isSubmitWithFeedback ]]"
+      },
+      "outcomes": {
+        "true": "resetVariablesIsSubmitWithFeedback",
+        "false": "callChainFeedbackActionChain"
+      },
+      "label": "If Submit Feedback"
+    },
+    "resetVariablesIsSubmitWithFeedback": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.isSubmitWithFeedback"
+        ]
+      },
+      "outcomes": {
+        "success": "openFeedbackDialog"
+      }
+    }
+  }
+}

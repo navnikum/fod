@@ -1,0 +1,48 @@
+{
+    "tests": {
+        "Success": {
+            "context": {
+                "$variables.limit": 1234,
+                "$variables.offset": 56,
+                "$page.variables.appliedFilters": "[]"
+            },
+            "mocks": {
+                "fetchAction": {
+                    "outcome": "success",
+                    "result": {
+                        "status": 200,
+                        "headers": {},
+                        "body": {}
+                    }
+                },
+                "processResults": {
+                    "outcome": "success"
+                },
+                "returnFailureResponse": {
+                    "outcome": "failure",
+                    "result": {
+                        "message": {
+                            "summary": "Error executing the action"
+                        }
+                    }
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.returnSuccessResponse.results",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "status": 200,
+                        "headers": {},
+                        "body": {}
+                    }
+                },
+                {
+                    "actual": "$actions.returnSuccessResponse.outcome",
+                    "matcher": "to.equal",
+                    "expected": "success"
+                }
+            ]
+        }
+    }
+   }

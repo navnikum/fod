@@ -1,0 +1,34 @@
+{
+  "root": "resetVariablesOrderLinesADP",
+  "description": "",
+  "variables": {},
+  "actions": {
+    "callModuleFunctionResetChanges": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "resetChanges"
+      }
+    },
+    "resetVariablesOrderLinesADP": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "outcomes": {
+        "success": "callModuleFunctionResetChanges"
+      },
+      "parameters": {
+        "variables": [
+          "$page.variables.orderLinesADP",
+          "$page.variables.orderLineSeq",
+          "$page.variables.editRow",
+          "$page.variables.orderLinesTableRowData",
+          "$page.variables.totalAmount",
+          "$page.variables.dirtyDataFlag",
+          "$page.variables.currentOrderLineKey",
+          "$flow.variables.productDetail.productCount",
+          "$flow.variables.productDetail.productSubtitle",
+          "$flow.variables.isDrawerPopupOpen"
+        ]
+      }
+    }
+  }
+}

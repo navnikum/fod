@@ -1,0 +1,52 @@
+{
+  "root": "assignVariablesPreviousAppliedFiltersString",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "previousPage": "string",
+        "previousPageParams": "any",
+        "currentPage": "string",
+        "currentPageParams": "any"
+      }
+    },
+    "previousAppliedFiltersString": {
+      "type": "string"
+    }
+  },
+  "actions": {
+
+    "assignVariablesPreviousAppliedFiltersString": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.previousAppliedFiltersString": {
+          "source": "{{ $page.variables.appliedFilters && $page.variables.appliedFilters.length ? JSON.stringify($page.variables.appliedFilters) : undefined }}"
+        }
+      },
+      "outcomes": {
+        "success": "if"
+      }
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.appliedFiltersStr === $variables.previousAppliedFiltersString ]]"
+      },
+      "description": "Test if we are trying to apply the same filter: this happens after the user changes the filters and we navigate to the same page.",
+      "outcomes": {
+        "false": "assignVariablesAppliedFilters"
+      }
+    },
+    "assignVariablesAppliedFilters": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.appliedFilters": {
+          "source": "{{ $page.variables.appliedFiltersStr && $page.variables.appliedFiltersStr.length > 0 ? JSON.parse($page.variables.appliedFiltersStr) : [] }}",
+          "reset": "empty"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "description": "",
+  "root": "callChainListItemSecondaryActionChain",
+  "actions": {
+    "callChainListItemSecondaryActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "listItemSecondaryActionChain",
+        "params": {
+          "orderId": "{{ $variables.rowData.OrderId }}",
+          "actionId": "{{ $variables.rowData.OrderStatus === 'PROCESSING' ? 'view-order' : 'edit-order' }}"
+        }
+      }
+    }
+  },
+  "variables": {
+    "rowKey": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "rowData": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

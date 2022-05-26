@@ -1,0 +1,200 @@
+{
+  "description": "",
+  "root": "ifLinesValidAndHasProductId",
+  "variables": {
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "linesValid": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "previousRowData": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "rowData": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "callsetDirtyActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "setDirtyDataFlagActionChain"
+      },
+      "outcomes": {
+        "success": "callModuleFunctionUpdateItem"
+      }
+    },
+    "callModuleFunctionUpdateItem": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "updateItem",
+        "params": [
+          "{{ $variables.key }}",
+          "{{ $variables.rowData }}"
+        ]
+      },
+      "outcomes": {
+        "success": "callModuleFunctionCalTotalAmount"
+      }
+    },
+    "callModuleFunctionCalTotalAmount": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "outcomes": {
+        "success": "assignVariablesTotalAmount"
+      },
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "calculateTotalAmount"
+      }
+    },
+    "callShowMessagesMethod": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-lines-validation-tracker') }}",
+        "method": "showMessages"
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "resetVariablesEditRow": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.editRow",
+          "$page.variables.orderLinesTableRowSaveNeeded"
+        ]
+      },
+      "label": "Reset Edit mode",
+      "outcomes": {
+        "success": "ifAddingLine"
+      }
+    },
+    "assignVariablesProductDetails": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.productDetail": {
+          "source": {
+            "productCount": "[[ $flow.variables.productDetail.productCount + 1 ]]"
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$page.variables.addingLine": {
+          "source": false
+        }
+
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "ifAddingLine": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.addingLine ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesProductDetails",
+        "false": "return"
+      }
+    },
+    "ifLinesValidAndHasProductId": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "true": "ifQuantityIsZero",
+        "false": "ifCurrentOrderLineQuantity"
+      },
+      "parameters": {
+        "condition": "[[ $variables.linesValid === 'valid' && $variables.rowData.ProductId ]]"
+      }
+    },
+    "ifQuantityIsZero": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.rowData.Quantity === 0 ]]"
+      },
+      "outcomes": {
+        "true": "callChainAssignKeyAndOpenDestructiveDialog",
+        "false": "if"
+      },
+      "description": "If quantity is zero",
+      "label": "If Quantity is zero"
+    },
+    "ifCurrentOrderLineQuantity": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.currentOrderLineQuantity === '' ]]"
+      },
+      "outcomes": {
+        "false": "callShowMessagesMethod",
+        "true": "callChainAssignKeyAndOpenDestructiveDialog2"
+      },
+      "label": "If order line qty is empty"
+    },
+    "callChainAssignKeyAndOpenDestructiveDialog": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "assignOrderLineKeyAndOpenDestructiveDialog",
+          "params": {
+          "key": "{{ $variables.key }}",
+          "originalProductQty": "{{ $variables.previousRowData.Quantity }}"
+        }
+      },
+      "label": "Call action chain assign key and open destructive dialog",
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "callChainAssignKeyAndOpenDestructiveDialog2": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "assignOrderLineKeyAndOpenDestructiveDialog",
+        "params": {
+          "key": "{{ $variables.key }}"
+        }
+      },
+      "label": "Call action chain assign key and open destructive dialog",
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success"
+      }
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.addingLine || $variables.previousRowData.Quantity !== $variables.rowData.Quantity || $variables.previousRowData.ProductId !== $variables.rowData.ProductId ]]"
+      },
+      "outcomes": {
+        "true": "callsetDirtyActionChain",
+        "false": "return"
+      }
+    },
+    "assignVariablesTotalAmount": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.totalAmount": {
+          "source": "{{ $chain.results.callModuleFunctionCalTotalAmount }}"
+        }
+      },
+      "outcomes": {
+        "success": "resetVariablesEditRow"
+      }
+    }
+  }
+}

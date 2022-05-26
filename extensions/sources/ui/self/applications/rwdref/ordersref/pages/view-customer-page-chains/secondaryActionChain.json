@@ -1,0 +1,91 @@
+{
+  "root": "showSecondaryActionId",
+  "description": "Notifiy custom action is triggered",
+  "variables": {
+    "actionId": {
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "orderId": {
+      "type": "string",
+      "input": "fromCaller"
+    },
+    "orderNumber": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "showSecondaryActionId": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.listItemTemplateEventNotificationMessages": {
+          "source": "[[ [{ summary: 'Secondary Action: ' + $chain.variables.actionId, severity: 'confirmation' }] ]]",
+          "auto": "always"
+        }
+      },
+      "description": "Notification of secondary action execution",
+      "label": "notify secondary action id",
+      "outcomes": {
+        "success": "switch1"
+      }
+    },
+    "switch1": {
+      "module": "vb/action/builtin/switchAction",
+      "parameters": {
+        "caseValue": "[[ $variables.actionId ]]",
+        "possibleValues": [
+          "delete-order",
+          "view-order",
+          "edit-order"
+        ]
+      },
+      "outcomes": {
+        "delete-order": "assignVariables",
+        "view-order": "navigateToViewOrder",
+        "edit-order": "navigateToEditOrder"
+      }
+    },
+    "openDeleteConfDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-delete-conf-dialog') }}",
+        "method": "open"
+      }
+    },
+    "navigateToViewOrder": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "view-order",
+        "params": {
+          "parentPage": "{{ $application.currentPage.id }}",
+          "orderId": "{{ $variables.orderId }}"
+        }
+      }
+    },
+    "navigateToEditOrder": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "edit-order",
+        "params": {
+          "parentPage": "{{ $application.currentPage.id }}",
+          "orderId": "{{ $variables.orderId }}"
+        }
+      }
+    },
+    "assignVariables": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.currentItem": {
+          "source": "{{ $variables.orderId }}"
+        },
+        "$page.variables.currentItemOrderNumber": {
+          "source": "{{ $variables.orderNumber }}"
+        }
+      },
+      "outcomes": {
+        "success": "openDeleteConfDialog"
+      }
+    }
+  }
+}

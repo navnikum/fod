@@ -1,0 +1,40 @@
+{
+  "description": "",
+  "root": "navigateToProductDetail",
+  "actions": {
+    "navigateToProductDetail": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "product-detail",
+        "params": {
+          "rowIndex": "{{ $variables.index }}",
+          "parentPage": "{{ $application.currentPage.id }}",
+          "appliedFiltersStr": "{{ $page.variables.appliedFiltersStr }}"
+        }
+      }
+    }
+  },
+  "variables": {
+    "detail": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "index": {
+      "required": true,
+      "type": "number",
+      "input": "fromCaller",
+      "defaultValue": 0
+    },
+    "current": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "description": "Submit form data",
+  "root": "callModuleFunctionGetLineItemCount",
+  "actions": {
+    "callModuleFunctionGetLineItemCount": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "outcomes": {
+        "success": "isFormValid"
+      },
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "getLineItemsCount"
+      },
+      "label": "Call Line Count Function "
+    },
+    "isFormValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ ($page.variables.orderId || $page.variables.customerValid === 'valid') &&  $page.variables.linesValid === 'valid' && $chain.results.callModuleFunctionGetLineItemCount !== 0 ]]"
+      },
+      "outcomes": {
+        "true": "resetErrorMessageAndCalculateTotalAmount",
+        "false": "resetErrorMessage"
+      },
+      "label": "Check if Form is valid",
+      "description": "Check if Form is valid"
+    },
+    "resetErrorMessageAndCalculateTotalAmount": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": "$page.variables.errorMessages"
+      },
+      "outcomes": {
+        "success": "callModuleFunctionTotalAmount"
+      }
+    },
+    "resetErrorMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [ "$page.variables.errorMessages" ]
+      },
+      "outcomes": {
+        "success": "ifOrderId"
+      }
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "submit-fod-orders-batch-error",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "[[ $application.translations.app.ORDER_SUBMIT_VALIDATION_ERROR_PRIMARY_TEXT ]]",
+                "secondaryText": "[[ $chain.results.callModuleFunctionGetLineItemCount === 0 ? $application.translations.app.ORDER_MIN_LINE_VALIDATION_MSG : $application.translations.app.ORDER_LINES_ERROR_MSG ]]"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "openSubmitConfDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "[[ document.getElementById('oj-dialog-submit-confirmation') ]]",
+        "method": "open"
+      },
+      "label": "Open Submit Conf Dialog"
+    },
+    "callModuleFunctionTotalAmount": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "outcomes": {
+        "success": "assignVariablesTotalAmount"
+      },
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "calculateTotalAmount"
+      },
+      "label": "Calculate Total Amount"
+    },
+    "assignVariablesTotalAmount": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "assignVariablesIsSubmitWithFeedback"
+      },
+      "parameters": {
+        "$page.variables.totalAmount": {
+          "source": "{{ $chain.results.callModuleFunctionTotalAmount }}"
+        }
+      },
+      "label": "Update totalAmount Variable"
+    },
+    "callComponentOrderCustomerValidationTrackerShowMessages": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('order-customer-validation-tracker') }}",
+        "method": "showMessages"
+      },
+      "outcomes": {
+        "success": "ifCustomerValid"
+      }
+    },
+    "ifOrderId": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.orderId ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesErrorMessage",
+        "false": "callComponentOrderCustomerValidationTrackerShowMessages"
+      }
+    },
+    "assignVariablesErrorMessages": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+                {
+                  "id": "submit-fod-orders-batch-error",
+                  "template": "validation",
+                  "severity": "error",
+                  "primaryText": "[[ $application.translations.app.ORDER_SUBMIT_VALIDATION_ERROR_PRIMARY_TEXT ]]",
+                  "secondaryText": "[[ $variables.errorMessages ]]"
+                }
+              ]
+          },
+          "auto": "always"
+        }
+      }
+    },
+    "assignVariablesErrorMessages2": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.errorMessages": {
+          "source": "[[ $application.translations.app.ORDER_LINES_ERROR_MSG ]]",
+          "reset": "none"
+        }
+      },
+      "outcomes": {
+        "success": "if"
+      }
+    },
+    "ifCustomerValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.customerValid !== 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesErrorMessages5",
+        "false": "ifLinesValid"
+      }
+    },
+    "ifLinesValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.linesValid !== 'valid' ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesErrorMessages2",
+        "false": "if"
+      }
+    },
+    "assignVariablesErrorMessages3": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.errorMessages": {
+          "source": "[[ $application.translations.app.ORDER_MIN_LINE_VALIDATION_MSG ]]",
+          "reset": "none"
+        }
+      },
+      "outcomes": {
+        "success": "assignVariablesErrorMessages"
+      }
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $chain.results.callModuleFunctionGetLineItemCount === 0 ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesErrorMessages3",
+        "false": "assignVariablesErrorMessages"
+      }
+    },
+    "assignVariablesErrorMessages5": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.errorMessages": {
+          "source": "[[ $application.translations.app.CUSTOMER_REQUIRED_VALIDATION_MSG ]]",
+          "reset": "none"
+        }
+      },
+      "outcomes": {
+        "success": "ifLinesValid"
+      }
+    },
+    "assignVariablesIsSubmitWithFeedback": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.isSubmitWithFeedback": {
+          "source": "{{ $variables.actionId }}"
+        }
+      },
+      "outcomes": {
+        "success": "openSubmitConfDialog"
+      },
+      "label": "Test feedback action id"
+    }
+  },
+  "variables": {
+    "actionId": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "errorMessages": {
+      "type": "string[]"
+    }
+
+  }
+}

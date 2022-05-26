@@ -1,0 +1,33 @@
+{
+  "root": "assignVariablesErrorMessage",
+  "description": "Handle error",
+  "variables": {
+    "data": {
+      "type": "object",
+      "required": false,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "{{ $variables.data.id }}",
+                "template": "general",
+                "severity": "{{ $variables.data.severity }}",
+                "primaryText": "{{ $variables.data.detail.message }}",
+                "secondaryText": "[[ $application.translations.format('app','ORDER_DATA_LOADING_ERR') ]]"
+              }
+            ]
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "tests": {
+        "Success": {
+            "expectations": [
+                {
+                    "actual": "$actions.navigateToManageOrders.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "manage-orders"
+                },
+                {
+                    "actual": "$actions.navigateToManageOrders.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "appliedFiltersStr": "[{\"filter\":\"keyword\"},{\"filter\":\"keyword\",\"value\":\"PROCESSING\",\"label\":\"PROCESSING\"}]"
+                    }
+                }
+            ]
+        }
+    }
+   }

@@ -1,0 +1,89 @@
+{
+  "description": "",
+  "root": "resetVariables1",
+  "actions": {
+    "forEach1": {
+      "module": "vb/action/builtin/forEachAction",
+      "parameters": {
+        "items": "{{ $chain.results.callModuleFunctionGetSubmittable }}",
+        "actionId": "if2"
+      },
+      "label": "Iterate Through Operations"
+    },
+    "switch1": {
+      "module": "vb/action/builtin/switchAction",
+      "parameters": {
+        "caseValue": "[[ $current.data.operation ]]",
+        "possibleValues": [
+          "add"
+        ]
+      },
+      "outcomes": {
+        "add": "setCreateLinePayload"
+      },
+      "label": "Check Operation Type"
+    },
+    "callModuleFunctionGetSubmittable": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "getSubmittableItems",
+        "returnType": "any"
+      },
+      "outcomes": {
+        "success": "forEach1"
+      },
+      "label": "Get All Line Operations"
+    },
+    "setCreateLinePayload": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "label": "Build Create Line Payload",
+      "parameters": {
+        "$page.variables.orders": {
+          "source": {
+            "OrderLinesVO": [
+              {
+                "Amount": "{{ $current.data.item.data.Amount }}",
+                "ListPrice": "{{ $current.data.item.data.ListPrice }}",
+                "ProductId": "{{ $current.data.item.data.ProductId }}",
+                "Quantity": "{{ $current.data.item.data.Quantity }}",
+                "CurrencyCode": "{{ $flow.constants.defaultCurrencyCode }}"
+              }
+            ]
+          },
+          "reset": "none",
+          "mapping": {
+            "$target.RraOrderLines.items": {
+              "source": "$source.OrderLinesVO",
+              "reset": "none",
+              "auto": "always"
+            }
+          }
+        }
+      }
+    },
+    "resetVariables1": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.orders.RraOrderLines"
+        ]
+      },
+      "outcomes": {
+        "success": "callModuleFunctionGetSubmittable"
+      },
+      "label": "Reset Order Lines Data"
+    },
+    "if2": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "true": "switch1"
+      },
+      "parameters": {
+        "condition": "[[  $current.data.item.data && $current.data.item.data.ProductId ]]"
+      },
+      "label": "Check for empty line"
+    }
+  },
+  "variables": {}
+}

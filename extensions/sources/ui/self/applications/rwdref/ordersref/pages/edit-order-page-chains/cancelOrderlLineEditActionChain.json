@@ -1,0 +1,97 @@
+{
+  "description": "",
+  "root": "setCurrentOrderLineKey",
+  "variables": {
+    "key": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    },
+    "rowData": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "setCurrentOrderLineKey": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "ifAddingLine"
+      },
+      "label": "Set current order line key",
+      "parameters": {
+        "$page.variables.currentOrderLineKey": {
+          "source": "{{ $variables.key }}",
+          "reset": "empty"
+        }
+      }
+    },
+    "resetVariablesOrderLinesTableRowData": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.orderLinesTableRowData"
+        ]
+      },
+      "outcomes": {
+        "success": "callChainDeleteOrderLineActionChain"
+      },
+      "label": "Reset order lines table row data"
+    },
+    "callChainDeleteOrderLineActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "deleteOrderLineActionChain"
+      }
+    },
+    "ifAddingLine": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.addingLine ]]"
+      },
+      "outcomes": {
+        "false": "assignVariablesOrderLinesTableRowData",
+        "true": "resetVariablesOrderLinesTableRowData"
+      },
+      "description": "If adding new line"
+    },
+    "resetVariablesEditRow": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.editRow"
+        ]
+      },
+      "outcomes": {
+        "success": "resetVariablesIsDeletingOrderLine"
+      }
+    },
+    "assignVariablesOrderLinesTableRowData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.orderLinesTableRowData": {
+          "source": "{{ $variables.rowData }}",
+          "auto": "always"
+        },
+        "$page.variables.orderLinesTableRowSaveNeeded": {
+          "source": false
+        },
+        "$page.variables.forceOrderLineEditExit": {
+          "source": true
+        }
+      },
+      "outcomes": {
+        "success": "resetVariablesEditRow"
+      }
+    },
+    "resetVariablesIsDeletingOrderLine": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.forceOrderLineEditExit"
+        ]
+      }
+    }
+  }
+}

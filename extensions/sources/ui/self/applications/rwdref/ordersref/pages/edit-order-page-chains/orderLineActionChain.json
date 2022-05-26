@@ -1,0 +1,106 @@
+{
+  "description": "",
+  "root": "switch",
+  "variables": {
+    "currentOrderLineData": {
+      "type": "object",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "menuId": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    },
+    "tableId": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "switch": {
+      "module": "vb/action/builtin/switchAction",
+      "parameters": {
+        "caseValue": "[[ $variables.menuId ]]",
+        "possibleValues": [
+          "edit",
+          "delete"
+        ]
+      },
+      "outcomes": {
+        "edit": "assignVariablesEditRow",
+        "delete": "setCurrentOrderLineKeyAndData"
+      }
+    },
+    "setCurrentOrderLineKeyAndData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "outcomes": {
+        "success": "openDestructiveDialog"
+      },
+      "label": "Set current order line key and data",
+      "parameters": {
+        "$page.variables.currentOrderLineKey": {
+          "source": "{{ $variables.key }}",
+          "reset": "empty"
+        },
+        "$page.variables.orderLinesTableRowData": {
+          "source": "{{ $variables.currentOrderLineData }}",
+          "auto": "always"
+        }
+      }
+    },
+    "openDestructiveDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "[[ document.getElementById('oj-dialog-line-delete-conf') ]]",
+        "method": "open"
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ {\"cancelled\":true} }}"
+      }
+    },
+    "assignVariablesEditRow": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.editRow": {
+          "source": {
+            "rowKey": "{{ $variables.key }}"
+          },
+          "reset": "toDefault",
+          "auto": "always",
+          "mapping": {
+            "$target.rowKey": {
+              "source": "$source.rowKey",
+              "reset": "empty",
+              "auto": "always"
+            }
+          }
+        }
+      },
+      "outcomes": {
+        "success": "callOrderLinesTable"
+      },
+      "label": "Assign variables edit row"
+    },
+    "callOrderLinesTable": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById($variables.tableId) }}",
+        "method": "focus"
+      }
+    }
+  }
+}

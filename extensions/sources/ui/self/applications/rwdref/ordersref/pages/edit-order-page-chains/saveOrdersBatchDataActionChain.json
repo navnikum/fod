@@ -1,0 +1,173 @@
+{
+  "root": "callCreateOrderBatchDataPayload",
+  "description": "",
+  "variables": {
+    "actionType": {
+      "required": true,
+      "type": "string",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+
+    "callCreateOrderBatchDataPayload": {
+      "module": "vb/action/builtin/callChainAction",
+      "outcomes": {
+        "success": "callRestEndpointRraOrdersBatch"
+      },
+      "parameters": {
+        "id": "createOrderBatchDataPayloadActionChain",
+        "params": {
+          "actionType": "{{ $variables.actionType }}"
+        }
+      },
+      "label": "Call CreateOrderBatchDataPayload Chain"
+    },
+    "isSubmitOrder": {
+      "module": "vb/action/builtin/ifAction",
+      "outcomes": {
+        "true": "assignVariablesManageOrdersToastMessage",
+        "false": "assignVariablesEditOrderToastMessage"
+      },
+      "parameters": {
+        "condition": "[[ $variables.actionType === 'spPrimaryAction' ]]"
+      },
+      "label": "Check if it's Submit Action"
+    },
+    "assignVariablesManageOrdersToastMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.manageOrdersToastMessage": {
+          "source": "[[ $application.translations.format('app','ORDER_SUBMITTED_CONF_MSG', {orderNumber: $page.variables.orders.OrderNumber}) ]]",
+          "auto": "always"
+        }
+      },
+      "description": "Assign variables manage orders Toast Message",
+      "label": "Save submit success message to manage orders toast message"
+    },
+    "assignVariablesEditOrderToastMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.editOrderToastMessage": {
+          "source": "[[ $application.translations.format('app','ORDER_SAVE_CONF_MSG') ]]",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "openEditOrderToastMessage"
+      },
+      "label": "Show Success Toast Message"
+    },
+    "openEditOrderToastMessage": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "[[ document.getElementById('editOrderSuccessMessageToast') ]]",
+        "method": "open"
+      },
+      "outcomes": {
+        "success": "resetEditOrderToastMessage"
+      }
+    },
+    "resetEditOrderToastMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [ "$page.variables.editOrderToastMessage" ]
+      },
+      "outcomes": {
+        "success": "runInParallelReloadData"
+      }
+    },
+    "resetErrorMessage": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [ "$page.variables.errorMessages" ]
+      },
+      "outcomes": {
+        "success": "assignVariablesErrorMessage"
+      }
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "save-fod-orders-batch-error",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "[[ $application.translations.format('app','ERROR') ]]",
+                "secondaryText": "[[ $chain.results.callRestEndpointRraOrdersBatch.message.summary ]]"
+              }
+            ]
+          }
+        }
+      },
+      "outcomes": {
+        "success": "returnFailure"
+      }
+    },
+    "returnSuccess": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success"
+      },
+      "label": "Return Success"
+    },
+    "returnFailure": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "failure"
+      },
+      "label": "Return Failure"
+    },
+    "runInParallelReloadData": {
+      "module": "vb/action/builtin/forkAction",
+      "outcomes": {
+        "join": "returnSuccess"
+      },
+      "parameters": {
+        "actions": {
+          "callLoadOrdersChain": "callLoadOrdersChain",
+          "callLoadOrdersLineItemsChain": "callLoadOrdersLineItemsChain"
+        }
+      },
+      "label": "Reload Data"
+    },
+    "callRestEndpointRraOrdersBatch": {
+      "module": "vb/action/builtin/restAction",
+      "outcomes": {
+        "failure": "resetErrorMessage",
+        "success": "isSubmitOrder"
+      },
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/batch",
+        "body": "{{ $page.variables.batchDataPayload }}"
+      },
+      "label": "Call Rest API rraOrders/batch"
+    },
+    "callLoadOrdersChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "loadOrdersActionChain",
+        "params": {
+          "fetchedFields": "[[ $page.variables.ordersEditFormRenderedFields ]]",
+          "ordersId": "{{ $page.variables.orderId }}"
+        }
+      },
+      "description": "Calls action chain re-loading orders data",
+      "label": "Reload orders data"
+    },
+    "callLoadOrdersLineItemsChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "loadOrdersLineItemsActionChain",
+        "params": {
+          "ordersId": "{{ $page.variables.orderId }}"
+        }
+      },
+      "description": "Calls action chain re-loading Order Lines data",
+      "label": "Reload Order Lines data"
+    }
+  }
+}

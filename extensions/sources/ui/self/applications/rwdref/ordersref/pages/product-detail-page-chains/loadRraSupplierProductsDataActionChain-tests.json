@@ -1,0 +1,47 @@
+{
+    "tests": {
+        "Success": {
+            "mocks": {
+
+                "assignVariables": {
+                    "outcome": "success"
+                },
+                "fireNotification": {
+                    "outcome": "failure",
+                    "result": {
+                        "message": {
+                            "summary": "Error executing the action"
+                        }
+                    }
+                },
+                "if": {
+                    "outcome": "true"
+                },
+                "callRestGetallRraSupplierProducts": {
+                    "outcome": "success",
+                    "result": {
+                        "status": 200,
+                        "headers": {},
+                        "body": {
+                            "items": [
+                                {}
+                            ]
+                        }
+                    }
+                }
+            },
+            "expectations": [
+{
+                    "actual": "$actions.if.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.if3.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                }
+            ]
+        }
+    }
+   }

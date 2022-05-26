@@ -1,0 +1,29 @@
+{
+    "tests": {
+        "Success": {
+            "context": {
+                "$variables.index": 4,
+                "$application.currentPage": {
+                    "currentPage": "ordersref/inventory"
+                },
+                "$page.variables.appliedFiltersStr": ""
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.navigateToProductDetail.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "product-detail"
+                },
+                {
+                    "actual": "$actions.navigateToProductDetail.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "rowIndex": 4,
+                        "parentPage": "",
+                        "appliedFiltersStr": ""
+                    }
+                }
+            ]
+        }
+    }
+   }

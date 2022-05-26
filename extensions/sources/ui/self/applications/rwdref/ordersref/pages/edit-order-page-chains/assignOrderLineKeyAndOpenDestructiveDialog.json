@@ -1,0 +1,49 @@
+{
+  "root": "assignVariablesCurrentOrderLineKey",
+  "description": "Assign key and open destructive dialog",
+  "actions": {
+    "openDestructiveDialog": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "[[ document.getElementById('oj-dialog-line-delete-conf') ]]",
+        "method": "open"
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ {\"cancelled\":true} }}"
+      }
+    },
+    "assignVariablesCurrentOrderLineKey": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.currentOrderLineKey": {
+          "source": "{{ $variables.key }}"
+        },
+        "$page.variables.originalProductQuantity": {
+          "source": "{{ $variables.originalProductQty }}"
+        }
+      },
+      "outcomes": {
+        "success": "openDestructiveDialog"
+      }
+    }
+  },
+  "variables": {
+    "key": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "originalProductQty": {
+      "type": "number",
+      "required": false,
+      "input": "fromCaller"
+    }
+  }
+}

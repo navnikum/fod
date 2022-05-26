@@ -1,0 +1,95 @@
+{
+  "description": "",
+  "root": "assignVariablesCurrentOrderLineQuantityAndIsDeletingOrderLine",
+  "actions": {
+    "callsetDirtyActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "setDirtyDataFlagActionChain"
+      },
+      "outcomes": {
+        "success": "resetVariablesEditRow"
+      }
+    },
+    "callModuleFunctionRemoveItem": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "removeItem",
+        "params": [
+          "{{ $page.variables.currentOrderLineKey }}",
+          "{{ $page.variables.orderLinesTableRowData }}"
+        ]
+      },
+      "outcomes": {
+        "success": "callModuleFunctionCalTotalAmount"
+      }
+    },
+    "resetTableRowData": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.orderLinesTableRowData",
+          "$page.variables.addingLine",
+          "$page.variables.currentOrderLineKey",
+          "$page.variables.forceOrderLineEditExit"
+        ]
+      }
+    },
+    "assignVariablesTotalAmount": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.totalAmount": {
+          "source": "{{ $chain.results.callModuleFunctionCalTotalAmount }}"
+        },
+        "$flow.variables.productDetail": {
+          "source": {
+            "productCount": "[[ !$page.variables.addingLine ? $flow.variables.productDetail.productCount - 1 : $flow.variables.productDetail.productCount ]]"
+          },
+          "reset": "none",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "resetTableRowData"
+      }
+    },
+    "callModuleFunctionCalTotalAmount": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "outcomes": {
+        "success": "assignVariablesTotalAmount"
+      },
+      "parameters": {
+        "module": "[[ $page.functions ]]",
+        "functionName": "calculateTotalAmount"
+      }
+    },
+    "assignVariablesCurrentOrderLineQuantityAndIsDeletingOrderLine": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.currentOrderLineQuantity": {
+          "source": "'1'"
+        },
+        "$page.variables.forceOrderLineEditExit": {
+          "source": true
+        }
+      },
+      "outcomes": {
+        "success": "callsetDirtyActionChain"
+      }
+    },
+    "resetVariablesEditRow": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.editRow"
+        ]
+      },
+      "outcomes": {
+        "success": "callModuleFunctionRemoveItem"
+      }
+    }
+  },
+  "variables": {
+  }
+}

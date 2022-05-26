@@ -1,0 +1,12 @@
+{
+    "tests": {
+        "Success": {
+            "expectations": [
+                {
+                    "actual": "$actions.callFunctionSubscribeForAfterFetch.results",
+                    "matcher": "to.be.undefined"
+                }
+            ]
+        }
+    }
+   }

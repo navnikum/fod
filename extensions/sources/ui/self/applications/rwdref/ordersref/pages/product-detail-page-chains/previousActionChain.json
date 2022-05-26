@@ -1,0 +1,22 @@
+{
+  "root": "previous",
+  "description": "previous",
+  "variables": {
+    "event": {
+      "type": "any",
+      "description": "The event",
+      "input": "fromCaller",
+      "required": true
+    }
+  },
+  "actions": {
+    "previous": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rowIndex": {
+          "source": "[[ $page.variables.rowIndex ? ($page.variables.rowIndex - 1) : 0 ]]"
+        }
+      }
+    }
+  }
+}

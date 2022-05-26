@@ -1,0 +1,17 @@
+{
+  "root": "callFunctionSubscribeForAfterFetch",
+  "description": "",
+  "variables": {},
+  "actions": {
+    "callFunctionSubscribeForAfterFetch": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "subscribeForAfterFetch",
+        "params": [
+          "{{ $page.variables.searchResultsDP }}"
+        ]
+      }
+    }
+  }
+}

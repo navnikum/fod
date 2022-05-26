@@ -1,0 +1,40 @@
+{
+  "root": "updateAllFiltersAction",
+  "actions": {
+    "updateAllFiltersAction": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.allFilters": {
+          "source": "{{$page.variables.selectContextValue ? (($page.variables.appliedFilters || []).concat([ { 'type': 'keyword', 'filter': 'keyword', 'value': $page.variables.selectContextValue } ])) :  $page.variables.appliedFilters }}",
+          "reset": "empty"
+        }
+      },
+      "outcomes": {
+        "success": "navigateToSelf"
+      }
+    },
+    "navigateToSelf": {
+      "module": "vb/action/builtin/navigateToPageAction",
+      "parameters": {
+        "page": "[[ $application.currentPage.id ]]",
+        "params": {
+          "appliedFiltersStr": "{{ $page.variables.appliedFilters && $page.variables.appliedFilters.length ? JSON.stringify($page.variables.appliedFilters) : undefined }}",
+          "selectContextValue": "{{ $page.variables.selectContextValue }}"
+        },
+        "history": "push"
+      },
+      "outcomes": {
+        "success": "assignAppliedFiltersStr"
+      }
+    },
+    "assignAppliedFiltersStr": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.appliedFiltersStr": {
+          "source": "{{ $page.variables.appliedFilters && $page.variables.appliedFilters.length > 0 ? JSON.stringify($page.variables.appliedFilters) : undefined }}",
+          "reset": "empty"
+        }
+      }
+    }
+  }
+}
