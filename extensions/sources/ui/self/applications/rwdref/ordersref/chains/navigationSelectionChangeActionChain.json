@@ -1,0 +1,63 @@
+{
+  "root": "switch",
+  "description": "",
+  "variables": {
+    "itemId": {
+      "type": "string",
+      "required": true,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "switch": {
+      "module": "vb/action/builtin/switchAction",
+      "parameters": {
+        "caseValue": "[[ $variables.itemId.substr($variables.itemId.lastIndexOf(\"_\") + 1) ]]",
+        "possibleValues": [
+          "my-training",
+          "manage-orders",
+          "inventory",
+          "welcome",
+          "dashboard"
+        ]
+      },
+      "outcomes": {
+        "my-training": "navigateToMyTraining",
+        "manage-orders": "navigateToManageOrders",
+        "inventory": "navigateToInventory",
+        "welcome": "navigateToHome",
+        "dashboard":"navigateToDashboard"
+      }
+    },
+    "navigateToMyTraining": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "my-training"
+      }
+    },
+    "navigateToManageOrders": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "manage-orders"
+      }
+    },
+    "navigateToInventory": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "inventory"
+      }
+    },
+    "navigateToDashboard": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "dashboard-page"
+      }
+    },
+    "navigateToHome": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "welcome"
+      }
+    }
+  }
+}

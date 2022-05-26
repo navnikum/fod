@@ -1,0 +1,160 @@
+{
+  "flowModelVersion": "2010.0.0",
+  "id": "ordersref",
+  "description": "Order Management Demo",
+  "defaultPage": "welcome",
+  "security": {
+    "access": {
+      "permissions": [
+        "/vbcs/fnd/rra/flows/ordersref"
+      ],
+      "requiresAuthentication": true
+    }
+  },
+  "chains": {},
+  "services": {},
+  "metadata": {
+    "rraProductsGetRraProductsMetadata": {
+      "type": "vb/DynamicLayoutMetadataProviderDescriptor",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraProducts/get_rraProducts"
+      }
+    }
+  },
+  "types": {
+    "getall_rraProducts": {
+      "items": [
+        {
+          "CurrencyCode": "string",
+          "ImageUrl": "string",
+          "ProductId": "number",
+          "ProductName": "string",
+          "ProductNumber": "string",
+          "UnitPrice": "number"
+        }
+      ]
+    },
+    "filterChip": {
+      "count": "number",
+      "dependencies": "string[]",
+      "filter": "string",
+      "filterLabel": "string",
+      "label": "string",
+      "value": "any"
+    }
+  },
+  "constants": {
+    "defaultCurrencyCode": {
+      "type": "string",
+      "defaultValue": "USD"
+    }
+  },
+  "variables": {
+    "addProductMessage": {
+      "type": "string"
+    },
+    "manageOrdersAppliedFilters": {
+      "type": "filterChip[]",
+      "description": "This variable should be moved at the page level after SPECTRAUI-14477 is addressed. It was moved here as a temporary solution as suggested at https://appsdev-core-srv.slack.com/archives/C6S389AKB/p1626389397391000?thread_ts=1626366036.380600&cid=C6S389AKB"
+    },
+    "navigationItems": {
+      "type": [
+        {
+          "icon": "string",
+          "id": "string",
+          "label": "string"
+        }
+      ]
+    },
+    "navigationItemsAdp": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "data": "{{ $flow.variables.navigationItems }}",
+        "itemType": "object",
+        "keyAttributes": "id"
+      }
+    },
+    "orderDrawerNavigation": {
+      "type": {
+        "currentIndex": "number",
+        "next": {
+          "display": "string",
+          "productId": "string"
+        },
+        "previous": {
+          "display": "string",
+          "productId": "string"
+        }
+      },
+      "defaultValue": {
+        "next": {
+          "display": "disabled"
+        },
+        "previous": {
+          "display": "disabled"
+        }
+      }
+    },
+    "isDrawerPopupOpen": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "manageOrdersToastMessage": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "manageOrdersDeleteToastMessage": {
+      "type": "string",
+      "defaultValue": ""
+    }
+  },
+  "eventListeners": {
+    "vbEnter": {
+      "chains": [
+        {
+          "chainId": "initInAppNavigationActionChain",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "interface": {
+    "types": {
+      "ProductDetail": {
+        "defaultFields": "string[]",
+        "hasProductsErrorMessages": "boolean",
+        "products": "any",
+        "productsDetailFormLoadingStatus": "string",
+        "productsDetailFormRenderedFields": "any[]",
+        "productSubtitle": "string",
+        "productCount": "number"
+      }
+    },
+    "variables": {
+      "productDetail": {
+        "defaultValue": {
+          "defaultFields": [
+            "ProductName",
+            "ProductNumber",
+            "ImageUrl",
+            "NumOfItems",
+            "PlaceOfManufacture",
+            "Description",
+            "BrandName",
+            "CategoryName",
+            "CurrencyCode",
+            "UnitPrice",
+            "Weight",
+            "Dimensions"
+          ],
+          "products": {},
+          "productsDetailFormRenderedFields": [],
+          "productCount": 0,
+          "productSubtitle": "[[ $application.translations.format('app','PRODUCT_DETAILS_DRAWER_ITEMS', {count: $flow.variables.productDetail.productCount}) ]]"
+        },
+        "type": "ProductDetail",
+        "mode": "readOnly"
+      }
+    }
+  }
+}

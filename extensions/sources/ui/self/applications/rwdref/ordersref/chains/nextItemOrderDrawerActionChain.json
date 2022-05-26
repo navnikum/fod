@@ -1,0 +1,64 @@
+{
+  "root": "ifOrderDrawerNavigation",
+  "description": "",
+  "actions": {
+    "ifOrderDrawerNavigation": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $flow.variables.orderDrawerNavigation.next.productId !== undefined]]"
+      },
+      "outcomes": {
+        "true": "callChainLoadFodProductsActionChain",
+        "false": "return"
+      }
+    },
+    "callChainUpdateOrderDrawerNavigation": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "flow:updateOrderDrawerNavigation",
+        "params": {
+          "index": "{{ $flow.variables.orderDrawerNavigation.currentIndex }}",
+          "indexMove": "1",
+          "productId": "{{ $flow.variables.orderDrawerNavigation.next.productId }}"
+
+        }
+      },
+      "outcomes": {
+        "success": "return2"
+      }
+    },
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "failure"
+      }
+    },
+    "return2": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success"
+      }
+    },
+    "callChainLoadFodProductsActionChain": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "flow:loadRraProductsActionChain",
+        "params": {
+          "fetchedFields": "[[ $flow.variables.productDetail.defaultFields.concat($flow.variables.productDetail.productsDetailFormRenderedFields) ]]",
+          "rraProductsId": "{{ $flow.variables.orderDrawerNavigation.next.productId }}",
+          "errorMessages": "{{ $variables.errorMessages }}"
+        }
+      },
+      "outcomes": {
+        "success": "callChainUpdateOrderDrawerNavigation"
+      }
+    }
+  },
+  "variables": {
+    "errorMessages": {
+      "type": "vb/ArrayDataProvider2",
+      "required": true,
+      "input": "fromCaller"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "root": "ifDrawerUpdatedFromInternal",
+  "description": "Check if the drawer updated from internal and sync the current state",
+  "variables": {
+    "event": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "ifDrawerUpdatedFromInternal": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.event.detail.updatedFrom === 'internal' ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesIsDrawerPopupOpen"
+      }
+    },
+    "assignVariablesIsDrawerPopupOpen": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.isDrawerPopupOpen": {
+          "source": "{{ $variables.event.detail.value }}"
+        }
+      },
+      "description": "If the drawer closed itself, sync the current state",
+      "label": "If the drawer closed itself, sync the current state"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+    "tests": {
+        "in place": {
+            "context": {
+                "$variables.index": 1,
+                "$variables.indexMove": 0
+            },
+            "expectations": [
+                {
+                    "actual": "$flow.variables.orderDrawerNavigation",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "next": {
+                            "display": "disabled"
+                        },
+                        "previous": {
+                            "display": "disabled"
+                        },
+                        "currentIndex": 1
+                    }
+                },
+                {
+                    "actual": "$actions.return.outcome",
+                    "matcher": "to.equal",
+                    "expected": "success"
+                },
+                {
+                    "actual": "$actions.callFunctionOrderDrawerGetProductNavigationInfo.results",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "currentIndex": 1,
+                        "previous": {
+                            "display": "disabled"
+                        },
+                        "next": {
+                            "display": "disabled"
+                        }
+                    }
+                },
+                {
+                    "actual": "$actions.return.results",
+                    "matcher": "to.be.undefined"
+                }
+            ]
+        }
+    }
+   }

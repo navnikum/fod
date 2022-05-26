@@ -1,0 +1,30 @@
+{
+  "root": "callFunctionNavigationItems",
+  "description": "",
+  "variables": {},
+  "actions": {
+    "callFunctionNavigationItems": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "navigationItems",
+        "params": [
+          "{{ $application.user.permissions }}",
+          "{{ $application.user.roles }}",
+          "{{ $application.translations }}"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesNavigationItems"
+      }
+    },
+    "assignVariablesNavigationItems": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.navigationItems": {
+          "source": "{{ $chain.results.callFunctionNavigationItems }}"
+        }
+      }
+    }
+  }
+}

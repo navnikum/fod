@@ -1,0 +1,51 @@
+{
+  "root": "callFunctionOrderDrawerGetProductNavigationInfo",
+  "description": "",
+  "variables": {
+    "index": {
+      "type": "number",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "indexMove": {
+      "type": "number",
+      "defaultValue": 0,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+
+    "return": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success"
+      }
+    },
+    "callFunctionOrderDrawerGetProductNavigationInfo": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $flow.functions ]]",
+        "functionName": "orderDrawerGetProductNavigationInfo",
+        "params": [
+          "{{ $variables.index }}",
+          "{{ $variables.indexMove }}"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesOrderDrawerNavigation"
+      }
+    },
+    "assignVariablesOrderDrawerNavigation": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.orderDrawerNavigation": {
+          "source": "{{ $chain.results.callFunctionOrderDrawerGetProductNavigationInfo }}",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "return"
+      }
+    }
+  }
+}

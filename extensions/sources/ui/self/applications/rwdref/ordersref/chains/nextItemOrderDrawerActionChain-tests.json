@@ -1,0 +1,100 @@
+{
+    "tests": {
+        "go to next": {
+            "context": {
+                "$flow.variables.orderDrawerNavigation": {
+                    "currentIndex": 0,
+                    "next": {
+                        "display": "on",
+                        "productId": 6
+                    }
+                }
+            },
+            "mocks": {
+                "callChainLoadFodProductsActionChain": {
+                    "outcome": "success"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.return2.outcome",
+                    "matcher": "to.equal",
+                    "expected": "success"
+                },
+                {
+                    "actual": "$flow.variables.orderDrawerNavigation",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "next": {
+                            "display": "disabled"
+                        },
+                        "previous": {
+                            "display": "disabled"
+                        },
+                        "currentIndex": 0
+                    }
+                },
+                {
+                    "actual": "$actions.ifOrderDrawerNavigation.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.callChainUpdateOrderDrawerNavigation.results",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.return.outcome",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.callChainUpdateOrderDrawerNavigation.results",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.return2.results",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.return.results",
+                    "matcher": "to.be.undefined"
+                }
+            ]
+        },
+        "missing product id": {
+            "context": {
+                "$flow.variables.orderDrawerNavigation": {
+                    "currentIndex": 5,
+                    "next": {
+                        "display": "disabled"
+                    }
+                }
+            },
+            "mocks": {
+                "callChainLoadFodProductsActionChain": {
+                    "outcome": "success"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.return.outcome",
+                    "matcher": "to.equal",
+                    "expected": "failure"
+                },
+                {
+                    "actual": "$actions.ifOrderDrawerNavigation.outcome",
+                    "matcher": "to.equal",
+                    "expected": "false"
+                },
+                {
+                    "actual": "$actions.return2.outcome",
+                    "matcher": "to.equal"
+                },
+                {
+                    "actual": "$actions.callChainUpdateOrderDrawerNavigation.results",
+                    "matcher": "to.equal"
+                }
+            ]
+        }
+    }
+   }

@@ -1,0 +1,95 @@
+{
+    "tests": {
+        "missing productId": {
+            "context": {
+                "$flow.variables.orderDrawerNavigation": {
+                    "currentIndex": 1,
+                    "previous": {
+                        "display": "disabled"
+                    }
+                }
+            },
+            "mocks": {
+                "callChainLoadFodProductsActionChain": {
+                    "outcome": "success"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.return2.outcome",
+                    "matcher": "to.equal",
+                    "expected": "failure"
+                },
+                {
+                    "actual": "$actions.callChainUpdateOrderDrawerNavigation.results",
+                    "matcher": "to.equal"
+                },
+                {
+                    "actual": "$actions.return.outcome",
+                    "matcher": "to.equal"
+                },
+                {
+                    "actual": "$actions.ifOrderDrawerNavigation.outcome",
+                    "matcher": "to.equal",
+                    "expected": "false"
+                }
+            ]
+        },
+        "second item": {
+            "context": {
+                "$flow.variables.orderDrawerNavigation": {
+                    "currentIndex": 1,
+                    "previous": {
+                        "productId": 6
+                    }
+                }
+            },
+            "mocks": {
+                "callChainLoadFodProductsActionChain": {
+                    "outcome": "success"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.return.outcome",
+                    "matcher": "to.equal",
+                    "expected": "success"
+                },
+                {
+                    "actual": "$flow.variables.orderDrawerNavigation",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "next": {
+                            "display": "disabled"
+                        },
+                        "previous": {
+                            "display": "disabled"
+                        },
+                        "currentIndex": 1
+                    }
+                },
+                {
+                    "actual": "$actions.ifOrderDrawerNavigation.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.callChainUpdateOrderDrawerNavigation.results",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.return.results",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.return2.outcome",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.return2.results",
+                    "matcher": "to.be.undefined"
+                }
+            ]
+        }
+    }
+   }

@@ -1,0 +1,123 @@
+{
+  "root": "setPendingFormStatus",
+  "description": "Loads rraProducts record data",
+  "variables": {
+    "errorMessages": {
+      "type": "vb/ArrayDataProvider2",
+      "required": true,
+      "input": "fromCaller"
+    },
+    "fetchedFields": {
+      "type": "any[]",
+      "input": "fromCaller"
+    },
+    "rraProductsId": {
+      "type": "string",
+      "input": "fromCaller"
+    }
+
+  },
+  "actions": {
+    "setPendingFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.productDetail.productsDetailFormLoadingStatus": {
+          "source": "pending"
+        }
+      },
+      "outcomes": {
+        "success": "resetRraProductsData"
+      },
+      "description": "Updates form status to Pending.",
+      "label": "Set Form status to Pending"
+    },
+    "resetRraProductsData": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$flow.variables.productDetail.products"
+        ]
+      },
+      "outcomes": {
+        "success": "testValidInput"
+      },
+      "description": "Clears rraProducts data the variable holds",
+      "label": "Reset rraProducts variable"
+    },
+    "testValidInput": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.fetchedFields && $variables.fetchedFields.length && $variables.rraProductsId !== undefined ]]"
+      },
+      "outcomes": {
+        "true": "loadRraProducts"
+      },
+      "description": "Tests the REST call can be initiated",
+      "label": "Test valid input"
+    },
+    "loadRraProducts": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraProducts/get_rraProducts",
+        "responseFields": "[[ $variables.fetchedFields ]]",
+        "uriParams": {
+          "rraProducts_Id": "[[ $variables.rraProductsId ]]"
+        }
+      },
+      "outcomes": {
+        "success": "assignRraProductsData",
+        "failure": "assignVariablesErrorMessage"
+      },
+      "description": "Initiates REST call loading rraProducts data",
+      "label": "Load rraProducts record"
+    },
+    "assignRraProductsData": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.productDetail.products": {
+          "source": "[[ $chain.results.loadRraProducts.body ]]",
+          "auto": "always"
+        }
+      },
+      "outcomes": {
+        "success": "setReadyFormStatus"
+      },
+      "description": "Assigns data loaded by the REST call to the rraProducts variable",
+      "label": "Assign rraProducts data"
+    },
+    "setReadyFormStatus": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.productDetail.productsDetailFormLoadingStatus": {
+          "source": "ready"
+        }
+      }
+    },
+    "assignVariablesErrorMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$chain.variables.errorMessages": {
+          "source": {
+            "data": [
+              {
+                "id": "getFodProductsError",
+                "template": "general",
+                "severity": "error",
+                "primaryText": "{{ $chain.results.loadRraProducts.error.message }}",
+                "secondaryText": "[[ $application.translations.format('app','ORDER_DATA_LOADING_ERR') ]]"
+              }
+            ]
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$flow.variables.productDetail.productsDetailFormLoadingStatus": {
+          "source": "ready"
+        },
+        "$flow.variables.productDetail.hasProductsErrorMessages": {
+          "source": true
+        }
+      }
+    }
+  }
+}
