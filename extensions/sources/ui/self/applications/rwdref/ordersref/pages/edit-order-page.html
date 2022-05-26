@@ -1,0 +1,389 @@
+    <div id="content" class="oj-flex">
+        <div class="oj-flex-item oj-sm-12 oj-md-12">
+            <oj-sp-simple-create-edit :id="[[ $page.constants.simpleCreateEditId ]]"
+                page-title="[[ $variables.pageTitle ]]"
+                page-title-placeholder="[[ $page.variables.pageTitlePlaceholder ]]"
+                avatar="[[ $page.variables.avatar ]]"
+                primary-action.disabled="[[ $page.variables.hasApiFetchError ? true : false ]]"
+                display-options.save="[[ $page.variables.hasApiFetchError ? 'disabled' : 'on'  ]]"
+                display-options.go-to-parent="[[ $page.variables.goToParentOption ]]"
+                display-options.feedback="on"
+                feedback.acknowledgment-message="[[ $flow.variables.manageOrdersToastMessage ]]"
+                feedback.page-version="[[ $page.variables.pageVersion ]]"
+                contextual-info="[[ $variables.contextualInfo ]]"
+                contextual-info-sticky="[[ $page.variables.contextualInfoSticky ]]"
+                on-sp-cancel="[[ $listeners.onOjSpCancel ]]" on-sp-save="[[ $listeners.onOjSpSave ]]"
+                on-sp-go-to-parent="[[ $listeners.onOjSpGoToParent ]]"
+                on-sp-primary-action="[[ $listeners.onOjSpSubmit ]]"
+                on-sp-feedback-action="[[ $listeners.onSpFeedbackAction ]]">
+                <oj-sp-messages-banner id="errorMessage" slot="main" messages="[[ $page.variables.errorMessages ]]">
+                </oj-sp-messages-banner>
+                <div slot="main" class="oj-sm-margin-8x-bottom">
+                    <oj-bind-if test="[[ !$page.variables.hasApiFetchError ]]">
+                        <div id="mainFormContainer">
+                            <div class="oj-sm-padding-1x-top">
+                                <h2 class="oj-typography-subheading-xs">
+                                    <oj-bind-text value="[[ $application.translations.app.ORDER_CUSTOMER_INFO ]]">
+                                    </oj-bind-text>
+                                </h2>
+                                <oj-bind-if test="[[ !$variables.orderId ]]">
+                                  <oj-validation-group role="group" id="order-customer-validation-tracker"
+                                    valid="{{ $variables.customerValid }}">
+                                    <oj-vb-fragment id="oj-vb-fragment-input-customer" name="input-customer"
+                                      on-customerselected="[[$listeners.ojVbFragmentInputCustomerCustomerselected]]"></oj-vb-fragment>
+                                  </oj-validation-group>
+                                </oj-bind-if>
+                                <oj-bind-if test="[[ $variables.orderId ]]">
+                                    <oj-vb-fragment id="oj-vb-fragment-display-customer" name="display-customer">
+                                        <oj-vb-fragment-param name="name" value="[[ $page.variables.customerName ]]"></oj-vb-fragment-param>
+                                        <oj-vb-fragment-param name="phone"
+                                        value="[[ $page.variables.customer ? $page.variables.customer.Phone : '' ]]"></oj-vb-fragment-param>
+                                        <oj-vb-fragment-param name="email"
+                                        value="[[ $page.variables.customer ? $page.variables.customer.EmailAddress : '' ]]"></oj-vb-fragment-param>
+                                    </oj-vb-fragment>
+                                </oj-bind-if>
+                            </div>
+                            <div class="oj-sm-padding-4x-top">
+                              <oj-bind-if test="[[ $page.variables.shippingAddress?.Country ]]">
+                                <oj-sp-input-address
+                                    id="shipping-address"
+                                    label-hint="[[ $application.translations.app.ORDER_SHIPPING_ADDRESS ]]"
+                                    address-data="[[ $functions.getFormattedAddress($page.variables.shippingAddress) ]]"
+                                    style-formats="[[ $variables.addressStyleFormatSDP ]]"
+                                    countries="[[ $variables.countriesLovSDP ]]"
+                                    item-text="[[ $variables.itemText ]]"
+                                    readonly="true"
+                                >
+                                </oj-sp-input-address>
+                              </oj-bind-if>
+                            </div>
+                            <div class="oj-sm-padding-6x-top">
+                                <div class="oj-flex-bar">
+                                    <div class="oj-flex-bar-start oj-sm-align-self-center">
+                                        <h2 class="oj-typography-subheading-xs">
+                                            <oj-bind-text value="[[ $application.translations.app.ORDER_LINES ]]">
+                                            </oj-bind-text>
+                                        </h2>
+                                    </div>
+                                    <div class="oj-flex-bar-end">
+                                        <oj-toolbar chroming="solid">
+                                            <oj-button id="create-line-item" chroming="outlined"
+                                                on-oj-action="[[ $listeners.onCreateLineItem ]]">
+                                                <oj-bind-text
+                                                    value="[[ $application.translations.app.ORDER_LINES_ADD ]]">
+                                                </oj-bind-text>
+                                            </oj-button>
+                                        </oj-toolbar>
+                                    </div>
+                                </div>
+                                <oj-validation-group id="order-lines-validation-tracker"
+                                    valid="{{ $page.variables.linesValid }}" role="group">
+                                    <oj-table :id="[[ $page.constants.tableId ]]"
+                                        :aria-label="[[ $application.translations.app.ORDER_LINES ]]"
+                                        class="oj-flex-item oj-sm-12 oj-md-12" edit-mode="rowEdit"
+                                        columns-default.sortable='disabled' data="[[ $page.variables.orderLinesBDP ]]"
+                                        edit-row="{{ $page.variables.editRow }}"
+                                        on-oj-before-row-edit="[[ $listeners.onOrderLinesTableBeforeRowEdit ]]"
+                                        on-oj-before-row-edit-end="[[ $listeners.onOrderLinesTableBeforeRowEditEnd ]]"
+                                        columns='[[ $page.constants.orderLineColumns ]]' data-oj-context="true">
+
+                                        <template slot="productNameTemplate">
+                                            <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                <oj-bind-text value="[[ $current.data ]]"></oj-bind-text>
+                                            </oj-bind-if>
+
+                                            <oj-bind-if test='[[ $current.mode === "edit" ]]'>
+                                                <oj-select-single :id="[[ 'order-line-product-' + $current.index ]]"
+                                                  class="editable" data="[[ $variables.productSuggestionsDP.instance ]]"
+                                                  value="{{ $page.variables.orderLinesTableRowData.ProductId }}"
+                                                  item-text="ProductName"
+                                                  on-oj-value-action="[[$listeners.onProductSelectionChange]]"
+                                                  required="true"
+                                                  label-hint="[[ $application.translations.app.ADD_PRODUCT_SELECT_PRODUCT ]]"
+                                                  label-edge="none">
+                                                    <template slot="collectionTemplate" data-oj-as="collection">
+                                                        <oj-list-view class="oj-select-results" gridlines.item="hidden"
+                                                          selection-mode="single" data="[[collection.data]]"
+                                                          selected="[[collection.selected]]"
+                                                          current-item="{{collection.currentRow.rowKey}}"
+                                                          on-oj-item-action="[[collection.handleRowAction]]"
+                                                          slot="collectionTemplate">
+                                                            <template slot="itemTemplate" data-oj-as="item">
+                                                                <li :class="[[ $flow.functions.getSuggestionLineClass(item) ]]"
+                                                                    style="position: relative; border-top-width: 0px">
+                                                                    <oj-list-item-layout>
+                                                                        <span
+                                                                            class="oj-typography-body-md oj-text-color-primary">
+                                                                            <oj-highlight-text
+                                                                                text="[[item.data.ProductName]]"
+                                                                                match-text="[[collection.searchText]]">
+                                                                            </oj-highlight-text>
+                                                                        </span>
+                                                                    </oj-list-item-layout>
+                                                                    <div :style="[[ $flow.functions.getSuggestionStyle(item) ]]">
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </oj-list-view>
+                                                    </template>
+                                                </oj-select-single>
+                                            </oj-bind-if>
+                                        </template>
+
+                                        <template slot="productIdTemplate">
+                                            <div class="oj-helper-hidden-accessible">
+                                                <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                    <a on-click="[[$listeners.onProductDrawerAction]]"
+                                                        class="orderline-productId"
+                                                        :data-product-id="[[$current.data ]]"
+                                                        :data-index="[[ $current.index ]]">
+                                                        <oj-bind-text value="[[ $current.data ]]"></oj-bind-text>
+                                                    </a>
+                                                </oj-bind-if>
+                                                <oj-bind-if test='[[$current.mode === "edit"]]'>
+                                                    <a on-click="[[$listeners.onProductDrawerAction]]"
+                                                        class="orderline-productId"
+                                                        :data-product-id="[[ $page.variables.orderLinesTableRowData.ProductId ]]"
+                                                        :data-index="[[ $current.index ]]">
+                                                        <oj-bind-text
+                                                            value="{{ $page.variables.orderLinesTableRowData.ProductId }}">
+                                                        </oj-bind-text>
+                                                    </a>
+                                                </oj-bind-if>
+                                            </div>
+                                        </template>
+
+                                        <template slot="productNumberTemplate">
+                                            <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                <a on-click="[[$listeners.onProductNumberClickListener]]">
+                                                    <oj-bind-text value="[[ $current.data ]]"></oj-bind-text>
+                                                </a>
+                                            </oj-bind-if>
+                                            <oj-bind-if test='[[$current.mode === "edit"]]'>
+                                                <a on-click="[[$listeners.onProductNumberClickListener]]">
+                                                    <oj-bind-text
+                                                        value="{{ $page.variables.orderLinesTableRowData.ProductNumber }}">
+                                                    </oj-bind-text>
+                                                </a>
+                                            </oj-bind-if>
+                                        </template>
+
+                                        <template slot="productImageTemplate">
+                                            <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                <oj-bind-if test='[[ $current.data ]]'>
+                                                    <oj-avatar size="xs" src="[[ $flow.functions.toResourceUrl($application.path)($current.data) ]]"></oj-avatar>
+                                                </oj-bind-if>
+                                            </oj-bind-if>
+                                            <oj-bind-if
+                                                test='[[ $current.mode === "edit" && $page.variables.orderLinesTableRowData.ImageUrl ]]'>
+                                                <oj-avatar size="xs"
+                                                    src="{{ $flow.functions.toResourceUrl($application.path)($page.variables.orderLinesTableRowData.ImageUrl) }}">
+                                                </oj-avatar>
+                                            </oj-bind-if>
+                                        </template>
+
+                                        <template slot="listPriceTemplate">
+                                            <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                <oj-sp-input-currency currency="USD" currency-display="symbol"
+                                                    currency-format="standard" readonly="true" text-align="end"
+                                                    value="[[$current.data]]" label-edge="none" label-hint="-">
+                                                </oj-sp-input-currency>
+                                            </oj-bind-if>
+                                            <oj-bind-if test='[[ $current.mode === "edit" ]]'>
+                                                <oj-sp-input-currency currency="USD" currency-display="symbol"
+                                                    currency-format="standard" readonly="true" text-align="end"
+                                                    value="[[$page.variables.orderLinesTableRowData.ListPrice]]"
+                                                    label-edge="none" label-hint="-"></oj-sp-input-currency>
+                                            </oj-bind-if>
+                                        </template>
+
+                                        <template slot="productQtyTemplate">
+                                            <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                <oj-input-number :id="[[ 'order-line-qty-' + $current.index ]]"
+                                                  value="[[ $current.data ]]"
+                                                  converter="[[ $page.constants.wholeNumberOptions ]]"
+                                                  label-hint="[[ $application.translations.app.ORDER_LINE_QTY ]]"
+                                                  label-edge="none" readonly="true" max="1000000">
+                                                </oj-input-number>
+                                            </oj-bind-if>
+
+                                            <oj-bind-if test='[[ $current.mode === "edit" ]]'>
+                                                <oj-input-number :id="[[ 'order-line-qty-' + $current.index ]]"
+                                                  value="{{ $page.variables.orderLinesTableRowData.Quantity }}"
+                                                  on-raw-value-changed="[[ $listeners.onQtyRawValueChange ]]" min="0"
+                                                  required="true"
+                                                  converter="[[ $page.constants.wholeNumberOptions ]]"
+                                                  label-hint="[[ $application.translations.app.ORDER_LINE_QTY ]]"
+                                                  label-edge="none" max="1000000">
+                                                </oj-input-number>
+                                            </oj-bind-if>
+                                        </template>
+
+                                        <template slot="amountTemplate">
+                                            <!-- We are doing a hack to convert the value of the input-currency to string, by concatanating strings. Otherwise the WC gives errors. -->
+                                            <!-- TODO remove hack when a new version of input-currency available.  -->
+                                            <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                <oj-sp-input-currency currency="USD" currency-display="symbol"
+                                                    currency-format="standard" readonly="true" text-align="end"
+                                                    value="[['' + $current.data]]" label-edge="none" label-hint="-">
+                                                </oj-sp-input-currency>
+                                            </oj-bind-if>
+
+                                            <oj-bind-if test='[[ $current.mode === "edit" ]]'>
+                                                <oj-sp-input-currency currency="USD" currency-display="symbol"
+                                                    currency-format="standard" text-align="end"
+                                                    value="{{'' + $page.variables.orderLinesTableRowData.Amount}}"
+                                                    label-edge="none" label-hint="-" readonly="true">
+                                                </oj-sp-input-currency>
+                                            </oj-bind-if>
+                                        </template>
+
+                                        <template slot="actionTemplate">
+                                            <oj-bind-if test='[[ $current.mode === "navigation" ]]'>
+                                                <oj-menu-button :id="[[ '-menu-' + $current.key ]]"
+                                                    chroming="borderless" display="icons"
+                                                    data-oj-clickthrough="disabled"
+                                                    :aria-label="[[ $application.translations.app.ORDER_ACTIONS ]]">
+                                                    <oj-menu slot="menu"
+                                                        on-oj-action="[[ $listeners.onOrderLineActionListener ]]">
+                                                        <oj-option value="edit">
+                                                            <span class="oj-ux-ico-edit" slot="startIcon"></span>
+                                                            <oj-bind-text
+                                                                value="[[ $application.translations.app.EDIT ]]">
+                                                            </oj-bind-text>
+                                                        </oj-option>
+                                                        <oj-option value="delete">
+                                                            <span class="oj-ux-ico-delete-circle"
+                                                                slot="startIcon"></span>
+                                                            <oj-bind-text
+                                                                value="[[ $application.translations.app.DELETE ]]">
+                                                            </oj-bind-text>
+                                                        </oj-option>
+                                                    </oj-menu>
+                                                </oj-menu-button>
+                                            </oj-bind-if>
+
+                                            <oj-bind-if test='[[ $current.mode === "edit" ]]'>
+                                                <oj-button :id="[[ 'order-line-save-' + $current.index ]]"
+                                                    display='icons' chroming="borderless"
+                                                    on-oj-action="[[ $listeners.onSaveLineItem ]]">
+                                                    <span slot='startIcon' class="oj-ux-ico-check"></span>
+                                                        <oj-bind-text value="[[ $application.translations.app.SAVE ]]"></oj-bind-text>
+                                                </oj-button>
+                                                <oj-button :id="[[ 'order-line-delete-' + $current.index ]]"
+                                                    display="icons" chroming="borderless"
+                                                    on-oj-action="[[ $listeners.onCancelLineItem ]]">
+                                                    <span slot='startIcon' class="oj-ux-ico-close"></span>
+                                                        <oj-bind-text value="[[ $application.translations.app.CANCEL ]]"></oj-bind-text>
+                                                </oj-button>
+                                            </oj-bind-if>
+                                        </template>
+
+                                        <template slot="noData">
+                                            <oj-sp-empty-state
+                                                primary-text="[[ $application.translations.app.NO_RESULTS_ORDER_LINE_BODY ]]"
+                                                primary-action.display="on"
+                                                primary-action.label="[[ $application.translations.app.ORDER_LINES_ADD ]]"
+                                                primary-action.type="outlined"
+                                                on-sp-primary-action="[[ $listeners.onCreateLineItem ]]"
+                                                display-options.layout="other">
+                                            </oj-sp-empty-state>
+                                        </template>
+                                    </oj-table>
+                                </oj-validation-group>
+                            </div>
+                            <div class="oj-sm-padding-6x-top">
+                                <h2 class="oj-typography-subheading-xs">
+                                    <oj-bind-text value="[[ $application.translations.app.ORDER_ATTACHMENTS ]]">
+                                    </oj-bind-text>
+                                </h2>
+                                <oj-sp-attachments id="order-attachments" class="oj-flex-item oj-sm-12 oj-md-12"
+                                  :aria-label="[[ $application.translations.app.ORDER_ATTACHMENTS ]]"
+                                  create-mode="BACKGROUND_DEFERRED" category="MISC"
+                                  create="[[ $variables.attachmentsCreatePayload]]"
+                                  view="[[ $variables.attachmentsView ]]"
+                                  download="[[ $variables.attachmentsDownload ]]"
+                                  preview="[[ $variables.attachmentsPreview ]]"
+                                  background-upload.endpoint="oracle_atf_rwdrefUI:attachments/postAttachUpload"
+                                  background-tracker.endpoint="oracle_atf_rwdrefUI:attachments/postAttachDocTracker"
+                                  background-download.endpoint="oracle_atf_rwdrefUI:attachments/downloadFile"
+                                  background-download.endpoint-tracker-param-name="trackerId"
+                                  display-options.update-visibility="hidden"
+                                  display-options.add-types="file"
+                                  on-sp-attachment-completion="[[ $listeners.onOrderAttachmentsChanged ]]"
+                                  deferred-operation-payload="{{ $variables.attachmentsDeferredOperationPayload }}"
+                                  create-payload="{{ $variables.attachmentsCreatePayload }}">
+                                </oj-sp-attachments>
+                            </div>
+                            <div class="oj-sm-padding-6x-top">
+                                <oj-text-area id="order-comments"
+                                    placeholder="[[ $application.translations.app.ORDER_COMMENTS_LABEL ]]"
+                                    label-hint="[[ $application.translations.app.ORDER_COMMENTS ]]"
+                                    value='{{ $page.variables.orders.Comments }}' rows="3" max-rows="3"
+                                    on-keyup="[[ $listeners.onOrderCommentsChanged ]]">
+                                </oj-text-area>
+                            </div>
+                        </div>
+                    </oj-bind-if>
+
+                    <oj-bind-if test="[[ $page.variables.hasApiFetchError ]]">
+                        <oj-sp-empty-state primary-text="[[ $application.translations.app.EDIT_ORDER_LOAD_ERROR_PRIMARY_TEXT ]]"
+                            secondary-text="[[ $application.translations.app.LOAD_ERROR_SECONDARY_TEXT ]]"
+                            display-options.layout="fullPage">
+                        </oj-sp-empty-state>
+                    </oj-bind-if>
+                </div>
+            </oj-sp-simple-create-edit>
+        </div>
+
+        <!-- Dialogs -->
+        <oj-sp-message-unsaved-changes id="dirtyDataWarningDialog" display="discard"
+          on-oj-sp-discard-changes="[[ $listeners.onConfirmDiscardAction ]]"
+          open-dialog="false" on-oj-sp-cancel="[[$listeners.dirtyDataWarningDialogSpCancel]]">
+        </oj-sp-message-unsaved-changes>
+        <oj-sp-message-dialog-general id="oj-dialog-submit-confirmation"
+            primary-text="[[ $application.translations.format('app', 'ORDER_SUBMIT_CONF_MSG', {totalAmount: $application.functions.formatCurrency($flow.constants.defaultCurrencyCode, $page.variables.totalAmount)}) ]]"
+            primary-action-label="[[ $application.translations.app.ORDER_SUBMIT ]]"
+            on-oj-sp-primary-action="[[ $listeners.onSubmitConfYesBtn ]]" primary-action-type="callToAction"
+            display="primaryCancel" open-dialog="false">
+        </oj-sp-message-dialog-general>
+        <oj-sp-message-dialog-destructive id="oj-dialog-line-delete-conf"
+            primary-text="[[ $application.translations.app.ORDER_LINE_DELETE_CONF_MSG ]]"
+            secondary-text=""
+            primary-action-label="[[ $application.translations.app.ORDER_LINE_DELETE ]]"
+            on-oj-sp-delete-confirm="[[ $listeners.onDeleteLineItemConfYes ]]"
+            on-oj-sp-cancel="[[ $listeners.onDialogCancel ]]" open-dialog="false">
+        </oj-sp-message-dialog-destructive>
+        <!-------------->
+
+        <!-- Toast Messages -->
+        <oj-sp-messages-toast id="editOrderSuccessMessageToast" primary-text="[[ $page.variables.editOrderToastMessage ]]">
+        </oj-sp-messages-toast>
+        <!-------------->
+
+        <oj-sp-in-app-navigation id="in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12"
+          selection="{{ $variables.inAppNavigationSelection }}"
+          on-sp-selection-action="[[$listeners.onInAppNavigationSpSelection]]"
+          navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+        </oj-sp-in-app-navigation>
+    </div>
+
+    <!-- Panel Drawer -->
+    <oj-drawer-popup opened="[[ $flow.variables.isDrawerPopupOpen ]]"
+        on-opened-changed="[[ $listeners.onDrawerOpenedChanged ]]" modality="modal" edge="end">
+            <oj-sp-general-drawer-template class="oj-sp-general-drawer-template-full-width" drawer-size="md"
+                drawer-title="[[ $application.translations.app.PRODUCT_DETAILS ]]"
+                drawer-subtitle="[[ $flow.variables.productDetail.productCount > 1 ? $application.translations.format('app','PRODUCT_DETAILS_DRAWER_ITEMS', {count: $flow.variables.productDetail.productCount}) : $application.translations.format('app','PRODUCT_DETAILS_DRAWER_ITEM', {count: $flow.variables.productDetail.productCount}) ]]"
+                secondary-actions='[]' next-item.display="[[ $flow.variables.orderDrawerNavigation.next.display ]]"
+                previous-item.display="[[ $flow.variables.orderDrawerNavigation.previous.display ]]"
+                on-sp-close="[[$listeners.ojSpGeneralDrawerTemplateSpClose]]"
+                on-sp-previous="[[$listeners.ojSpGeneralDrawerTemplateSpPrevious]]"
+                on-sp-next="[[$listeners.ojSpGeneralDrawerTemplateSpNext]]">
+                <div class="oj-sm-padding-8x-start oj-flex oj-sm-flex-direction-column">
+                    <oj-dynamic-container layout="containerLayout1"
+                      layout-provider="[[ $metadata.dynamicContainerMetadata.provider ]]"
+                      class="oj-flex-item oj-sm-flex-initial"></oj-dynamic-container>
+                </div>
+            </oj-sp-general-drawer-template>
+    </oj-drawer-popup>
+    <!----------------->

@@ -1,0 +1,23 @@
+{
+  "root": "assignVariablesProductName",
+  "description": "",
+  "actions": {
+    "assignVariablesProductName": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.productName": {
+          "source": "{{ $page.variables.supplierProductValueItem?.data?.ProductName }}"
+        },
+        "$page.variables.productDescription": {
+          "source": "{{ $page.variables.supplierProductValueItem?.data?.ProductDescription }}"
+        },
+        "$page.variables.productPrice": {
+          "source": "{{ $page.variables.supplierProductValueItem?.data?.MsrpUnitPrice }}"
+        },
+        "$page.variables.productActivationDate": {
+          "source": "{{ new Date().toISOString().split('T')[0] }}"
+        }
+      }
+    }
+  }
+}

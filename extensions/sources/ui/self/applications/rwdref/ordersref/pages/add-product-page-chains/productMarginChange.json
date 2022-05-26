@@ -1,0 +1,79 @@
+{
+  "root": "callChainSetDirtyData",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "oldValue": "number",
+        "value": "number"
+      }
+    },
+    "newPrice": {
+      "type": "number"
+    }
+  },
+  "actions": {
+    "callChainSetDirtyData": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "setDirtyData",
+        "params": {
+          "dirty": true
+        }
+      },
+      "outcomes": {
+        "success": "if"
+      }
+    },
+    "assignVariablesProductPrice": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.productPrice": {
+          "source": "{{ $variables.newPrice }}"
+        }
+      }
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.supplierProductValueItem?.data?.SupplierUnitPrice > 0 && !isNaN($variables.event.value) ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesNewPrice",
+        "false": "assignVariablesProductPrice2"
+      },
+      "label": "if valid inputs"
+    },
+    "assignVariablesNewPrice": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.newPrice": {
+          "source": "{{ ($variables.event.value + 1 ) * $page.variables.supplierProductValueItem?.data?.SupplierUnitPrice }}"
+        }
+      },
+      "outcomes": {
+        "success": "if3"
+      }
+    },
+    "if3": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.productPrice === undefined || Math.abs($variables.newPrice - $page.variables.productPrice) > 1e-5 ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesProductPrice"
+      },
+      "label": "newPrice is different"
+    },
+    "assignVariablesProductPrice2": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.productPrice": {
+          "source": "{{ undefined }}"
+        }
+      }
+    }
+  }
+}

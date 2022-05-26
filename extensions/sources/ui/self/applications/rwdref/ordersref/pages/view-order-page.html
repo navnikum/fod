@@ -1,0 +1,82 @@
+    <div id="content" class="oj-flex">
+        <div class="oj-flex-item oj-sm-12 oj-md-12">
+            <oj-sp-smart-filter-search id="oj_ssfs1" page-title="[[ $variables.pageTitle ]]"
+                display-options.go-to-parent="false"
+                contextual-info="[[ $variables.contextualInfo ]]" class="oj-flex-item oj-sm-12 oj-md-12">
+                <div slot="main" class="oj-sm-padding-4x-top oj-sm-margin-8x-bottom">
+                    <oj-sp-messages-banner id="errorMessage"
+                        messages="[[ $page.variables.errorMessages ]]">
+                    </oj-sp-messages-banner>
+                    <oj-bind-if test="[[ $page.variables.rraOrders !== undefined && !$page.variables.hasApiFetchError ]]">
+                        <oj-dynamic-form id="order-form" class="oj-flex-item oj-sm-12 oj-md-12"
+                          columns="3"
+                          metadata="[[ $metadata.rraOrdersGetRraOrdersMetadata.provider ]]" layout="viewOrderLayout"
+                          value="{{ $variables.rraOrders }}"
+                          value-loading="[[ $variables.rraOrdersDetailFormLoadingStatus ]]"
+                          rendered-fields="{{ $variables.rraOrdersDetailFormRenderedFields }}"
+                          on-productnumberselected="[[$listeners.onOrderFormProductnumberselected]]">
+                        </oj-dynamic-form>
+                        <oj-label-value label-edge="top">
+                          <oj-label slot="label" for="order-lines-table" class="oj-text-color-secondary oj-typography-body-xs oj-typography-bold">
+                            <oj-bind-text value="[[$application.translations.app.ORDER_LINES]]"></oj-bind-text>
+                          </oj-label>
+                          <oj-dynamic-table slot="value" id="order-lines-table" class="oj-flex-item oj-sm-12 oj-md-12"
+                            context="[[ { toResourceUrl: $flow.functions.toResourceUrl($application.path), currency: $flow.constants.defaultCurrencyCode } ]]"
+                            data="[[$variables.rraOrderLinesListSDP]]"
+                            metadata="[[ $metadata.rraOrdersGetallRraOrdersRraOrderLinesMetadata.provider ]]"
+                            layout="orderLinesTable"
+                            on-product-number-click="[[$listeners.orderLinesTableProductNumberClick]]"
+                            ></oj-dynamic-table>
+                        </oj-label-value>
+                    </oj-bind-if>
+
+                    <oj-bind-if test="[[ $page.variables.hasApiFetchError ]]">
+                        <oj-sp-empty-state primary-text="[[ $application.translations.app.ORDER_SERVER_RESPONSE_ERROR_PRIMARY_TEXT ]]"
+                            secondary-text="[[ $application.translations.app.LOAD_ERROR_SECONDARY_TEXT ]]"
+                            display-options.layout="fullPage">
+                        </oj-sp-empty-state>
+                    </oj-bind-if>
+                </div>
+            </oj-sp-smart-filter-search>
+        </div>
+        <oj-sp-in-app-navigation id="in-app-navigation" selection="manage-orders"
+          on-sp-selection-action="[[$listeners.onNavigationSpSelection]]"
+          navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+        </oj-sp-in-app-navigation>
+
+    </div>
+    <!-- Panel Drawer -->
+    <oj-drawer-popup opened="[[ $flow.variables.isDrawerPopupOpen ]]" on-opened-changed="[[ $listeners.onDrawerOpenedChanged ]]"
+        modality="modal" edge="end">
+            <oj-sp-general-drawer-template class="oj-sp-general-drawer-template-full-width" drawer-size="md"
+                drawer-title="[[ $application.translations.app.PRODUCT_DETAILS ]]"
+                drawer-subtitle="[[ $flow.variables.productDetail.productCount > 1 ? $application.translations.format('app','PRODUCT_DETAILS_DRAWER_ITEMS', {count: $flow.variables.productDetail.productCount}) : $application.translations.format('app','PRODUCT_DETAILS_DRAWER_ITEM', {count: $flow.variables.productDetail.productCount})]]"
+                secondary-actions='[]' next-item.display="[[ $flow.variables.orderDrawerNavigation.next.display ]]"
+                previous-item.display="[[ $flow.variables.orderDrawerNavigation.previous.display ]]"
+                on-sp-close="[[$listeners.ojSpGeneralDrawerTemplateSpClose]]"
+                on-sp-previous="[[$listeners.ojSpGeneralDrawerTemplateSpPrevious]]"
+                on-sp-next="[[$listeners.ojSpGeneralDrawerTemplateSpNext]]">
+                <div class="oj-sm-padding-8x-start oj-flex oj-sm-flex-direction-column">
+                    <oj-avatar class="oj-flex-item oj-sm-flex-initial oj-sm-margin-2x-bottom"
+                        initials="[[ $application.functions.getInitials($flow.variables.productDetail.products.ProductName, $flow.variables.productDetail.products.ProductNumber) ]]"
+                        src="[[ $flow.functions.toResourceUrl($application.path)($flow.variables.productDetail.products.ImageUrl) ]]" size="xl"></oj-avatar>
+                    <p class="oj-typography-title-4 oj-text-color-primary oj-line-clamp-2 oj-sm-margin-0-bottom">
+                        <oj-bind-text value="[[$flow.variables.productDetail.products.ProductName]]"></oj-bind-text>
+                    </p>
+                    <p class="oj-typography-body-md oj-text-color-primary oj-line-clamp-2">
+                        <oj-bind-text value="[[$flow.variables.productDetail.products.ProductNumber]]">
+                        </oj-bind-text>
+                    </p>
+                    <oj-bind-if test="[[ $flow.variables.productDetail.products !== undefined ]]">
+                        <oj-dynamic-form id="item_overview_detail"
+                            metadata="[[ $flow.metadata.rraProductsGetRraProductsMetadata.provider ]]"
+                            layout="viewProductLayout" value="{{ $flow.variables.productDetail.products }}"
+                            value-loading="[[ $flow.variables.productDetail.productsDetailFormLoadingStatus ]]"
+                            rendered-fields="{{ $flow.variables.productDetail.productsDetailFormRenderedFields }}">
+                        </oj-dynamic-form>
+                    </oj-bind-if>
+                </div>
+            </oj-sp-general-drawer-template>
+    </oj-drawer-popup>
+
+<!----------------->

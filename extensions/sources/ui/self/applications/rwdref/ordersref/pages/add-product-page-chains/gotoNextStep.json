@@ -1,0 +1,20 @@
+{
+  "variables": {
+    "event": {
+      "type": "any",
+      "input": "fromCaller"
+    }
+  },
+  "root": "navigateToAddProduct",
+  "actions": {
+    "navigateToAddProduct": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "add-product",
+        "params": {
+          "currentStep": "{{ $variables.event?.detail?.nextStep }}"
+        }
+      }
+    }
+  }
+}

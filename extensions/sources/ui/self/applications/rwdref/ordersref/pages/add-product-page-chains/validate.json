@@ -1,0 +1,12 @@
+{
+  "root": "validateAction",
+  "actions": {
+    "validateAction": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('validationGroup') }}",
+        "method": "showMessages"
+      }
+    }
+  }
+}

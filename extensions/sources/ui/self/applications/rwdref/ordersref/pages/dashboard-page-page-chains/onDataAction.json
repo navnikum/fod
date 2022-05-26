@@ -1,0 +1,40 @@
+{
+  "root": "callFunctionRetrieveSearchParam",
+  "description": "",
+  "variables": {
+    "eventName": {
+      "type": "string",
+      "input": "fromCaller"
+    },
+    "payload": {
+      "type": "object",
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "navigateToManageOrders": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "manage-orders",
+        "params": {
+          "appliedFiltersStr": "{{ $chain.results.callFunctionRetrieveSearchParam }}"
+        }
+      }
+    },
+    "callFunctionRetrieveSearchParam": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "retrieveSearchParam",
+        "returnType": "string",
+        "params": [
+          "{{ $variables.eventName }}",
+          "{{ $variables.payload }}"
+        ]
+      },
+      "outcomes": {
+        "success": "navigateToManageOrders"
+      }
+    }
+  }
+}

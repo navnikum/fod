@@ -1,0 +1,274 @@
+{
+  "title": "[[ $application.translations.format('app','CUSTOMER_PAGE_TITLE') ]]",
+  "description": "",
+  "variables": {
+    "avatar": {
+      "type": {
+        "initials": "string",
+        "src": "string"
+      },
+      "defaultValue": {
+        "initials": "[[ $application.functions.getInitials($variables.rraCustomers.FirstName, $variables.rraCustomers.LastName) ]]",
+        "src": ""
+      }
+    },
+    "configBadgeSize": {
+      "type": "string",
+      "defaultValue": "medium"
+    },
+    "bidirectionalNavigation": {
+      "type": "boolean",
+      "defaultValue": false,
+      "input": "fromCaller"
+    },
+    "configBadgePosition": {
+      "type": "string",
+      "defaultValue": "leading"
+    },
+    "configColumnLayout": {
+      "type": "string",
+      "defaultValue": "auto"
+    },
+    "currentItem": {
+      "type": "string"
+    },
+    "currentItemOrderNumber": {
+      "type": "string"
+    },
+    "customerName": {
+      "type": "string",
+      "defaultValue": "[[ ($variables.rraCustomers.FirstName || '') + ' ' + ($variables.rraCustomers.LastName || '') ]]"
+    },
+    "defaultFields": {
+      "type": "string[]",
+      "defaultValue": [
+        "CustomerId",
+        "FirstName",
+        "LastName"
+      ]
+    },
+    "hasCustomersErrorMessages": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "inFlowBack": {
+      "type": "boolean",
+      "defaultValue": false,
+      "input": "fromCaller"
+    },
+    "itemId": {
+      "type": "string",
+      "required": true,
+      "input": "fromUrl",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "loadRraCustomersActionChain",
+            "parameters": {
+              "fetchedFields": "[[ $variables.rraCustomersDetailFormRenderedFields ]]",
+              "rraCustomersId": "{{ $variables.itemId }}"
+            }
+          }
+        ]
+      }
+    },
+    "orderListSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/getall_rraOrders",
+        "responseType": "getall_rraOrders",
+        "itemsPath": "items",
+        "filterCriterion": {
+          "op": "$eq",
+          "attribute": "CustomerId",
+          "value": "{{ $variables.itemId }}"
+        },
+        "sortCriteria": [
+          {
+            "attribute": "OrderNumber",
+            "direction": "descending"
+          }
+        ],
+        "keyAttributes": "OrderId"
+      }
+    },
+    "overviewExpanded": {
+      "type": "boolean",
+      "defaultValue": false,
+      "input": "fromCaller"
+    },
+    "parentPage": {
+      "type": "string",
+      "input": "fromCaller",
+      "required": true
+    },
+    "listItemTemplateEventNotificationMessages": {
+      "type": "any",
+      "defaultValue": "[[ [] ]]"
+    },
+    "errorMessages": {
+      "type": "vb/ArrayDataProvider"
+    },
+    "rraCustomers": {
+      "type": "getRraCustomersResponse"
+    },
+    "rraCustomersDetailFormLoadingStatus": {
+      "type": "string",
+      "defaultValue": "pending"
+    },
+    "rraCustomersDetailFormRenderedFields": {
+      "type": "any[]",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "loadRraCustomersActionChain",
+            "parameters": {
+              "fetchedFields": "[[ $page.variables.defaultFields.concat($variables.rraCustomersDetailFormRenderedFields) ]]",
+              "rraCustomersId": "{{ $variables.itemId }}"
+            }
+          }
+        ]
+      }
+    },
+    "successMessage": {
+      "type": "any"
+    }
+  },
+  "metadata": {
+    "rraCustomersGetRraCustomersMetadata": {
+      "type": "vb/DynamicLayoutMetadataProviderDescriptor",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraCustomers/get_rraCustomers"
+      }
+    }
+  },
+  "types": {
+    "@decorators.getall_rraOrders": {
+      "endpoint": "getall_rraOrders",
+      "service": "oracle_atf_rwdrefUI:rraOrders",
+      "path": "response"
+    },
+    "@decorators.getRraCustomersResponse": {
+      "endpoint": "get_rraCustomers",
+      "service": "oracle_atf_rwdrefUI:rraCustomers",
+      "path": "response"
+    },
+    "getall_rraOrders": {
+      "items": [
+        {
+          "OrderDate": "string",
+          "OrderId": "number",
+          "OrderNumber": "string",
+          "OrderStatus": "string",
+          "TotalAmount": "number"
+        }
+      ]
+    },
+    "getRraCustomersResponse": "object"
+  },
+  "chains": {},
+  "eventListeners": {
+    "onInAppNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}"
+          }
+        }
+      ]
+    },
+    "vbDataProviderNotification": {
+      "chains": [
+        {
+          "chainId": "vbDataProviderErrorActionChain",
+          "parameters": {
+            "data": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "onDialogCancel": {
+      "chains": [
+        {
+          "chainId": "dialogCancelActionChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "onDeleteOrder": {
+      "chains": [
+        {
+          "chainId": "deleteOrderActionChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "onSecondaryAction": {
+      "chains": [
+        {
+          "chainId": "secondaryActionChain",
+          "parameters": {
+            "actionId": "{{ $event.detail.actionId }}",
+            "orderId": "{{ $current.data ? $current.data.OrderId : undefined }}",
+            "orderNumber": "{{ $current.data ? $current.data.OrderNumber : undefined }}"
+          }
+        }
+      ]
+    },
+    "onOjSpItemOverviewSpCollapse": {
+      "chains": [
+        {
+          "chainId": "expandOrCollapseOverviewActionChain",
+          "parameters": {
+            "expand": "false"
+          }
+        }
+      ]
+    },
+    "onOjSpItemOverviewSpExpand": {
+      "chains": [
+        {
+          "chainId": "expandOrCollapseOverviewActionChain",
+          "parameters": {
+            "expand": "true"
+          }
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-item-overview-page": {
+        "path": "oj-sp/item-overview-page/loader"
+      },
+      "oj-sp-item-overview": {
+        "path": "oj-sp/item-overview/loader"
+      },
+      "oj-sp-message-dialog-destructive": {
+        "path": "oj-sp/message-dialog-destructive/loader"
+      },
+      "oj-dynamic-form": {
+        "path": "oj-dynamic/form/loader"
+      },
+      "oj-list-view": {
+        "path": "ojs/ojlistview"
+      },
+      "oj-sp-list-item-template": {
+        "path": "oj-sp/list-item-template/loader"
+      },
+      "oj-sp-messages-banner": {
+        "path": "oj-sp/messages-banner/loader"
+      },
+      "oj-sp-empty-state": {
+        "path": "oj-sp/empty-state/loader"
+      },
+      "oj-sp-messages-toast": {
+        "path": "oj-sp/messages-toast/loader"
+      }
+    }
+  }
+}

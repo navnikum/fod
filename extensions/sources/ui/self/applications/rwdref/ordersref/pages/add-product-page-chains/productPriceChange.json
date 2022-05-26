@@ -1,0 +1,80 @@
+{
+  "root": "callChainSetDirtyData",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "oldValue": "number",
+        "value": "number"
+      }
+    },
+    "newMargin": {
+      "type": "number"
+    }
+  },
+  "actions": {
+    "callChainSetDirtyData": {
+      "module": "vb/action/builtin/callChainAction",
+      "parameters": {
+        "id": "setDirtyData",
+        "params": {
+          "dirty": true
+        }
+      },
+      "outcomes": {
+        "success": "if"
+      }
+    },
+    "assignVariablesProductMargin": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.productMargin": {
+          "source": "{{ $variables.newMargin }}"
+        }
+      }
+    },
+    "assignVariablesNewMargin": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$variables.newMargin": {
+          "source": "{{ (($variables.event.value - $page.variables.supplierProductValueItem?.data?.SupplierUnitPrice) / $page.variables.supplierProductValueItem?.data?.SupplierUnitPrice) }}"
+        }
+      },
+      "outcomes": {
+        "success": "if3"
+      },
+      "label": "calculate new margin"
+    },
+    "if": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.supplierProductValueItem?.data?.SupplierUnitPrice > 0 && $variables.event.value > 0 ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesNewMargin",
+        "false": "assignVariablesProductMargin2"
+      },
+      "label": "if valid inputs"
+    },
+    "if3": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.productMargin === undefined || Math.abs($variables.newMargin - $page.variables.productMargin) > 1e-5 ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesProductMargin"
+      },
+      "label": "if newMargin is different"
+    },
+    "assignVariablesProductMargin2": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.productMargin": {
+          "source": "{{ undefined }}"
+        }
+      }
+    }
+  }
+}

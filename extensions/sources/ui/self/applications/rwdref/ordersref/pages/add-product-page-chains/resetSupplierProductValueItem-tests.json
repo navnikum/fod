@@ -1,0 +1,12 @@
+{
+    "tests": {
+        "reset": {
+            "expectations": [
+                {
+                    "actual": "$page.variables.supplierProductValueItem",
+                    "matcher": "to.be.undefined"
+                }
+            ]
+        }
+    }
+   }

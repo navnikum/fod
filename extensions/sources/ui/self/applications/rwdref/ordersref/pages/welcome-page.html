@@ -1,0 +1,65 @@
+<div class="flex">
+
+    <oj-sp-messages-banner id="errorMessage" class="oj-flex-item oj-sm-12"
+        messages="[[ $page.variables.errorMessages ]]">
+    </oj-sp-messages-banner>
+
+    <oj-sp-welcome-page id="welcome-page-template" class="oj-flex-item oj-sm-12 oj-md-12"
+        illustration-background="[[ require.toUrl($variables.illustrationBackground) ]]"
+        illustration-foreground="[[ require.toUrl($variables.illustrationForeground) ]]"
+        description-text="[[ $application.translations.format('app','WELCOME_PAGE_DESCRIPTION_TEXT') ]]"
+        page-title="[[ $application.translations.format('app','WELCOME_REDWOOD') ]]" display-options.mobile-image="off">
+        <div class="oj-flex">
+            <h1 id="welcome-page-header"
+                class="oj-header oj-sm-12 oj-sp-typography-display-6 oj-sp-helper-truncate oj-sm-padding-4x-horizontal">
+                <oj-bind-text value="[[ $application.translations.format('app','WELCOME_PAGE_LIST_VIEW_HEADER') ]]">
+                </oj-bind-text>
+            </h1>
+            <oj-list-view id="draft-orders-list" class="oj-flex-item" display="card"
+              data="[[ $variables.searchOrdersSDP ]]" scroll-policy="loadMoreOnScroll"
+              scroll-policy-options.scroller="[[document.documentElement]]"
+              scroll-policy-options.fetch-size="10"
+              :aria-label="[[ $application.translations.app.WELCOME_PAGE_LIST_VIEW_HEADER ]]">
+                <template slot="noData">
+                    <div class="oj-flex oj-sm-flex-items-initial oj-sm-justify-content-center oj-sm-flex-direction-column"
+                        style="height: 50vh;">
+                        <div class="oj-flex-item oj-sm-padding-2x-horizontal">
+                            <h1>
+                                <oj-bind-text value="[[ $application.translations.format('app','WELCOME_NO_DATA') ]]">
+                                </oj-bind-text>
+                            </h1>
+                        </div>
+                        <div class="oj-flex-item oj-sm-padding-2x-horizontal">
+                            <oj-bind-text value="[[ $application.translations.format('app','WELCOME_NO_DATA_SECONDARY') ]]">
+                            </oj-bind-text>
+                        </div>
+                        <div class="oj-flex-item oj-sm-padding-2x-horizontal oj-sm-padding-6x-top">
+                            <oj-button id="create-order-button" chroming="solid"
+                                on-oj-action="[[$listeners.onCreateOrderButtonOj]]">
+                                <oj-bind-text value="[[ $application.translations.format('app','ORDER_CREATE') ]]">
+                                </oj-bind-text>
+                            </oj-button>
+                        </div>
+                    </div>
+                </template>
+                <template slot="itemTemplate" data-oj-as="order">
+                    <li class="oj-sm-12 oj-md-6 oj-lg-4 oj-sm-margin-0">
+                        <oj-sp-object-card :id='[[ "i" + $current.index + "order-card-" + order.data.OrderId ]]'
+                            primary-text="[[ order.data.CustomerDetails?.CustomerName ]]"
+                            tertiary-text="[[ $application.functions.formatCurrency(order.data.CurrencyCode, order.data.TotalAmount) ]]"
+                            label="[[ order.data.OrderNumber ]]" secondary-text="[[ order.data.OrderStatus === 'DRAFT' ? 'Draft' : order.data.OrderStatus ]]"
+                            primary-actions='[[ [{"id":order.data.OrderId,"label": $application.translations.format("app","ORDER_EDIT"),"icon":"oj-icon demo-outdent-icon","display":"on","type":"promoted"}] ]]'
+                            emphasized="true" on-sp-primary-action="[[ $listeners.onOrderCardPrimaryAction ]]"
+                            image.src="[[ $flow.functions.toResourceUrl($application.path)(order.data.OrderLines[0]?.ProductDetails?.ImageUrl) ]]"
+                            image.alt-text="[[ order.data.OrderLines[0]?.ProductDetails?.ProductName ]]">
+                        </oj-sp-object-card>
+                    </li>
+                </template>
+            </oj-list-view>
+        </div>
+    </oj-sp-welcome-page>
+    <oj-sp-in-app-navigation id="in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12" selection="welcome"
+      on-sp-selection-action="[[$listeners.onNavigationSpSelection]]"
+      navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+    </oj-sp-in-app-navigation>
+</div>

@@ -1,0 +1,536 @@
+{
+  "title": "",
+  "description": "",
+  "constants": {
+    "orderAmountSeriesData": {
+      "type": "any[]",
+      "defaultValue": [
+        {
+          "id": 0,
+          "val": 1394920
+        },
+        {
+          "id": 1,
+          "val": 2103781
+        },
+        {
+          "id": 2,
+          "val": 1523649
+        },
+        {
+          "id": 3,
+          "val": 1442024
+        },
+        {
+          "id": 4,
+          "val": 1976116
+        },
+        {
+          "id": 5,
+          "val": 1398630
+        },
+        {
+          "id": 6,
+          "val": 2092019
+        },
+        {
+          "id": 7,
+          "val": 1517429
+        },
+        {
+          "id": 8,
+          "val": 2158557
+        },
+        {
+          "id": 9,
+          "val": 1613601
+        },
+        {
+          "id": 10,
+          "val": 1975255
+        },
+        {
+          "id": 11,
+          "val": 1373798
+        },
+        {
+          "id": 12,
+          "val": 1219305
+        },
+        {
+          "id": 13,
+          "val": 1609228
+        },
+        {
+          "id": 14,
+          "val": 1637719
+        },
+        {
+          "id": 15,
+          "val": 2568860
+        },
+        {
+          "id": 16,
+          "val": 1527206
+        },
+        {
+          "id": 17,
+          "val": 2301662
+        },
+        {
+          "id": 8,
+          "val": 285893
+        }
+      ]
+    },
+    "quantitySeriesData": {
+      "type": "any[]",
+      "defaultValue": [
+        {
+          "id": 0,
+          "val": 820520
+        },
+        {
+          "id": 1,
+          "val": 813214
+        },
+        {
+          "id": 2,
+          "val": 824289
+        },
+        {
+          "id": 3,
+          "val": 813267
+        },
+        {
+          "id": 4,
+          "val": 813384
+        },
+        {
+          "id": 5,
+          "val": 896471
+        },
+        {
+          "id": 6,
+          "val": 815324
+        },
+        {
+          "id": 7,
+          "val": 814131
+        },
+        {
+          "id": 8,
+          "val": 807258
+        }
+      ]
+    },
+    "numberOfOrdersSeriesData": {
+      "type": "any[]",
+      "defaultValue": [
+        {
+          "id": 0,
+          "val": 27283
+        },
+        {
+          "id": 1,
+          "val": 27208
+        },
+        {
+          "id": 2,
+          "val": 27451
+        },
+        {
+          "id": 3,
+          "val": 27103
+        },
+        {
+          "id": 4,
+          "val": 27117
+        },
+        {
+          "id": 5,
+          "val": 29941
+        },
+        {
+          "id": 6,
+          "val": 27272
+        },
+        {
+          "id": 7,
+          "val": 27143
+        },
+        {
+          "id": 8,
+          "val": 26961
+        }
+      ]
+    }
+  },
+  "variables": {
+    "oacHost": {
+      "type": "string",
+      "defaultValue": "https://oracledesign-idnym1tkby0n-ia.analytics.ocp.oraclecloud.com"
+    },
+    "selectedKpi": {
+      "type": "string",
+      "defaultValue": "totalOrderAmount"
+    },
+    "layoutType": {
+      "type": "string",
+      "defaultValue": "[[ $constants.defaultLayoutType ]]"
+    },
+    "primaryAction": {
+      "type": {
+        "display": "string",
+        "label": "string"
+      },
+      "defaultValue": {
+        "label": "Manage Orders",
+        "display": "off"
+      }
+    },
+    "notificationMessages": {
+      "type": "any",
+      "defaultValue": "[[ [] ]]"
+    },
+    "numberOfKpiCards": {
+      "type": "number",
+      "defaultValue": 3
+    },
+    "kpisADP": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "data": "{{ $page.variables.kpisArray }}",
+        "itemType": "object",
+        "keyAttributes": "id"
+      }
+    },
+    "kpisArray": {
+      "type": "object[]",
+      "defaultValue": [
+        {
+          "id": "totalOrderAmount",
+          "title": "Total Order Amount",
+          "metric": "$152.59M",
+          "badge": {
+            "status": "warning",
+            "text": "Warning"
+          },
+          "trendColor": "danger",
+          "trendChart": {
+            "type": "lineWithArea",
+            "data": "[[$page.variables.orderAmountChartDataADP]]",
+            "valueField": "val"
+          },
+          "trendChartTitle": "First Value: $1.39M<br>Last Value: $285,893M<br>Low Value: $285,893M<br>High Value: $2.75M",
+          "reportPath": "/shared/Custom/ojet/Team's Activities with filter 2",
+          "periodChangeIndicator": {
+            "value": "0.4",
+            "comparisonPeriod": "QoQ"
+          }
+        },
+        {
+          "id": "totalItemsInStock",
+          "title": "Total Items in Stock",
+          "metric": "1.55M",
+          "badge": {
+            "status": "danger",
+            "text": "Critical"
+          }
+        },
+        {
+          "id": "totalQuantity",
+          "title": "Total Quantity",
+          "metric": "121,119",
+          "badge": {
+            "status": "success",
+            "text": "On Track"
+          },
+          "trendColor": "neutral",
+          "trendChart": {
+            "type": "line",
+            "data": "[[$page.variables.quantityChartDataADP]]",
+            "valueField": "val"
+          },
+          "trendChartTitle": "First Value: 1,156<br>Last Value: 219<br>Low Value: 219<br>High Value: 2,044",
+          "reportPath": "/shared/Custom/ojet/Team's Activities with filter 4",
+          "periodChangeIndicator": {
+            "value": "0.5",
+            "comparisonPeriod": "QoQ"
+          }
+        },
+        {
+          "id": "averageLeadTime",
+          "title": "Average Lead Time",
+          "metric": "7.61",
+          "badge": {
+            "status": "warning",
+            "text": "Warning"
+          }
+        },
+        {
+          "id": "numberOfOrders",
+          "title": "Number of Orders",
+          "metric": "247,479",
+          "badge": {
+            "status": "success",
+            "text": "On Track"
+          },
+          "trendColor": "neutral",
+          "trendChart": {
+            "type": "line",
+            "data": "[[$page.variables.numberOfOrdersChartDataADP]]",
+            "valueField": "val"
+          },
+          "trendChartTitle": "First Value: 27,283<br>Last Value: 26,961<br>Low Value: 26,961<br>High Value: 29,941",
+          "periodChangeIndicator": {
+            "value": "0.6",
+            "comparisonPeriod": "QoQ"
+          }
+        }
+      ]
+    },
+    "selectionMode": {
+      "type": "string",
+      "defaultValue": "single"
+    },
+    "dashboardGrids": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "totalOrderAmount": "totalOrders",
+        "totalItemsInStock": "totalItems",
+        "totalQuantity": "totalOrders",
+        "averageLeadTime": "totalOrders",
+        "numberOfOrders": "totalOrders"
+      }
+    },
+    "orderAmountChartDataADP": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "data": "{{ $page.constants.orderAmountSeriesData }}",
+        "itemType": "selectSingleItem",
+        "keyAttributes": "id"
+      }
+    },
+    "quantityChartDataADP": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "data": "{{ $page.constants.quantitySeriesData }}",
+        "itemType": "selectSingleItem",
+        "keyAttributes": "id"
+      }
+    },
+    "numberOfOrdersChartDataADP": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "data": "{{ $page.constants.numberOfOrdersSeriesData }}",
+        "itemType": "selectSingleItem",
+        "keyAttributes": "id"
+      }
+    }
+  },
+  "metadata": {
+    "dynamicContainerMetadata": {
+      "type": "vb/ContainerMetadataProviderDescriptor"
+    }
+  },
+  "types": {
+    "selectSingleItem": {
+      "label": "string",
+      "value": "string"
+    }
+  },
+  "chains": {
+  },
+  "eventListeners": {
+    "onFodInAppNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}"
+          }
+        }
+      ]
+    },
+    "ojSpMetricCardClick": {
+      "chains": [
+        {
+          "chainId": "MetricCardClickChain",
+          "parameters": {
+            "key": "{{ $current.key }}"
+          }
+        }
+      ]
+    },
+    "onPrimaryAction": {
+      "chains": [
+        {
+          "chainId": "notificationChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "onDataAction": {
+      "chains": [
+        {
+          "chainId": "onDataAction",
+          "parameters": {
+            "eventName": "{{ $event.detail.eventName }}",
+            "payload": "{{ $event.detail.payload }}"
+          }
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-defer": {
+        "path": "ojs/ojdefer"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-dashboard-landing-page": {
+        "path": "oj-sp/dashboard-landing-page/loader"
+      },
+      "oj-messages": {
+        "path": "ojs/ojmessages"
+      },
+      "oj-sp-scoreboard": {
+        "path": "oj-sp/scoreboard/loader"
+      },
+      "oj-sp-dashboard-grid": {
+        "path": "oj-sp/dashboard-grid/loader"
+      },
+      "oj-sp-dashboard-panel": {
+        "path": "oj-sp/dashboard-panel/loader"
+      },
+      "oj-sp-analytics-canvas": {
+        "path": "oj-sp/analytics-canvas/loader"
+      },
+      "oj-switcher": {
+        "path": "ojs/ojswitcher"
+      }
+    }
+  },
+  "layouts": {
+    "dashboard2": {
+      "layoutType": "container",
+      "label": "Dashboard Layout",
+      "rules": [
+        "dashboard2-rule1"
+      ],
+      "layouts": {
+        "case1": {
+          "layoutType": "container",
+          "label": "Case 1",
+          "layout": {
+            "templateId": "dashboardGridTemplate",
+            "sectionTemplateMap": {
+              "primaryVis": "primaryVis",
+              "secondaryVisualization1": "secondaryVisualization1",
+              "secondaryVisualization2": "secondaryVisualization2",
+              "secondaryVisualization3": "secondaryVisualization3",
+              "secondaryVisualization4": "secondaryVisualization4"
+            },
+            "displayProperties": [
+              "secondaryVisualization1",
+              "secondaryVisualization2"
+            ]
+          }
+        }
+      },
+      "description": "Dashboard layout showcasing visualizations from Oracle Analytics",
+      "extensible": "full"
+    },
+    "dashboard2-rule1": {
+      "expression": "case1"
+    }
+  },
+  "templates": {
+    "dashboardGridTemplate": {
+      "title": "Dashboard Grid Template",
+      "extensible": "byReference",
+      "@dt": {
+        "layout": "dashboard2",
+        "type": "section"
+      },
+      "dependencies": [
+        "oj-dynamic/bind-section/loader",
+        "oj-sp/analytics-canvas/loader",
+        "oj-sp/dashboard-grid/loader"
+      ]
+    },
+    "primaryVis": {
+      "title": "Primary Visualization",
+      "extensible": "byReference",
+      "@dt": {
+        "layout": "dashboard2",
+        "type": "section"
+      },
+      "dependencies": [
+        "oj-dynamic/bind-section/loader",
+        "oj-sp/analytics-canvas/loader",
+        "oj-sp/dashboard-panel/loader"
+      ]
+    },
+    "secondaryVisualization1": {
+      "title": "Secondary Visualization 1",
+      "description": "",
+      "extensible": "byReference",
+      "dependencies": [
+        "oj-dynamic/bind-section/loader",
+        "oj-sp/analytics-canvas/loader",
+        "oj-sp/dashboard-panel/loader"
+      ]
+    },
+    "secondaryVisualization2": {
+      "title": "Secondary Visualization 2",
+      "description": "",
+      "extensible": "byReference",
+      "dependencies": [
+        "oj-dynamic/bind-section/loader",
+        "oj-sp/analytics-canvas/loader",
+        "oj-sp/dashboard-panel/loader"
+      ]
+    },
+    "secondaryVisualization3": {
+      "title": "Secondary Visualization 3",
+      "description": "",
+      "extensible": "byReference",
+      "dependencies": [
+        "oj-dynamic/bind-section/loader",
+        "oj-sp/analytics-canvas/loader",
+        "oj-sp/dashboard-panel/loader"
+      ]
+    },
+    "secondaryVisualization4": {
+      "title": "Secondary Visualization 4",
+      "description": "",
+      "extensible": "byReference",
+      "dependencies": [
+        "oj-dynamic/bind-section/loader",
+        "oj-sp/analytics-canvas/loader",
+        "oj-sp/dashboard-panel/loader"
+      ]
+    }
+  },
+  "interface": {
+    "constants": {
+      "defaultLayoutType": {
+        "type": "string",
+        "defaultValue": "above-fold",
+        "description": "Default Layout Type"
+      }
+    }
+  },
+  "security": {
+    "access": {
+      "permissions": [
+        "/vbcs/fnd/rra/managerView"
+      ],
+      "requiresAuthentication": true
+    }
+  }
+}

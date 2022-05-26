@@ -1,0 +1,495 @@
+{
+  "title": "",
+  "description": "",
+  "security": {
+    "access": {
+      "permissions": [
+        "/vbcs/fnd/rra/managerView"
+      ],
+      "requiresAuthentication": true
+    }
+  },
+  "variables": {
+    "avgLeadTimeDays": {
+      "type": "string",
+      "defaultValue": "5"
+    },
+    "cancel": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "categoryId": {
+      "type": "string"
+    },
+    "currentStep": {
+      "type": "string",
+      "defaultValue": "",
+      "input": "fromUrl"
+    },
+    "dirtyDataFlag": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "product": {
+      "type": "create_rraGuidedProcess"
+    },
+    "productActivationDate": {
+      "type": "string"
+    },
+    "productDeactivationDate": {
+      "type": "string"
+    },
+    "productDescription": {
+      "type": "string"
+    },
+    "productInitialOrderAmount": {
+      "type": "number"
+    },
+    "productLowInStockThreshold": {
+      "type": "number"
+    },
+    "productMargin": {
+      "type": "number",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "productMarginChange",
+            "parameters": {
+              "event": "{{ $event }}"
+            }
+          }
+        ]
+      }
+    },
+    "productName": {
+      "type": "string"
+    },
+    "productPrice": {
+      "type": "number",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "productPriceChange",
+            "parameters": {
+              "event": "{{ $event }}"
+            }
+          }
+        ]
+      },
+      "defaultValue": "[[ $variables.supplierProductValueItem?.data?.MsrpPrice ]]"
+    },
+    "productReorderAmount": {
+      "type": "number"
+    },
+    "rraProductCategoriesListSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraProductCategories/getall_rraProductCategories",
+        "keyAttributes": "ProductCategoryId",
+        "itemsPath": "items",
+        "responseType": "getall_rraProductCategories",
+        "transformsContext": {
+          "vb-textFilterAttributes": [
+            "CategoryName"
+          ]
+        }
+      }
+    },
+    "supplierId": {
+      "type": "string",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "setDirtyData",
+            "parameters": {
+              "event": "{{ $event }}",
+              "dirty": true
+            }
+          }
+        ]
+      }
+    },
+    "supplierProductCost": {
+      "type": "number"
+    },
+    "supplierProductId": {
+      "type": "string",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "setDirtyData",
+            "parameters": {
+              "event": "{{ $event }}",
+              "dirty": true
+            }
+          },
+          {
+            "chainId": "updateProductDefaultInformationChain",
+            "parameters": {
+              "event": "{{ $event }}"
+            }
+          }
+        ]
+      }
+    },
+    "supplierProductsSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraSupplierInventory/getall_rraSupplierInventory",
+        "responseType": "getall_rraSupplierInventory",
+        "itemsPath": "items",
+        "uriParameters": {
+          "q": "{{ \"SupplierId=\" + $variables.supplierValueItem?.data?.SupplierId }}",
+          "onlyData": true
+        },
+        "keyAttributes": "SupplierInventoryId",
+        "transformsContext": {
+          "vb-textFilterAttributes": [
+            "ProductName"
+          ]
+        }
+      }
+    },
+    "supplierProductValueItem": {
+      "type": "any"
+    },
+    "steps": {
+      "type": "step[]",
+      "defaultValue": "[[ [{\"id\":\"step1\",\"title\":$application.translations.format('app', 'ADD_PRODUCT_STEP1_TITLE'),\"display\": \"on\"},{\"id\":\"step2\",\"title\":$application.translations.format('app', 'ADD_PRODUCT_STEP2_TITLE'),\"display\":\"on\"},{\"id\":\"step3\",\"title\":$application.translations.format('app', 'ADD_PRODUCT_STEP3_TITLE'),\"display\":\"on\"},{\"id\":\"step4\",\"title\":$application.translations.format('app', 'ADD_PRODUCT_STEP4_TITLE'),\"display\":\"on\"},{\"id\":\"step5\",\"title\":$application.translations.format('app', 'ADD_PRODUCT_STEP5_TITLE'),\"display\":\"on\"}] ]]"
+    },
+    "suppliersSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraSuppliers/getall_rraSuppliers",
+        "responseType": "getall_rraSuppliers",
+        "itemsPath": "items",
+        "uriParameters": {
+          "onlyData": true
+        },
+        "keyAttributes": "SupplierId",
+        "transforms": {
+          "request": {
+            "filter": "{{ $flow.functions.processTextFilter(['SupplierName', 'SupplierNumber']) }}"
+          }
+        }
+      }
+    },
+    "supplierValueItem": {
+      "type": "any",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "resetSupplierProductValueItem",
+            "parameters": {
+              "event": "{{ $event }}"
+            }
+          }
+        ]
+      }
+    },
+    "valid": {
+      "type": "string"
+    }
+  },
+  "metadata": {},
+  "types": {
+    "@decorators.create_rraGuidedProcess": {
+      "endpoint": "create_rraGuidedProcess",
+      "service": "oracle_atf_rwdrefUI:rraCreateProduct",
+      "path": "request"
+    },
+    "@decorators.getall_rraProductCategories": {
+      "endpoint": "getall_rraProductCategories",
+      "service": "oracle_atf_rwdrefUI:rraProductCategories",
+      "path": "response"
+    },
+    "@decorators.getall_rraSupplierInventory": {
+      "endpoint": "getall_rraSupplierInventory",
+      "service": "oracle_atf_rwdrefUI:rraSupplierInventory",
+      "path": "response"
+    },
+    "@decorators.getall_rraSuppliers": {
+      "endpoint": "getall_rraSuppliers",
+      "service": "oracle_atf_rwdrefUI:rraSuppliers",
+      "path": "response"
+    },
+    "create_rraGuidedProcess": {
+      "BrandName": "string",
+      "Color": "string",
+      "CurrencyCode": "string",
+      "Description": "string",
+      "Dimensions": "string",
+      "FormattedDescription": "string",
+      "ImageUrl": "string",
+      "LastUpdateLogin": "string",
+      "LongDescription": "string",
+      "MinThresholdQty": "number",
+      "NumOfItems": "number",
+      "PlaceOfManufacture": "string",
+      "ProductActivationDate": "string",
+      "ProductCategoryId": "number",
+      "ProductId": "number",
+      "ProductName": "string",
+      "ProductNumber": "string",
+      "ReorderQty": "number",
+      "RraSuppliersProducts": [
+        {
+          "AvgLeadTimeDays": "number",
+          "CreatedBy": "string",
+          "CreationDate": "string",
+          "LastUpdateDate": "string",
+          "LastUpdatedBy": "string",
+          "MinOrderQuantity": "number",
+          "MsrpPrice": "number",
+          "ObjectVersionNumber": "number",
+          "ProductId": "number",
+          "StockStatus": "string",
+          "SupplierId": "number",
+          "SupplierPrice": "number",
+          "SupplierProductId": "number",
+          "SupplierProductNumber": "string"
+        }
+      ],
+      "UnitPrice": "number",
+      "Weight": "string"
+    },
+    "getall_rraProductCategories": {
+      "count": "number",
+      "hasMore": "boolean",
+      "items": [
+        {
+          "_context": {
+            "headers": {
+              "ETag": "string"
+            },
+            "key": "string",
+            "links": [
+              {
+                "href": "string",
+                "kind": "string",
+                "name": "string",
+                "rel": "string"
+              }
+            ]
+          },
+          "CategoryName": "string",
+          "CreatedBy": "string",
+          "CreationDate": "string",
+          "Description": "string",
+          "LastUpdateDate": "string",
+          "LastUpdatedBy": "string",
+          "LastUpdateLogin": "string",
+          "ObjectVersionNumber": "number",
+          "ProductCategoryId": "number"
+        }
+      ],
+      "limit": "number",
+      "links": [
+        {
+          "href": "string",
+          "kind": "string",
+          "name": "string",
+          "rel": "string"
+        }
+      ],
+      "offset": "number",
+      "totalResults": "number"
+    },
+    "getall_rraSupplierInventory": {
+      "count": "number",
+      "hasMore": "boolean",
+      "items": [
+        {
+          "AvailableQty": "number",
+          "Color": "string",
+          "CreatedBy": "string",
+          "CreationDate": "string",
+          "Dimensions": "string",
+          "ImageUrl": "string",
+          "LastUpdateDate": "string",
+          "LastUpdatedBy": "string",
+          "links": [
+            {
+              "href": "string",
+              "kind": "string",
+              "name": "string",
+              "properties": {
+                "changeIndicator": "string"
+              },
+              "rel": "string"
+            }
+          ],
+          "MinOrderQuantity": "number",
+          "MsrpUnitPrice": "number",
+          "ProductDescription": "string",
+          "ProductName": "string",
+          "ProductNumber": "number",
+          "SupplierId": "number",
+          "SupplierInventoryId": "number",
+          "SupplierUnitPrice": "number",
+          "Weight": "string"
+        }
+      ],
+      "limit": "number",
+      "links": [
+        {
+          "href": "string",
+          "kind": "string",
+          "name": "string",
+          "properties": {
+            "changeIndicator": "string"
+          },
+          "rel": "string"
+        }
+      ],
+      "offset": "number",
+      "totalResults": "number"
+    },
+    "getall_rraSuppliers": {
+      "count": "number",
+      "hasMore": "boolean",
+      "items": [
+        {
+          "ContactName": "string",
+          "EmailAddress": "string",
+          "Phone": "string",
+          "SupplierId": "string",
+          "SupplierName": "string",
+          "SupplierNumber": "string",
+          "SupplierUrl": "string"
+        }
+      ],
+      "limit": "number",
+      "offset": "number",
+      "totalResults": "number"
+    },
+    "step": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "display": "string"
+    }
+  },
+  "eventListeners": {
+    "confirmNoOjAction": {
+      "chains": [
+        {
+          "chainId": "dialogResponseChain",
+          "parameters": {
+            "detail": "{{ $event.detail }}",
+            "response": "NO"
+          }
+        }
+      ]
+    },
+    "confirmYesOjAction": {
+      "chains": [
+        {
+          "chainId": "dialogResponseChain",
+          "parameters": {
+            "detail": "{{ $event.detail }}",
+            "response": "YES"
+          }
+        }
+      ]
+    },
+    "ojSpCancel": {
+      "chains": [
+        {
+          "chainId": "spCancel",
+          "parameters": {
+            "detail": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "onSpNextStep": {
+      "chains": [
+        {
+          "chainId": "gotoNextStep",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "onSpValidate": {
+      "chains": [
+        {
+          "chainId": "validate",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "pageConstantsGuidedProcessSpPrimaryAction": {
+      "chains": [
+        {
+          "chainId": "onSubmitProductActionChain"
+        }
+      ]
+    },
+    "vbBeforeExit": {
+      "chains": [
+        {
+          "chainId": "checkBeforeExit",
+          "parameters": {}
+        }
+      ]
+    },
+    "vbEnter": {
+      "chains": [
+        {
+          "chainId": "firePageLayoutEventChain"
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-form-layout": {
+        "path": "ojs/ojformlayout"
+      },
+      "oj-input-date": {
+        "path": "ojs/ojdatetimepicker"
+      },
+      "oj-input-number": {
+        "path": "ojs/ojinputnumber"
+      },
+      "oj-input-text": {
+        "path": "ojs/ojinputtext"
+      },
+      "oj-select-single": {
+        "path": "ojs/ojselectsingle"
+      },
+      "oj-sp-guided-process": {
+        "path": "oj-sp/guided-process/loader"
+      },
+      "oj-sp-message-unsaved-changes": {
+        "path": "oj-sp/message-unsaved-changes/loader"
+      },
+      "oj-sp-input-currency": {
+        "path": "oj-sp/input-currency/loader"
+      },
+      "oj-text-area": {
+        "path": "ojs/ojinputtext"
+      },
+      "oj-validation-group": {
+        "path": "ojs/ojvalidationgroup"
+      }
+    },
+    "modules": {
+      "ojValidationNumber": {
+        "path": "ojs/ojvalidation-number"
+      }
+    }
+  },
+  "events": {},
+  "constants": {
+    "guidedProcessId": {
+      "type": "string",
+      "defaultValue": "add-product-guided-process"
+    }
+  }
+}

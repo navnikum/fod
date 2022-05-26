@@ -1,0 +1,152 @@
+<!-- Contains Page Dynamic container templates -->
+<template id="productDetailsTmpl">
+    <oj-bind-for-each data="[[ $sections.$display ]]">
+        <template>
+            <oj-dynamic-bind-section section="[[ $current.data ]]">
+            </oj-dynamic-bind-section>
+        </template>
+    </oj-bind-for-each>
+</template>
+
+<template id="productItemOverviewPanel"></template>
+
+<template id="supplierContactPanel">
+    <oj-sp-foldout-panel id="supplier-contact-panel" panel-title="[[ $page.variables.panelOneTitle]]"
+        class="oj-sp-foldout-panel-handle-overflow">
+        <!-- below div is default slot for the content of the first foldout panel -->
+        <div class="oj-sm-margin-6x-top">
+            <oj-bind-if test="[[ $page.variables.hasFodSupplierProductsErrorMessages ]]">
+                <oj-sp-empty-state primary-text="[[ $application.translations.app.PRODUCT_DETAIL_EMPTY_STATE_PRIMARY_TEXT ]]"
+                    secondary-text="[[ $application.translations.app.SERVER_RESPONSE_ERROR_SECONDARY_TEXT ]]">
+                </oj-sp-empty-state>
+            </oj-bind-if>
+            <oj-bind-if test="[[ $page.variables.supplierProductData.SupplierName ]]">
+                <oj-form-layout readonly="true">
+                    <oj-input-text id="supplier-contact-suppname"
+                        label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_SUPPLIER_NAME') ]]"
+                        value="[[ $page.variables.supplierProductData.SupplierName ]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-contact-number"
+                        label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_SUPPLIER_NUMBER') ]]"
+                        value="[[ $variables.supplierProductData.RraSuppliers.items[0].SupplierNumber ]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-contact-name"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_CONTACT_NAME') ]]"
+                        value="[[ $variables.supplierProductData.ContactName ]]">
+                    </oj-input-text>
+                    <oj-sp-input-email id="supplier-contact-email"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_CONTACT_EMAIL') ]]"
+                        value="[[ $variables.supplierProductData.EmailAddress ]]">
+                    </oj-sp-input-email>
+                    <oj-input-text id="supplier-contact-phone"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_CONTACT_PHONE') ]]"
+                        value="[[ $variables.supplierProductData.Phone ]]">
+                    </oj-input-text>
+                    <oj-sp-input-url id="supplier-contact-url"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_CONTACT_URL') ]]"
+                        value="[[ $variables.supplierProductData.SupplierUrl ]]">
+                    </oj-sp-input-url>
+                </oj-form-layout>
+            </oj-bind-if>
+        </div>
+        <!-- Summary Slot: Summary Section of the first foldout panel -->
+        <div slot="summary"></div>
+    </oj-sp-foldout-panel>
+</template>
+
+<template id="supplierProductPanel">
+    <oj-sp-foldout-panel id="supplier-product-panel" panel-title="[[ $page.variables.panelTwoTitle]]"
+        class="oj-sp-foldout-panel-handle-overflow">
+        <!-- below div is default slot for the content of the second foldout panel -->
+        <div class="oj-sm-margin-6x-top">
+            <oj-bind-if test="[[ $page.variables.hasFodSupplierProductsErrorMessages ]]">
+                <oj-sp-empty-state primary-text="[[ $application.translations.app.PRODUCT_DETAIL_EMPTY_STATE_PRIMARY_TEXT ]]"
+                    secondary-text="[[ $application.translations.app.SERVER_RESPONSE_ERROR_SECONDARY_TEXT ]]">
+                </oj-sp-empty-state>
+            </oj-bind-if>
+            <oj-bind-if test="[[ $page.variables.supplierProductData.SupplierProductNumber ]]">
+                <oj-form-layout readonly="true">
+                    <oj-input-text id="supplier-product-msrp"
+                        label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_MSRP') ]]"
+                        value="[[ $application.functions.formatCurrency($flow.constants.defaultCurrencyCode, $variables.supplierProductData.MsrpPrice) ]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-product-price"
+                        label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_COST') ]]"
+                        value="[[ $application.functions.formatCurrency($flow.constants.defaultCurrencyCode, $variables.supplierProductData.SupplierPrice) ]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-product-prodnumber"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_PRODUCT_PRODNUMBER') ]]"
+                        value="[[ $variables.supplierProductData.SupplierProductNumber ]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-product-leadtime"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_PRODUCT_LEADTIME') ]]"
+                        value="[[ $variables.supplierProductData.AvgLeadTimeDays + ' ' + $application.translations.format('app','PRODUCT_DETAIL_PRODUCT_DAYS')]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-product-status"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_PRODUCT_SUPPSTATUS') ]]"
+                        value="[[ $variables.supplierProductData.StockStatus ]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-product-site"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_PRODUCT_MFG') ]]"
+                        value="[[ $flow.variables.productDetail.products.PlaceOfManufacture ? $flow.variables.productDetail.products.PlaceOfManufacture : '' ]]">
+                    </oj-input-text>
+                    <oj-input-text id="supplier-product-minqty"
+                        label-hint="[[ $application.translations.format('app', 'PRODUCT_DETAIL_PRODUCT_MIN_QTY') ]]"
+                        value="[[ $variables.supplierProductData.MinOrderQuantity ]]">
+                    </oj-input-text>
+                </oj-form-layout>
+            </oj-bind-if>
+        </div>
+        <!-- Summary Slot: Summary Section of the second foldout panel -->
+        <div slot="summary">
+            <div class="oj-flex-bar">
+                <div class="oj-sm-margin-10x-end">
+                    <div class="oj-typography-body-md oj-typography-semi-bold oj-text-color-secondary">
+                        <oj-bind-text
+                            value="[[ $application.translations.format('app','PRODUCT_DETAIL_PRODUCT_INVENTORY') ]]">
+                        </oj-bind-text>
+                    </div>
+                    <div class="oj-typography-subheading-md oj-text-color-primary">
+                        <oj-bind-text
+                            value="[[ ($flow.variables.productDetail.products.NumOfItems ? $flow.variables.productDetail.products.NumOfItems : 0) + ' ' + $application.translations.format('app','PRODUCT_DETAIL_PRODUCT_ITEMS_STOCK') ]]">
+                        </oj-bind-text>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </oj-sp-foldout-panel>
+</template>
+
+<template id="orderListPanel">
+    <oj-sp-foldout-panel id="order-list-panel" panel-title="[[ $page.variables.panelThreeTitle]]" class="profile-panel">
+        <!-- Summary Slot: Summary Section of the second foldout panel -->
+        <oj-sp-summarizing-collection id="product_detail"
+            overflow-action-label="[[ $application.translations.format('app','PRODUCT_DETAIL_PANEL3_VIEW_ALL_ORDERS') ]]"
+            on-sp-overflow-action="[[$listeners.onOjSpSummarizingCollectionSpOverflow]]">
+            <oj-sp-list-section id="order-list-section" data="[[ $variables.searchResultsDP ]]">
+                <template slot="itemTemplate">
+                  <oj-sp-mini-card primary-text="[[$current.data.CustomerDetails.CustomerName]]"
+                    secondary-text="[[  $application.functions.formatDate($current.data.OrderDate) ]]"
+                    navigation-action.display="disabled"
+                    navigation-action.label="[[ $application.functions.formatCurrency($flow.constants.defaultCurrencyCode, $current.data.TotalAmount) ]]"
+                    overline-text="[[$current.data.OrderNumber]]"></oj-sp-mini-card>
+                </template>
+            </oj-sp-list-section>
+        </oj-sp-summarizing-collection>
+        <!-- Summary Slot: Summary Section of the second foldout panel -->
+        <div slot="summary">
+            <div class="oj-flex-bar">
+                <div class="oj-sm-margin-10x-end">
+                    <div class="oj-typography-body-md oj-typography-semi-bold oj-text-color-secondary">
+                        <oj-bind-text
+                            value="[[ $application.translations.format('app','PRODUCT_DETAIL_PANEL3_SUMMARY') ]]">
+                        </oj-bind-text>
+                    </div>
+                    <div class="oj-typography-subheading-md oj-text-color-primary">
+                        <oj-bind-text value="[[ $page.variables.totalOrders ]]"></oj-bind-text>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </oj-sp-foldout-panel>
+</template>

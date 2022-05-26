@@ -1,0 +1,51 @@
+<div class="oj-flex">
+    <oj-sp-smart-filter-search id="oj_ssfs1" page-title="{{ $page.variables.pageTitle }}"
+        display-options.go-to-parent="{{ $page.variables.goToParentOption }}"
+        smart-filters.value="{{ $flow.variables.manageOrdersAppliedFilters }}"
+        smart-filters.ask-hint="{{ $page.variables.askHint}}"
+        smart-filters.results-data="[[ $page.variables.searchResultsDP ]]"
+        smart-filters.suggestions="[[ $page.variables.searchSuggestionsDP ]]"
+        smart-filters.suggestion-filters="[[ $page.variables.suggestionFiltersDP ]]"
+        smart-filters.filters-metadata="[[ $page.metadata.filters.provider ]]"
+        on-smart-filters-changed="[[ $listeners.onFiltersChanged ]]"
+        on-sp-go-to-parent="[[ $listeners.onOjSpGoToParent ]]" class="oj-flex-item oj-sm-12 oj-md-12"
+        primary-action="[[ $variables.primaryAction ]]"
+        on-sp-primary-action="[[ $listeners.onOjSpSmartFilterSearchPrimaryAction ]]">
+      <oj-sp-messages-banner id="formErrorMessage" slot="main"
+        messages="[[ $page.variables.errorMessages ]]">
+      </oj-sp-messages-banner>
+       <oj-list-view id="order-list" slot="main" class="oj-flex-item" data="[[ $page.variables.searchResultsDP ]]"
+          scroll-policy-options.scroller="[[ document.documentElement ]]" data-oj-context=""
+          scroll-policy-options.fetch-size="10" selection-mode="single"
+          on-first-selected-item-changed="[[$listeners.orderListFirstSelectedItem]]"
+          :aria-label="[[ $application.translations.app.ORDER_LIST ]]">
+            <template slot="itemTemplate" data-oj-as="item">
+                <oj-sp-list-item-template :id="[[ 'order-list-template-' + item.data.OrderId ]]"
+                    badge.text="[[ item.data.OrderStatus === 'PROCESSING' ? 'Processing' : (item.data.OrderStatus === 'DRAFT' ? 'Draft' : item.data.OrderStatus) ]]"
+                    badge.status="[[ item.data.OrderStatus === 'PROCESSING' ? 'info' : 'default' ]]"
+                    badge.position="leading" selector.row-key="[[ item.data.OrderId ]]"
+                    selector.aria-label="[[ 'Select Item ' + item.index ]]"
+                    columns='[[ [{"primaryText":item.data.CustomerDetails.CustomerName},{"primaryText":item.data.OrderNumber,"secondaryText":$application.functions.formatDate(item.data.OrderDate)},{"primaryText":$application.functions.formatCurrency(item.data.CurrencyCode, item.data.TotalAmount)}] ]]'
+                    secondary-actions='{{ [{"id":"view-order","label": $application.translations.app.ORDERS_LIST_ITEM_VIEW_ORDER_OPTION, "icon":"oj-ux-ico-view", "display":(item.data.OrderStatus === "PROCESSING" ? "on" : "off")},{"id":"edit-order","label":$application.translations.app.ORDER_EDIT,"icon":"oj-ux-ico-pen","display":(item.data.OrderStatus === "PROCESSING" ? "off" : "on")},{"id":"delete-order","label":$application.translations.app.DELETE,"icon":"oj-ux-ico-trash","display":(item.data.OrderStatus === "PROCESSING" ? "disabled" : "on")},{"id":"view-customer","label":$application.translations.app.CUSTOMER_VIEW,"icon":"oj-ux-ico-contact","display": "on"}] }}'
+                    on-sp-secondary-action="[[ $listeners.onOjSpListItemSecondaryAction ]]"
+                    display-options.badge-size="long" slot="itemTemplate">
+                </oj-sp-list-item-template>
+            </template>
+        </oj-list-view>
+    </oj-sp-smart-filter-search>
+    <oj-sp-message-dialog-destructive id="order-delete-conf-dialog"
+        primary-text="[[ $application.translations.format('app', 'ORDER_DELETE_CONF_MSG_PRIMARY', {orderNumber: $page.variables.currentItemOrderNumber}) ]]"
+        secondary-text=""
+        primary-action-label="[[ $application.translations.app.DELETE ]]"
+        on-oj-sp-delete-confirm="[[ $listeners.onDeleteOrder ]]" open-dialog="false">
+    </oj-sp-message-dialog-destructive>
+    <!-- Toast Messages removed as we show order submit confirmation in feedback dialog itself -->
+    <oj-sp-messages-toast id="manageOrdersMessageToast" primary-text="[[ $flow.variables.manageOrdersToastMessage ]]">
+    </oj-sp-messages-toast>
+    <!-------------->
+</div>
+
+<oj-sp-in-app-navigation id="in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12" selection="manage-orders"
+  on-sp-selection-action="[[ $listeners.onInAppNavigationSpSelection ]]"
+  navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+</oj-sp-in-app-navigation>

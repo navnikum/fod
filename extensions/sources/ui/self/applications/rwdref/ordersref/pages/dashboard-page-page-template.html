@@ -1,0 +1,57 @@
+<!-- Contains Page Dynamic container templates -->
+<template id="dashboardGridTemplate">
+  <oj-sp-dashboard-grid layout="[[ $variables.layoutType ]]">
+    <div slot="" style="height: 100%">
+      <oj-dynamic-bind-section section="primaryVis"></oj-dynamic-bind-section>
+    </div>
+    <oj-bind-for-each data="[[ $sections.$display ]]">
+      <template>
+        <div slot="" style="height: 100%;">
+          <oj-dynamic-bind-section section="[[ $current.data ]]"></oj-dynamic-bind-section>
+        </div>
+      </template>
+    </oj-bind-for-each>
+  </oj-sp-dashboard-grid>
+</template>
+<template id="primaryVis">
+  <oj-sp-dashboard-panel panel-title="Order Amount: Top 10 Product Categories">
+    <div style="width: 100%; height: 100%">
+      <oj-sp-analytics-canvas host="https://oracledesign-idnym1tkby0n-ia.analytics.ocp.oraclecloud.com"
+        project-path="/@Catalog/shared/Katia/RDA Demo Scenario" active-tab-id="2"
+        on-sp-data-action="[[$listeners.onDataAction]]" >
+      </oj-sp-analytics-canvas>
+    </div>
+  </oj-sp-dashboard-panel>
+</template>
+<template id="secondaryVisualization2">
+   <oj-sp-dashboard-panel panel-title="Ordered vs. In Stock">
+  <div style="width: 100%; height: 100%">
+    <oj-sp-analytics-canvas host="https://oracledesign-idnym1tkby0n-ia.analytics.ocp.oraclecloud.com"
+      project-path="/@Catalog/shared/Katia/RDA Demo Scenario" active-tab-id="4" on-sp-data-action="[[$listeners.onDataAction]]">
+    </oj-sp-analytics-canvas>
+  </div>
+  </oj-sp-dashboard-panel>
+</template>
+<template id="secondaryVisualization1">
+   <oj-sp-dashboard-panel panel-title="Total Amount by Order Date" >
+  <div style="width: 100%; height: 100%">
+    <oj-sp-analytics-canvas host="https://oracledesign-idnym1tkby0n-ia.analytics.ocp.oraclecloud.com" 
+      project-path="/@Catalog/shared/Katia/RDA Demo Scenario" active-tab-id="3" on-sp-data-action="[[$listeners.onDataAction]]">
+    </oj-sp-analytics-canvas>
+  </div>
+  </oj-sp-dashboard-panel>
+</template>
+<template id="secondaryVisualization3">
+  <div style="width: 100%;">
+    <oj-sp-analytics-canvas host="https://oracledesign-idnym1tkby0n-ia.analytics.ocp.oraclecloud.com"
+      project-path="/@Catalog/shared/Katia/Redwood Chart Colors v2" active-tab-id="4" on-sp-data-action="[[$listeners.onDataAction]]">
+    </oj-sp-analytics-canvas>
+  </div>
+</template>
+<template id="secondaryVisualization4">
+  <div style="width: 100%;">
+    <oj-sp-analytics-canvas host="https://oracledesign-idnym1tkby0n-ia.analytics.ocp.oraclecloud.com"
+      project-path="/@Catalog/shared/Katia/Redwood Chart Colors v2" active-tab-id="5" on-sp-data-action="[[$listeners.onDataAction]]">
+    </oj-sp-analytics-canvas>
+  </div>
+</template>

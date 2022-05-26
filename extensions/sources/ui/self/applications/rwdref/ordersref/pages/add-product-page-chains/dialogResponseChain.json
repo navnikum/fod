@@ -1,0 +1,28 @@
+{
+  "description": "",
+  "variables": {
+    "detail": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "response": {
+      "type": "string",
+      "required": false,
+      "input": "fromCaller"
+    }
+  },
+  "root": "callModuleFunction1",
+  "actions": {
+    "callModuleFunction1": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "{{$page.functions}}",
+        "functionName": "userResponse",
+        "params": [
+          "{{ $chain.variables.response }}"
+        ]
+      }
+    }
+  }
+}

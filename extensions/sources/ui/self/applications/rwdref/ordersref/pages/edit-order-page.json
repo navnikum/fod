@@ -1,0 +1,1091 @@
+{
+  "title": "[[ $application.translations.format('app', 'ORDER_EDIT') ]]",
+  "description": "",
+  "constants": {
+    "orderLineColumns": {
+      "type": "object[]",
+      "defaultValue": [
+        {
+          "headerText": "[[ $application.translations.format('app','ADD_PRODUCT_SELECT_PRODUCT') ]]",
+          "field": "ProductName",
+          "template": "productNameTemplate"
+        },
+        {
+          "headerText": "",
+          "field": "ProductId",
+          "template": "productIdTemplate"
+        },
+        {
+          "headerText": "[[ $application.translations.format('app','ADD_PRODUCT_PRODUCT_NUMBER') ]]",
+          "field": "ProductNumber",
+          "template": "productNumberTemplate",
+          "className": "oj-read-only",
+          "style": "background-color: inherit; min-width: 8rem; max-width: 8rem; width: 8rem;"
+        },
+        {
+          "headerText": "[[ $application.translations.format('app','ORDER_LINE_IMAGE') ]]",
+          "field": "ImageUrl",
+          "template": "productImageTemplate",
+          "className": "oj-read-only",
+          "style": "background-color: inherit; min-width: 8rem; max-width: 8rem; width: 8rem;"
+        },
+        {
+          "headerText": "[[ $application.translations.format('app','ORDER_LINE_PRICE') ]]",
+          "field": "ListPrice",
+          "template": "listPriceTemplate",
+          "headerClassName": "oj-helper-text-align-end",
+          "className": "oj-helper-text-align-end oj-read-only",
+          "style": "background-color: inherit; min-width: 8rem; max-width: 8rem; width: 8rem;"
+        },
+        {
+          "headerText": "[[ $application.translations.format('app','ORDER_LINE_QTY') ]]",
+          "field": "Quantity",
+          "template": "productQtyTemplate",
+          "headerClassName": "oj-helper-text-align-end",
+          "className": "oj-helper-text-align-end",
+          "style": "min-width: 8rem; max-width: 8rem; width: 8rem;"
+        },
+        {
+          "headerText": "[[ $application.translations.format('app','ORDER_LINE_AMT') ]]",
+          "field": "Amount",
+          "template": "amountTemplate",
+          "headerClassName": "oj-helper-text-align-end",
+          "className": "oj-helper-text-align-end oj-read-only",
+          "style": "background-color: inherit; min-width: 8rem; max-width: 8rem; width: 8rem;"
+        },
+        {
+          "headerText": "[[ $application.translations.format('app','ORDER_LINE_ACTION') ]]",
+          "template": "actionTemplate",
+          "headerStyle": "text-align: center;",
+          "style": "text-align: center; padding-top: 0px; padding-bottom: 0px; min-width: 8rem; max-width: 8rem; width: 8rem;"
+        }
+      ]
+    },
+    "simpleCreateEditId": {
+      "type": "string",
+      "defaultValue": "order-simple-create-edit"
+    },
+    "wholeNumberOptions": {
+      "type": "object",
+      "defaultValue": {
+        "options": {
+          "roundingMode": "FLOOR",
+          "maximumFractionDigits": 0,
+          "roundDuringParse": true
+        },
+        "type": "number"
+      }
+    },
+    "tableId": {
+      "type": "string",
+      "defaultValue": "edit-order-lines-table"
+    }
+  },
+  "variables": {
+    "currentOrderLineKey": {
+      "type": "any",
+      "description": "Current order line key",
+      "input": "none"
+    },
+    "currentOrderLineQuantity": {
+      "type": "any"
+    },
+    "addingLine": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "dirtyDataFlag": {
+      "type": "boolean",
+      "description": "a variable to determine if page contains modified uncommitted data",
+      "input": "none",
+      "defaultValue": false
+    },
+    "editRow": {
+      "type": "tableEditRow",
+      "defaultValue": {
+        "rowIndex": -1
+      }
+    },
+    "inAppNavigationSelection": {
+      "type": "string",
+      "defaultValue": "manage-orders"
+    },
+    "forceOrderLineEditExit": {
+      "type": "boolean",
+      "description": "Allow line edit exit without saving in delete and edit cancel cases",
+      "defaultValue": false
+    },
+    "isSubmitWithFeedback": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "originalProductQuantity": {
+      "type": "number"
+    },
+    "pageVersion": {
+      "type": "string",
+      "defaultValue": "[[ Date.now().toString() ]]"
+    },
+    "totalAmount": {
+      "type": "number",
+      "defaultValue": 0
+    },
+    "orderLinesTableRowSaveNeeded": {
+      "type": "boolean",
+      "defaultValue": true
+    },
+    "orderLineSeq": {
+      "type": "number",
+      "defaultValue": 0
+    },
+    "orderLinesTableRowData": {
+      "type": {
+        "Amount": "number",
+        "ImageUrl": "string",
+        "ListPrice": "number",
+        "OrderLineId": "any",
+        "ProductId": "number",
+        "ProductName": "string",
+        "ProductNumber": "string",
+        "Quantity": "number",
+        "CurrencyCode": "string"
+      },
+      "defaultValue": {
+        "Amount": 0,
+        "Quantity": 0,
+        "CurrencyCode": "{{ $flow.constants.defaultCurrencyCode }}"
+      }
+    },
+    "orderLinesBDP": {
+      "type": "any"
+    },
+    "orderLinesADP": {
+      "type": "vb/ArrayDataProvider",
+      "defaultValue": {
+        "data": [],
+        "keyAttributes": "OrderLineId"
+      },
+      "description": ""
+    },
+    "attachmentsCreatePayload": {
+      "type": "any"
+    },
+    "attachmentsDeferredOperationPayload": {
+      "type": "any"
+    },
+    "avatar": {
+      "type": "object",
+      "defaultValue": {
+        "initials": "",
+        "src": ""
+      }
+    },
+    "batchDataPayload": {
+      "type": {
+        "parts": "batchPayloadType[]"
+      }
+    },
+    "contextualInfo": {
+      "type": "object[]",
+      "defaultValue": [
+        {
+          "label": "customer",
+          "value": "{{ $page.variables.customerName || '' }}"
+        },
+        {
+          "label": "date",
+          "value": "{{ $application.functions.formatDate($page.variables.orderId ? $page.variables.orders.OrderDate : Date.now()) }}"
+        },
+        {
+          "label": "totalAmount",
+          "value": "{{ 'Total Amount: ' + $application.functions.formatCurrency($flow.constants.defaultCurrencyCode, $page.variables.totalAmount) }}"
+        }
+      ]
+    },
+    "contextualInfoSticky": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "customerName": {
+      "type": "string"
+    },
+    "customerValid": {
+      "type": "string"
+    },
+    "customer": {
+      "type": "get_rraCustomers"
+    },
+    "goToParentOption": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "inAppNavigationDestination": {
+      "type": "string"
+    },
+    "isSaved": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "linesValid": {
+      "type": "string"
+    },
+    "attachmentsView": {
+      "type": {
+        "endpoint": "string",
+        "endpoint-params": {
+          "rraOrders_Id": "any"
+        }
+      },
+      "defaultValue": "[[ $variables.orderId ? { endpoint: 'oracle_atf_rwdrefUI:rraOrders/getall_rraOrders-Attachments', endpointParams: { rraOrders_Id: $variables.orderId } } : null ]]"
+    },
+    "attachmentsDownload": {
+      "type": {
+        "endpoint": "string",
+        "endpoint-params": {
+          "rraOrders_Id": "any"
+        },
+        "endpoint-attachment-param-name": "string"
+      },
+      "defaultValue": "[[ $variables.orderId ? { endpoint: 'oracle_atf_rwdrefUI:rraOrders/get_rraOrders-Attachments-FileContents', endpointParams: { rraOrders_Id: $variables.orderId }, endpointAttachmentParamName: 'rraOrders_Attachments_Id' } : null ]]"
+    },
+    "attachmentsPreview": {
+      "type": {
+        "endpoint": "string",
+        "endpoint-params": {
+          "rraOrders_Id": "any"
+        },
+        "endpoint-attachment-param-name": "string"
+      },
+      "defaultValue": "[[ $variables.orderId ? { endpoint: 'oracle_atf_rwdrefUI:rraOrders/getall_rraOrders-Attachments-AttachmentsPreview', endpointParams: { rraOrders_Id: $variables.orderId }, endpointAttachmentParamName: 'rraOrders_Attachments_Id' } : null ]]"
+    },
+    "orderDataPayload": {
+      "type": {
+        "Comments": "string",
+        "OrderStatus": "string",
+        "TotalAmount": "number"
+      }
+    },
+    "orderId": {
+      "type": "string",
+      "input": "fromUrl"
+    },
+    "orderLinePayload": {
+      "type": {
+        "Amount": "number",
+        "CurrencyCode": "string",
+        "ListPrice": "number",
+        "ProductId": "string",
+        "Quantity": "number"
+      }
+    },
+    "pageTitle": {
+      "type": "string",
+      "defaultValue": "[[ $variables.orders.OrderNumber ? $application.translations.format('app', 'ORDER_EDIT_PAGE_TITLE', {orderNumber: $variables.orders.OrderNumber}) : $application.translations.format('app', 'ORDER') ]]"
+    },
+    "pageTitlePlaceholder": {
+      "type": "string",
+      "defaultValue": "[[ $variables.orderId ? \"Edit Order\" : \"Create Order\" ]]"
+    },
+    "parentPage": {
+      "type": "string",
+      "defaultValue": "manage-orders",
+      "input": "fromCaller"
+    },
+    "productSuggestionsDP": {
+      "type": "application:smartplatform/provider/SuggestionsInstanceDataProvider",
+      "constructorParams": [
+        {
+          "policyHint": "mfu",
+          "subject": "fscmRestApi::getall_rraProducts::ProductId",
+          "context": "{{ { CustomerId: $variables.customer.CustomerId } }}",
+          "baseDataProvider": "{{ $variables.productsSDP }}",
+          "provider": "smart-platform"
+        }
+      ]
+    },
+    "saveOption": {
+      "type": "string",
+      "defaultValue": "on"
+    },
+    "shippingAddress": {
+      "type": "get_rraOrders_RraShippingAddress"
+    },
+    "orders": {
+      "type": "getRraOrdersResponse"
+    },
+    "fetchedOrders": {
+      "type": "getRraOrdersResponse"
+    },
+    "ordersEditFormLoadingStatus": {
+      "type": "string",
+      "defaultValue": "pending"
+    },
+    "ordersEditFormRenderedFields": {
+      "type": "any[]",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "loadOrdersActionChain",
+            "parameters": {
+              "fetchedFields": "[[ $page.variables.ordersEditFormRenderedFields ]]",
+              "ordersId": "[[ $variables.orderId ]]"
+            }
+          }
+        ]
+      }
+    },
+    "productsSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraProducts/getall_rraProducts",
+        "responseType": "flow:getall_rraProducts",
+        "transforms": {
+          "request": {
+            "filter": "{{ $flow.functions.processTextFilter($page.variables.productsTextFilterAttrs) }}"
+          }
+        },
+        "itemsPath": "items",
+        "keyAttributes": "ProductId"
+      }
+    },
+    "productsTextFilterAttrs": {
+      "type": "string[]",
+      "defaultValue": [
+        "ProductName",
+        "ProductId"
+      ]
+    },
+    "hasApiFetchError": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "errorMessages": {
+      "type": "vb/ArrayDataProvider"
+    },
+    "editOrderToastMessage": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "countriesLovSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:territoriesLOV/getall_territoriesLOV",
+        "itemsPath": "items",
+        "responseType": "getall_territoriesLOV",
+        "keyAttributes": "TerritoryCode",
+        "uriParameters": {
+          "fields": "TerritoryCode,TerritoryShortName"
+        }
+      }
+    },
+    "addressStyleFormatSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:addressStyleFormats/getall_addressStyleFormats",
+        "itemsPath": "items",
+        "keyAttributes": "CountryCode",
+        "filterCriterion": {
+          "op": "$co",
+          "attribute": "CountryCode",
+          "value": "{{ $page.variables.shippingAddress ? $page.variables.shippingAddress.Country : 'US' }}"
+        },
+        "transforms": {
+          "response": {
+            "body": "{{ $functions.ojInputAddressFormatStyleMapping }}"
+          }
+        },
+        "uriParameters": {
+          "expand": "AddressStyleFormatLayout",
+          "onlyData": true
+        }
+      }
+    },
+    "itemText": {
+      "type": "object",
+      "defaultValue": {
+        "searchApi": [
+          "Text",
+          "Description"
+        ],
+        "countriesApi": "TerritoryShortName"
+      }
+    }
+  },
+  "metadata": {
+    "fodOrdersUpdateFodOrdersMetadata": {
+      "type": "vb/DynamicLayoutMetadataProviderDescriptor",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fodOrders/update_fodOrders"
+      }
+    },
+    "fodCustomersGetFodCustomersMetadata": {
+      "type": "vb/DynamicLayoutMetadataProviderDescriptor",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fodCustomers/get_fodCustomers"
+      }
+    },
+    "dynamicContainerMetadata": {
+      "type": "vb/ContainerMetadataProviderDescriptor"
+    }
+  },
+  "types": {
+    "@decorators.get_rraCustomers": {
+      "endpoint": "get_rraCustomers",
+      "service": "oracle_atf_rwdrefUI:rraCustomers",
+      "path": "response"
+    },
+    "@decorators.get_rraOrders_RraShippingAddress": {
+      "endpoint": "get_rraOrders-RraShippingAddress",
+      "service": "oracle_atf_rwdrefUI:rraOrders",
+      "path": "response"
+    },
+    "@decorators.getRraOrdersResponse": {
+      "endpoint": "get_rraOrders",
+      "service": "oracle_atf_rwdrefUI:rraOrders",
+      "path": "response"
+    },
+    "@decorators.getRraProductsResponse": {
+      "endpoint": "get_rraProducts",
+      "service": "oracle_atf_rwdrefUI:rraProducts",
+      "path": "response"
+    },
+    "batchPayloadType": {
+      "id": "string",
+      "operation": "string",
+      "path": "string",
+      "payload": "object"
+    },
+    "genericServiceErrorResponseType": {
+      "body": "any",
+      "status": "number"
+    },
+    "get_rraCustomers": {
+      "CustomerId": "string",
+      "CustomerNumber": "string",
+      "EmailAddress": "string",
+      "FirstName": "string",
+      "LastName": "string",
+      "Phone": "string"
+    },
+    "get_rraOrders_RraShippingAddress": {
+      "AddressLine1": "string",
+      "AddressLine2": "string",
+      "AddressLine3": "string",
+      "AddressLine4": "string",
+      "City": "string",
+      "Country": "string",
+      "County": "string",
+      "PostalCode": "string",
+      "Province": "string",
+      "State": "string"
+    },
+    "getRraOrdersResponse": {
+      "Attachments": {
+        "items": [
+          {
+            "AsyncTrackerId": "string",
+            "AttachedDocumentId": "number",
+            "CategoryName": "string",
+            "ContentRepositoryFileShared": "boolean",
+            "DatatypeCode": "string",
+            "FileName": "string",
+            "Title": "string",
+            "UploadedFileName": "string"
+          }
+        ]
+      },
+      "BillToAddressId": "number",
+      "Comments": "string",
+      "CurrencyCode": "string",
+      "CustomerId": "number",
+      "LastUpdateDate": "string",
+      "OrderDate": "string",
+      "OrderId": "number",
+      "OrderNumber": "string",
+      "OrderStatus": "string",
+      "PrimaryBillingAddressId": "number",
+      "PrimaryShippingAddressId": "number",
+      "RraOrderLines": {
+        "items": [
+          {
+            "Amount": "number",
+            "CurrencyCode": "string",
+            "ImageUrl": "string",
+            "ListPrice": "number",
+            "OrderLineId": "number",
+            "ProductId": "number",
+            "ProductName": "string",
+            "ProductNumber": "string",
+            "Quantity": "number"
+          }
+        ]
+      },
+      "RraShippingAddress": {
+        "items": [
+          {
+            "AddressLine1": "string",
+            "AddressLine2": "string",
+            "AddressLine3": "string",
+            "AddressLine4": "string",
+            "City": "string",
+            "Country": "string",
+            "County": "string",
+            "PostalCode": "string",
+            "Province": "string",
+            "State": "string"
+          }
+        ]
+      },
+      "ShippingAddressCity": "string",
+      "ShippingAddressCountry": "string",
+      "ShippingAddressLine1_1": "string",
+      "ShippingAddressLine2_1": "string",
+      "ShippingAddressPostalCode": "string",
+      "ShippingAddressState": "string",
+      "ShipToAddressId": "number",
+      "TotalAmount": "number"
+    },
+    "getRraProductsResponse": "object",
+    "tableEditRow": {
+      "rowIndex": "number",
+      "rowKey": "any"
+    },
+    "@decorators.getall_territoriesLOV": {
+      "endpoint": "getall_territoriesLOV",
+      "service": "oracle_atf_rwdrefUI:territoriesLOV",
+      "path": "response"
+    },
+    "getall_territoriesLOV": {
+      "count": "number",
+      "hasMore": "boolean",
+      "items": [
+        {
+          "Description": "string",
+          "EnabledFlag": "string",
+          "links": [
+            {
+              "href": "string",
+              "kind": "string",
+              "name": "string",
+              "properties": {
+                "changeIndicator": "string"
+              },
+              "rel": "string"
+            }
+          ],
+          "ObsoleteFlag": "string",
+          "TerritoryCode": "string",
+          "TerritoryShortName": "string"
+        }
+      ],
+      "limit": "number",
+      "links": [
+        {
+          "href": "string",
+          "kind": "string",
+          "name": "string",
+          "properties": {
+            "changeIndicator": "string"
+          },
+          "rel": "string"
+        }
+      ],
+      "offset": "number",
+      "totalResults": "number"
+    }
+  },
+  "chains": {},
+  "eventListeners": {
+    "dirtyDataWarningDialogSpCancel": {
+      "chains": [
+        {
+          "chainId": "MessageDialogUnsavedChangesSpCancelChain"
+        }
+      ]
+    },
+    "ojVbFragmentInputCustomerCustomerselected": {
+      "chains": [
+        {
+          "chainId": "onCustomerSelectedActionChain",
+          "parameters": {
+            "customerData": "{{ $event.detail.customerData }}"
+          }
+        },
+        {
+          "chainId": "setDirtyDataFlagActionChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "onInAppNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "inAppNavigationActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}",
+            "dirtyDataFlag": "{{ $page.variables.dirtyDataFlag }}"
+          }
+        }
+      ]
+    },
+    "vbDataProviderNotification": {
+      "chains": [
+        {
+          "chainId": "vbDataProviderErrorActionChain",
+          "parameters": {
+            "data": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "ojSpGeneralDrawerTemplateSpClose": {
+      "chains": [
+        {
+          "chainId": "flow:closeDrawerActionChain"
+        }
+      ]
+    },
+    "ojSpGeneralDrawerTemplateSpNext": {
+      "chains": [
+        {
+          "chainId": "flow:nextItemOrderDrawerActionChain",
+          "parameters": {
+            "errorMessages": "{{ $variables.errorMessages }}"
+          }
+        }
+      ]
+    },
+    "ojSpGeneralDrawerTemplateSpPrevious": {
+      "chains": [
+        {
+          "chainId": "flow:previousItemOrderDrawerActionChain",
+          "parameters": {
+            "errorMessages": "{{ $variables.errorMessages }}"
+          }
+        }
+      ]
+    },
+    "onConfirmDiscardAction": {
+      "chains": [
+        {
+          "chainId": "confirmDiscardActionChain",
+          "parameters": {
+            "response": "YES"
+          }
+        }
+      ]
+    },
+    "onOjSpCancel": {
+      "chains": [
+        {
+          "chainId": "spCancelActionChain",
+          "parameters": {
+            "detail": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "onOjSpGoToParent": {
+      "chains": [
+        {
+          "chainId": "goToParentActionChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "onOjSpSave": {
+      "chains": [
+        {
+          "chainId": "spSaveActionChain",
+          "parameters": {
+            "type": "{{ $event.type }}"
+          }
+        }
+      ]
+    },
+    "onOjSpSubmit": {
+      "chains": [
+        {
+          "chainId": "spSubmitActionChain",
+          "parameters": {
+            "actionId": "{{ $event.detail.actionId }}"
+          }
+        }
+      ]
+    },
+    "onOrderCommentsChanged": {
+      "chains": [
+        {
+          "chainId": "textAreaValueChangeActionChain"
+        }
+      ]
+    },
+    "onOrderAttachmentsChanged": {
+      "chains": [
+        {
+          "chainId": "setDirtyDataFlagActionChain"
+        }
+      ]
+    },
+    "onOrderLineActionListener": {
+      "chains": [
+        {
+          "chainId": "orderLineActionChain",
+          "parameters": {
+            "menuId": "{{ $event.target.value }}",
+            "key": "{{ $current.key }}",
+            "tableId": "{{ $constants.tableId }}",
+            "currentOrderLineData": "{{ $current.item.data }}"
+          }
+        }
+      ]
+    },
+    "onOrderLinesTableBeforeRowEdit": {
+      "chains": [
+        {
+          "chainId": "editableTableBeforeRowEditActionChain",
+          "parameters": {
+            "rowData": "{{$event.detail.rowContext.componentElement.getDataForVisibleRow($event.detail.rowContext.status.rowIndex).data}}"
+          }
+        }
+      ]
+    },
+    "onOrderLinesTableBeforeRowEditEnd": {
+      "chains": [
+        {
+          "chainId": "orderLineBeforeEditEndActionChain",
+          "parameters": {
+            "key": "{{ $event.detail.rowContext.item.key }}",
+            "linesValid": "{{ $variables.linesValid }}",
+            "previousRowData": "{{ $event.detail.rowContext.item.data }}",
+            "rowData": "{{ $page.variables.orderLinesTableRowData }}"
+          }
+        }
+      ],
+      "preventDefault": "[[ !$variables.forceOrderLineEditExit && ($variables.linesValid !== 'valid' || $variables.orderLinesTableRowData.Quantity === 0) ]]"
+    },
+    "onDialogCancel": {
+      "chains": [
+        {
+          "chainId": "dialogDestructiveCancelActionChain",
+          "parameters": {
+            "index": "{{ $page.variables.editRow.rowIndex }}"
+          }
+        }
+      ]
+    },
+    "onDrawerOpenedChanged": {
+      "chains": [
+        {
+          "chainId": "flow:drawerOpenedChangedActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "onProductDrawerAction": {
+      "chains": [
+        {
+          "chainId": "flow:loadRraProductsActionChain",
+          "parameters": {
+            "fetchedFields": "[[ $flow.variables.productDetail.defaultFields.concat($flow.variables.productDetail.productsDetailFormRenderedFields) ]]",
+            "rraProductsId": "[[ $current.data ? $current.data : $page.variables.orderLinesTableRowData.ProductId ]]",
+            "errorMessages": "{{ $variables.errorMessages }}"
+          }
+        },
+        {
+          "chainId": "flow:updateOrderDrawerNavigation",
+          "parameters": {
+            "index": "[[ $current.index ]]",
+            "indexMove": "0"
+          }
+        }
+      ]
+    },
+    "onProductNumberClickListener": {
+      "chains": [
+        {
+          "chainId": "productNumberClickActionChain",
+          "parameters": {
+            "index": "{{ $current.index }}"
+          }
+        }
+      ]
+    },
+    "onQtyRawValueChange": {
+      "chains": [
+        {
+          "chainId": "qtyValueChangeActionChain",
+          "parameters": {
+            "value": "{{ $event.detail.value }}",
+            "key": "{{ $current.key }}"
+          }
+        }
+      ]
+    },
+    "onDeleteLineItemConfYes": {
+      "chains": [
+        {
+          "chainId": "deleteOrderLineActionChain"
+        }
+      ]
+    },
+    "onSubmitConfYesBtn": {
+      "chains": [
+        {
+          "chainId": "submitConfDialogYesActionChain",
+          "parameters": {
+            "detail": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "vbBeforeExit": {
+      "chains": [
+        {
+          "chainId": "checkBeforeExitActionChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "vbEnter": {
+      "chains": [
+        {
+          "chainId": "createOrderLinesBDPActionChain",
+          "parameters": {}
+        },
+        {
+          "chainId": "loadOrdersActionChain",
+          "parameters": {
+            "ordersId": "{{ $variables.orderId }}"
+          }
+        },
+        {
+          "chainId": "loadOrdersLineItemsActionChain",
+          "parameters": {
+            "ordersId": "{{ $variables.orderId }}"
+          }
+        },
+        {
+          "chainId": "handleToastMessageActionChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "onSaveLineItem": {
+      "chains": [
+        {
+          "chainId": "saveOrderLineActionChain",
+          "parameters": {
+            "key": "{{ $current.key }}",
+            "linesValid": "{{ $variables.linesValid }}",
+            "previousRowData": "{{ $current.item.data }}",
+            "rowData": "{{ $page.variables.orderLinesTableRowData }}"
+          }
+        }
+      ]
+    },
+    "onSpFeedbackAction": {
+      "chains": [
+        {
+          "chainId": "feedbackActionChain",
+          "parameters": {
+            "actionId": "{{ $event.detail.actionId }}"
+          }
+        }
+      ]
+    },
+    "onCancelLineItem": {
+      "chains": [
+        {
+          "chainId": "cancelOrderlLineEditActionChain",
+          "parameters": {
+            "rowData": "{{ $current.item.data }}",
+            "key": "{{ $current.key }}"
+          }
+        }
+      ]
+    },
+    "onCreateLineItem": {
+      "chains": [
+        {
+          "chainId": "createOrderLineActionChain",
+          "parameters": {
+            "key": "{{ $current.key }}",
+            "linesValid": "{{ $variables.linesValid }}",
+            "tableId": "{{ $constants.tableId }}"
+          }
+        }
+      ]
+    },
+    "onProductSelectionChange": {
+      "chains": [
+        {
+          "chainId": "productSelectionChangeActionChain",
+          "parameters": {
+            "index": "{{ $current.index }}",
+            "data": "{{ $event.detail.itemContext.data }}"
+          }
+        },
+        {
+          "chainId": "suggestionDPHandleOjActionActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-drawer-popup": {
+        "path": "ojs/ojdrawerpopup"
+      },
+      "oj-avatar": {
+        "path": "ojs/ojavatar"
+      },
+      "oj-dynamic-container": {
+        "path": "oj-dynamic/container/loader"
+      },
+      "oj-highlight-text": {
+        "path": "ojs/ojhighlighttext"
+      },
+      "oj-list-item-layout": {
+        "path": "ojs/ojlistitemlayout"
+      },
+      "oj-list-view": {
+        "path": "ojs/ojlistview"
+      },
+      "oj-sp-attachments": {
+        "path": "oj-sp/attachments/loader"
+      },
+      "oj-sp-general-drawer-template": {
+        "path": "oj-sp/general-drawer-template/loader"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-simple-create-edit": {
+        "path": "oj-sp/simple-create-edit/loader"
+      },
+      "oj-button": {
+        "path": "ojs/ojbutton"
+      },
+      "oj-toolbar": {
+        "path": "ojs/ojtoolbar"
+      },
+      "oj-select-single": {
+        "path": "ojs/ojselectsingle"
+      },
+      "oj-text-area": {
+        "path": "ojs/ojinputtext"
+      },
+      "oj-table": {
+        "path": "ojs/ojtable"
+      },
+      "oj-input-number": {
+        "path": "ojs/ojinputnumber"
+      },
+      "oj-validation-group": {
+        "path": "ojs/ojvalidationgroup"
+      },
+      "oj-sp-input-currency": {
+        "path": "oj-sp/input-currency/loader"
+      },
+      "oj-sp-message-dialog-general": {
+        "path": "oj-sp/message-dialog-general/loader"
+      },
+      "oj-sp-message-dialog-destructive": {
+        "path": "oj-sp/message-dialog-destructive/loader"
+      },
+      "oj-sp-message-unsaved-changes": {
+        "path": "oj-sp/message-unsaved-changes/loader"
+      },
+      "oj-sp-messages-banner": {
+        "path": "oj-sp/messages-banner/loader"
+      },
+      "oj-sp-empty-state": {
+        "path": "oj-sp/empty-state/loader"
+      },
+      "oj-sp-messages-toast": {
+        "path": "oj-sp/messages-toast/loader"
+      },
+      "oj-menu-button": {
+        "path": "ojs/ojbutton"
+      },
+      "oj-menu": {
+        "path": "ojs/ojmenu"
+      },
+      "oj-option": {
+        "path": "ojs/ojoption"
+      },
+      "oj-sp-input-address": {
+        "path": "oj-sp/input-address/loader"
+      }
+    },
+    "modules": {
+      "ojValidationNumber": {
+        "path": "ojs/ojvalidation-number"
+      }
+    }
+  },
+  "interface": {
+    "types": {}
+  },
+  "layouts": {
+    "containerLayout1": {
+      "label": "Container Rule Set 1",
+      "layoutType": "container",
+      "layouts": {
+        "case1": {
+          "label": "Case 1",
+          "layoutType": "container",
+          "layout": {
+            "sectionTemplateMap": {
+              "template1": "template1",
+              "header": "header"
+            },
+            "displayProperties": [
+              "header",
+              "template1"
+            ]
+          }
+        }
+      },
+      "extensible": "full",
+      "rules": [
+        "containerLayout1-rule1"
+      ]
+    },
+    "containerLayout1-rule1": {
+      "expression": "case1"
+    }
+  },
+  "templates": {
+    "header": {
+      "title": "Header",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "section",
+        "layout": "containerLayout1"
+      },
+      "dependencies": [
+        "ojs/ojavatar"
+      ]
+    },
+    "template1": {
+      "title": "Detail",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "section",
+        "layout": "containerLayout1"
+      },
+      "dependencies": [
+        "oj-dynamic/form/loader",
+        "ojs/ojavatar"
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "tests": {
+        "go to next step": {
+            "context": {
+                "$variables.event": "[[ { detail: { nextStep: 'Step A' } } ]]"
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.navigateToAddProduct.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "add-product"
+                },
+                {
+                    "actual": "$actions.navigateToAddProduct.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "currentStep": "Step A"
+                    }
+                }
+            ]
+        }
+    }
+   }

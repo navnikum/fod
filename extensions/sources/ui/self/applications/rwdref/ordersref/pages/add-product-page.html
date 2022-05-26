@@ -1,0 +1,150 @@
+<div class="oj-flex">
+  <oj-sp-guided-process :id="[[ $page.constants.guidedProcessId ]]"
+    process-title="[[ $application.translations.format('app', 'ADD_PRODUCT_PROCESS_TITLE') ]]"
+    current-step="{{$page.variables.currentStep}}"
+    on-sp-before-next="[[ function(event) { event.preventDefault(); ($variables.valid !== 'valid') ? $listeners.onSpValidate(event) : $listeners.onSpNextStep(event) } ]]"
+    on-sp-cancel="[[$listeners.ojSpCancel]]" class="oj-flex-item oj-sm-12 oj-md-12"
+    steps="[[ $variables.steps ]]"
+    primary-action.label="[[ $application.translations.format('app', 'ADD_PRODUCT_SUBMIT') ]]"
+    on-sp-primary-action="[[$listeners.pageConstantsGuidedProcessSpPrimaryAction]]">
+    <oj-validation-group id="validationGroup" valid="{{ $page.variables.valid }}">
+      <div>
+        <oj-bind-if test="[[ $variables.currentStep === 'step1' ]]">
+          <h5>
+            <oj-bind-text value="[[ $application.translations.format('app', 'ADD_PRODUCT_SELECT_SUPPLIER') ]]"></oj-bind-text>
+          </h5>
+          <oj-form-layout max-columns="3">
+            <oj-select-single label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_SUPPLIER_NAME') ]]"
+              data="[[ $variables.suppliersSDP ]]" item-text="SupplierName"
+              value-item="{{ $variables.supplierValueItem }}" required="true" value="{{ $variables.supplierId }}"></oj-select-single>
+            <oj-input-text label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_SUPPLIER_NUMBER') ]]"
+              readonly="true" value="[[ $variables.supplierValueItem?.data?.SupplierNumber ]]"></oj-input-text>
+          </oj-form-layout>
+          <h5>
+            <oj-bind-text value="[[ $application.translations.format('app', 'ADD_PRODUCT_SELECT_PRODUCT') ]]"></oj-bind-text>
+          </h5>
+          <oj-form-layout max-columns="3">
+            <oj-select-single label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_PRODUCT_NAME') ]]"
+              data="[[ $variables.supplierProductsSDP ]]" item-text="ProductName"
+              value-item="{{ $variables.supplierProductValueItem }}"
+              disabled="[[ $variables.supplierValueItem === undefined ]]" required="true"
+              value="{{ $variables.supplierProductId }}"></oj-select-single>
+            <oj-input-text label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_PRODUCT_NUMBER') ]]"
+              readonly="true" value="[[ $variables.supplierProductValueItem?.data?.ProductNumber ]]"></oj-input-text>
+            <oj-text-area label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_DESCRIPTION') ]]"
+              readonly="true" value="[[ $variables.supplierProductValueItem?.data?.ProductDescription ]]"></oj-text-area>
+          </oj-form-layout>
+        </oj-bind-if>
+      </div>
+      <div>
+        <oj-bind-if test="[[ $variables.currentStep === 'step2' ]]">
+          <h5>
+            <oj-bind-text value="[[ $application.translations.format('app', 'ADD_PRODUCT_PRODUCT_INFORMATION') ]]"></oj-bind-text>
+          </h5>
+          <oj-form-layout max-columns="3">
+            <oj-input-text label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_PRODUCT_NAME') ]]"
+              value="{{ $variables.productName }}"></oj-input-text>
+            <oj-input-text label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_DESCRIPTION') ]]"
+              value="{{ $variables.productDescription }}"></oj-input-text>
+          </oj-form-layout>
+          <h5>
+            <oj-bind-text value="[[ $application.translations.format('app', 'ADD_PRODUCT_SELECT_CATEGORY') ]]"></oj-bind-text>
+          </h5>
+          <oj-form-layout max-columns="3">
+            <oj-select-single label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_CATEGORY') ]]"
+              required="true" item-text="CategoryName" value="{{ $variables.categoryId }}"
+              data="[[$variables.rraProductCategoriesListSDP]]"></oj-select-single>
+          </oj-form-layout>
+        </oj-bind-if>
+      </div>
+      <div>
+        <oj-bind-if test="[[ $variables.currentStep === 'step3' ]]">
+          <h5>
+            <oj-bind-text value="[[ $application.translations.format('app', 'ADD_PRODUCT_MSRP_AND_COST') ]]"></oj-bind-text>
+          </h5>
+          <oj-form-layout max-columns="3">
+            <oj-sp-input-currency label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_MSRP') ]]"
+              value="[[ $variables.supplierProductValueItem?.data?.MsrpUnitPrice ]]" readonly="true"
+              currency-display="symbol"></oj-sp-input-currency>
+            <oj-sp-input-currency label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_COST') ]]"
+              value="[[ $variables.supplierProductValueItem?.data?.SupplierUnitPrice ]]" readonly="true"
+              currency-display="symbol"></oj-sp-input-currency>
+          </oj-form-layout>
+          <h5>
+            <oj-bind-text value="[[ $application.translations.format('app', 'ADD_PRODUCT_STEP3_TITLE') ]]"></oj-bind-text>
+          </h5>
+          <oj-form-layout max-columns="3">
+            <oj-sp-input-currency label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_PRICE') ]]"
+              value="{{ $variables.productPrice }}" currency-display="symbol" required="true"></oj-sp-input-currency>
+            <oj-input-number label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_MARGIN') ]]"
+              value="{{ $variables.productMargin }}"
+              converter='{"options":{"style":"percent","minimumFractionDigits":1},"type":"number"}' required="true"></oj-input-number>
+          </oj-form-layout>
+        </oj-bind-if>
+      </div>
+      <div>
+        <oj-bind-if test="[[ $variables.currentStep === 'step4' ]]">
+          <oj-form-layout max-columns="3">
+            <oj-input-number
+              label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_MINIMUM_ORDER_AMOUNT') ]]"
+              readonly="true" value="[[parseInt($variables.supplierProductValueItem?.data?.MinOrderQuantity)]]"></oj-input-number>
+            <oj-input-number
+              label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_SUPPLIER_INVENTORY') ]]"
+              readonly="true" value="[[ parseInt($variables.supplierProductValueItem?.data?.AvailableQty) ]]"></oj-input-number>
+            <oj-input-date
+              label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_ESTIMATED_ARRIVAL_DATE') ]]"
+              readonly="true"
+              value="[[ $page.functions.defaultEstimatedArrivalDate($page.variables.avgLeadTimeDays) ]]"></oj-input-date>
+          </oj-form-layout>
+          <oj-form-layout max-columns="3">
+            <oj-input-number
+              label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_INITIAL_NUMBER_TO_ORDER') ]]"
+              converter='{"options":{"maximumFractionDigits":0},"type":"number"}'
+              value="{{ $variables.productInitialOrderAmount }}" required="true"
+              min="[[ parseInt($variables.supplierProductValueItem?.data?.MinOrderQuantity) ]]"
+              translations.number-range.hint.min="[[ $application.translations.format('app', 'ADD_PRODUCT_INITIAL_NUMBER_TO_ORDER_VALIDATION_MSG') ]]"
+              ></oj-input-number>
+          </oj-form-layout>
+          <h5>
+            <oj-bind-text value="[[ $application.translations.format('app', 'ADD_PRODUCT_REORDER_AMOUNT') ]]"></oj-bind-text>
+          </h5>
+          <oj-form-layout max-columns="3">
+            <oj-input-number
+              label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_LOW_IN_STOCK_THRESHOLD') ]]"
+              converter='{"options":{"maximumFractionDigits":0},"type":"number"}'
+              value="{{ $variables.productLowInStockThreshold }}" required="true" min="0"></oj-input-number>
+            <oj-input-number label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_REORDER_AMOUNT') ]]"
+              converter='{"options":{"maximumFractionDigits":0},"type":"number"}'
+              value="{{ $variables.productReorderAmount }}"
+              required="true" min="[[ parseInt($variables.supplierProductValueItem?.data?.MinOrderQuantity) ]]"></oj-input-number>
+          </oj-form-layout>
+        </oj-bind-if>
+      </div>
+      <div>
+        <oj-bind-if test="[[ $variables.currentStep === 'step5' ]]">
+          <oj-form-layout max-columns="3">
+            <oj-input-date
+              label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_ESTIMATED_ARRIVAL_DATE') ]]"
+              readonly="true"
+              value="[[ $page.functions.defaultEstimatedArrivalDate($page.variables.avgLeadTimeDays) ]]"></oj-input-date>
+          </oj-form-layout>
+          <oj-form-layout max-columns="3">
+            <oj-input-date label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_ACTIVATION_DATE') ]]"
+              value="{{ $variables.productActivationDate }}"
+              required="true"
+              min="{{ new Date().toISOString().split('T')[0] }}"></oj-input-date>
+            <oj-input-date label-hint="[[ $application.translations.format('app', 'ADD_PRODUCT_DEACTIVATION_DATE') ]]"
+              value="{{ $variables.productDeactivationDate }}"
+              min="{{ $page.functions.calculateMinDeactivationDate($variables.productActivationDate) }}"></oj-input-date>
+          </oj-form-layout>
+        </oj-bind-if>
+      </div>
+    </oj-validation-group>
+  </oj-sp-guided-process>
+</div>
+<div class="oj-flex">
+  <oj-sp-message-unsaved-changes id="dirtyDataWarningDialog"
+    on-oj-sp-discard-changes="[[ $listeners.confirmYesOjAction ]]" on-oj-sp-cancel="[[ $listeners.confirmNoOjAction ]]"
+    class="oj-flex-item oj-sm-12 oj-md-12" open-dialog="false">
+</oj-sp-message-unsaved-changes>
+</div>

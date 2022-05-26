@@ -1,0 +1,21 @@
+{
+  "description": "",
+  "root": "assignVariablesPrimaryPanelTitle",
+  "actions": {
+    "assignVariablesPrimaryPanelTitle": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.selectedKpi": {
+          "source": "{{ $variables.key }}"
+        }
+      }
+    }
+  },
+  "variables": {
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "tests": {
+        "handleResponse": {
+            "expectations": [
+                {
+                    "actual": "$actions.callModuleFunction1.results",
+                    "matcher": "to.be.undefined"
+                }
+            ]
+        }
+    }
+   }

@@ -1,0 +1,207 @@
+{
+    "tests": {
+        "cancel dirty - cancel": {
+            "context": {
+                "$page.variables.cancel": true,
+                "$page.variables.dirtyDataFlag": true
+            },
+            "mocks": {
+                "callOpenDialog": {
+                    "outcome": "success",
+                    "result": "YES"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.check.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.checkDirtyDataFlag.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.checkCancelFlag.outcome",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$page.variables.cancel",
+                    "matcher": "to.equal",
+                    "expected": true
+                },
+                {
+                    "actual": "$actions.staySamePage.outcome",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.staySamePage.results",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.checkDialogResponse.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                }                ,
+                {
+                    "actual": "$actions.continueNavigation.outcome",
+                    "matcher": "to.equal",
+                    "expected": "success"
+                }                ,
+                {
+                    "actual": "$actions.continueNavigation.results",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "cancelled": false
+                    }
+                }
+            ]
+        },
+        "cancel dirty - discard": {
+            "context": {
+                "$page.variables.cancel": true,
+                "$page.variables.dirtyDataFlag": true
+            },
+            "mocks": {
+                "callOpenDialog": {
+                    "outcome": "success",
+                    "result": "NO"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.check.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.checkDirtyDataFlag.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.continueNavigation.outcome",
+                    "matcher": "to.be.undefined"
+                },
+                {
+                    "actual": "$actions.checkDialogResponse.outcome",
+                    "matcher": "to.equal",
+                    "expected": "false"                },
+                {
+                    "actual": "$actions.checkCancelFlag.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                }                ,
+                {
+                    "actual": "$page.variables.cancel",
+                    "matcher": "to.equal",
+                    "expected": false
+                }                ,
+                {
+                    "actual": "$actions.staySamePage.outcome",
+                    "matcher": "to.equal",
+                    "expected": "success"
+                }                ,
+                {
+                    "actual": "$actions.staySamePage.results",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "cancelled": true
+                    }
+                }                ,
+                {
+                    "actual": "$actions.stopNavigation.inputs.page",
+                    "matcher": "to.be.undefined"
+                }                ,
+                {
+                    "actual": "$actions.stopNavigation.inputs.params",
+                    "matcher": "to.be.undefined"
+                }
+            ]
+        },
+        "cancel not dirty": {
+            "context": {
+                "$page.variables.cancel": true,
+                "$page.variables.dirtyDataFlag": false
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.check.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.checkDirtyDataFlag.outcome",
+                    "matcher": "to.equal",
+                    "expected": "false"
+                }
+            ]
+        },
+        "other page": {
+            "context": {
+                "$page.variables.cancel": false,
+                "$application.currentPage": {
+                    "id": "pageId"
+                },
+                "$page.variables.dirtyDataFlag": true
+            },
+            "mocks": {
+                "check": {
+                    "outcome": "true"
+                },
+                "callOpenDialog": {
+                    "outcome": "success",
+                    "result": "NO"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$actions.checkDirtyDataFlag.outcome",
+                    "matcher": "to.equal",
+                    "expected": "true"
+                },
+                {
+                    "actual": "$actions.checkCancelFlag.outcome",
+                    "matcher": "to.equal",
+                    "expected": "false"
+                },
+                {
+                    "actual": "$actions.stopNavigation.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": ""
+                },
+                {
+                    "actual": "$actions.stopNavigation.inputs.params",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "currentStep": "",
+                        "dirtyDataFlag": true
+                    }
+                },
+                {
+                    "actual": "$actions.stopNavigation.inputs.history",
+                    "matcher": "to.equal",
+                    "expected": "push"
+                },
+                {
+                    "actual": "$actions.staySamePage.outcome",
+                    "matcher": "to.equal",
+                    "expected": "success"
+                },
+{
+                    "actual": "$actions.staySamePage.results",
+                    "matcher": "to.deep.equal",
+                    "expected": {
+                        "cancelled": true
+                    }
+                },
+                {
+                    "actual": "$actions.checkDialogResponse.outcome",
+                    "matcher": "to.equal",
+                    "expected": "false"
+                }
+            ]
+        }
+    }
+   }

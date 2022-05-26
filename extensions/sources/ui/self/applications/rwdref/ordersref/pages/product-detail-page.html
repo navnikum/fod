@@ -1,0 +1,42 @@
+<div>
+    <oj-sp-messages-banner id="errorMessage" class="oj-flex-item oj-sm-12"
+        messages="[[ $page.variables.errorMessages ]]">
+    </oj-sp-messages-banner>
+
+    <oj-sp-foldout-layout id="foldout_layout_Horizontal_page" animate="[[$page.variables.animate]]"
+        display-options.go-to-parent="false" selected-panel="{{$variables.selectedPanel}}"
+        on-sp-previous="[[$listeners.onSpPrevious]]" on-sp-next="[[$listeners.onSpNext]]" orientation="vertical"
+        display-options.background="transparent">
+
+        <oj-sp-vertical-overview id="oj-sp-item-overview-1" slot="overview" item-title="[[$page.variables.itemTitle]]"
+            item-subtitle="[[$page.variables.itemSubtitle]]"
+            avatar.src="[[ $flow.functions.toResourceUrl($application.path)($flow.variables.productDetail.products.ImageUrl) ]]"
+            avatar.initials="[[ $application.functions.getInitials($page.variables.itemTitle, $page.variables.itemTitle) ]]">
+            <div slot="body">
+                <oj-bind-if test="[[ $flow.variables.productDetail.hasFodProductsErrorMessages ]]">
+                    <oj-sp-empty-state primary-text="[[ $application.translations.app.PRODUCT_DETAIL_EMPTY_STATE_PRIMARY_TEXT ]]"
+                        secondary-text="[[ $application.translations.app.SERVER_RESPONSE_ERROR_SECONDARY_TEXT ]]">
+                    </oj-sp-empty-state>
+                </oj-bind-if>
+                <oj-bind-if test="[[ $flow.variables.productDetail.products !== undefined ]]">
+                    <oj-dynamic-form id="item_overview_detail"
+                        metadata="[[ $flow.metadata.rraProductsGetRraProductsMetadata.provider ]]"
+                        layout="viewProductLayout" value="{{ $flow.variables.productDetail.products }}"
+                        value-loading="[[ $flow.variables.productDetail.productsDetailFormLoadingStatus ]]"
+                        rendered-fields="{{ $flow.variables.productDetail.productsDetailFormRenderedFields }}">
+                    </oj-dynamic-form>
+                </oj-bind-if>
+            </div>
+        </oj-sp-vertical-overview>
+
+        <oj-dynamic-container layout="productDetailsLayout"
+            layout-provider="[[ $page.metadata.dynamicContainerMetadata.provider ]]">
+        </oj-dynamic-container>
+
+    </oj-sp-foldout-layout>
+
+    <oj-sp-in-app-navigation id="in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12" selection="inventory"
+      navigation-data="[[ $flow.variables.navigationItemsAdp ]]"
+      on-sp-selection-action="[[$listeners.inAppNavigationSpSelectionAction]]">
+    </oj-sp-in-app-navigation>
+</div>

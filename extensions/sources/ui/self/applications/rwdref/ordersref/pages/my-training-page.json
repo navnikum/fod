@@ -1,0 +1,199 @@
+{
+  "pageModelVersion": "2010.0.0",
+  "title": "[[ $application.translations.format('app','TRAINING_PAGE_TITLE') ]]",
+  "description": "My Training",
+  "variables": {
+    "pageTitle": {
+      "type": "string",
+      "defaultValue": "[[ $application.translations.app.TRAINING_PAGE_TITLE ]]"
+    },
+    "goToParentOption": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "expanded": {
+      "type": "string",
+      "defaultValue": "auto"
+    },
+    "selectContextValue": {
+      "type": "string",
+      "defaultValue": null,
+      "persisted": "device",
+      "input": "fromUrl",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "updateAllFiltersActionChain"
+          }
+        ]
+      }
+    },
+    "appliedFiltersStr": {
+      "type": "string",
+      "input": "fromUrl",
+      "defaultValue": "",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "updateAppliedFiltersActionChain",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "appliedFilters": {
+      "type": "filterChip[]",
+      "defaultValue": "{{ $page.variables.appliedFiltersStr && $page.variables.appliedFiltersStr.length > 0 ? JSON.parse($page.variables.appliedFiltersStr) : [] }}",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "updateAllFiltersActionChain"
+          }
+        ]
+      }
+    },
+    "allFilters": {
+      "type": "filterChip[]",
+      "defaultValue": "{{ $page.variables.selectContextValue ? (($page.variables.appliedFilters || []).concat([ { 'label': $page.variables.selectContextValue, 'filter': 'keyword', 'value': $page.variables.selectContextValue } ])) :  $page.variables.appliedFilters }}"
+    },
+    "searchResultsDP": {
+      "type": "oj-sp/data-provider/SmartSearchAndFilterDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fndRraUserTrainingSearch/SmartSearchSearch_rraUserTrainingSearch",
+        "options": {
+          "filterCriterion": {
+            "op": "$eq",
+            "value": {
+              "filters": "{{$page.variables.allFilters}}"
+            }
+          },
+          "parameters": {
+            "smartSearchName": "rraUserTrainingSearch"
+          },
+          "recentSearches": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraUserTrainingRecent/adv_save"
+          }
+        }
+      }
+    },
+    "searchSuggestionsDP": {
+      "type": "oj-sp/data-provider/SmartSuggestionChipsDataProvider",
+      "defaultValue": {
+        "dataProviders": {
+          "recentSearches": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraUserTrainingRecent/adv_search",
+            "uriParameters": {
+              "smartSearchName": "rraUserTrainingSearch"
+            }
+          },
+          "autocompleteSearch": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraUserTrainingAutocomplete/SmartSearchAutocomplete_rraUserTrainingSearch",
+            "uriParameters": {
+              "smartSearchName": "rraUserTrainingSearch"
+            }
+          },
+          "suggestionFiltersSearch": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraUserTrainingFilters/SmartSearchFilters_rraUserTrainingSearch",
+            "uriParameters": {
+              "smartSearchName": "rraUserTrainingSearch"
+            }
+          }
+        }
+      }
+    },
+    "showAllTotalCount": {
+      "type": "boolean",
+      "defaultValue": true
+    },
+    "trainingsSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraUserTrainings/getall_rraUserTrainings",
+        "responseType": "getall_rraUserTrainings",
+        "itemsPath": "items",
+        "uriParameters": {
+          "onlyData": "{{ true }}"
+        },
+        "keyAttributes": "TrainingId",
+        "filterCriterion": {
+          "op": "$eq",
+          "attribute": "Username",
+          "value": "{{ $application.user.userName.toLowerCase() }}"
+        }
+      }
+    }
+  },
+  "metadata": {},
+  "types": {
+    "@decorators.getall_rraUserTrainings": {
+      "endpoint": "getall_rraUserTrainings",
+      "service": "oracle_atf_rwdrefUI:rraUserTrainings",
+      "path": "response"
+    },
+    "filterChip": {
+      "count": "number",
+      "dependencies": "string[]",
+      "filter": "string",
+      "filterLabel": "string",
+      "label": "string",
+      "value": "any"
+    },
+    "getall_rraUserTrainings": {
+      "items": [
+        {
+          "CompletedTasks": "number",
+          "CompletionDate": "string",
+          "DueDate": "string",
+          "ImageUrl": "string",
+          "TotalTasks": "number",
+          "TrainingDescription": "string",
+          "TrainingId": "number",
+          "TrainingName": "string",
+          "TrainingType": "string",
+          "Username": "string",
+          "UserTrainingStatus": "string"
+        }
+      ]
+    }
+  },
+  "chains": {},
+  "eventListeners": {
+    "onInAppNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}"
+          }
+        }
+      ]
+    },
+    "trainingListOjItemAction": {
+      "chains": [
+        {
+          "chainId": "goToMyTrainingDetailsActionChain",
+          "parameters": {
+            "itemKey": "{{ $event.detail.context.data.TrainingId }}",
+            "title": "{{ $event.detail.context.data.TrainingName }}"
+          }
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-list-view": {
+        "path": "ojs/ojlistview"
+      },
+      "oj-sp-image-card": {
+        "path": "oj-sp/image-card/loader"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-smart-filter-search": {
+        "path": "oj-sp/smart-filter-search/loader"
+      }
+    }
+  }
+}

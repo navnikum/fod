@@ -1,0 +1,42 @@
+<div class="oj-flex">
+  <oj-sp-smart-filter-search id="inventory-search-filter" page-title="{{$page.variables.pageTitle}}"
+    page-subtitle="{{$page.variables.subtitle}}" display-options.go-to-parent="{{$page.variables.goToParentOption }}"
+    smart-filters.expanded="{{ $page.variables.expanded}}"
+    smart-filters.value="{{ $page.variables.appliedFilters || []}}"
+    smart-filters.ask-hint="{{ $page.variables.askHint}}"
+    smart-filters.results-data="[[$page.variables.searchResultsDP]]"
+    smart-filters.suggestions="[[$page.variables.searchSuggestionsDP]]"
+    smart-filters.suggestion-filters="[[$page.variables.suggestionFiltersDP]]"
+    smart-filters.filters-metadata="[[ $page.metadata.filters.provider ]]"
+    on-smart-filters-changed="[[ $listeners.onFiltersChanged ]]" on-sp-go-to-parent="[[$listeners.onOjSpGoToParent]]"
+    class="oj-flex-item oj-sm-12 oj-md-12" show-all-total-count="[[$page.variables.showAllTotalCount]]"
+    primary-action="[[ ($application.user.permissions.indexOf('/vbcs/fnd/rra/managerView') > -1) ? { display: 'on', label: $application.translations.format('app','ADD_PRODUCT_SUBMIT') } : undefined ]]"
+    on-sp-primary-action="[[$listeners.addProductButtonClick]]">
+    <oj-list-view id="inventory-product-list" slot="main" data="[[ $variables.searchResultsDP ]]" display="card"
+      selection-mode="single" scroll-policy="loadMoreOnScroll" class="oj-flex-item"
+      scroll-policy-options.scroller="[[document.documentElement]]"
+      scroll-policy-options.fetch-size="10" :aria-label="[[ $application.translations.app.INVENTORY_PRODUCT_LIST ]]">
+      <template slot="itemTemplate" data-oj-as="product">
+        <li class="oj-sm-12 oj-md-6 oj-lg-4 oj-sm-margin-0">
+          <oj-sp-object-card :id="[[ 'product-card-' + $current.data.ProductId ]]"
+            label="[[ product.data.ProductNumber ]]"
+            primary-text="[[ product.data.ProductName ]]"
+            secondary-text="[[ product.data.ProductCategory.CategoryName ]]"
+            emphasized="true" footer-text.label="Price"
+            footer-text.value="[[ $application.functions.formatCurrency(product.data.CurrencyCode, product.data.UnitPrice) ]]"
+            image.src="[[ $flow.functions.toResourceUrl($application.path)(product.data.ImageUrl) ]]" on-sp-card-action="[[$listeners.onOjSpObjectCardClick]]"
+            image.alt-text="[[ product.data.ProductName ]]">
+          </oj-sp-object-card>
+        </li>
+      </template>
+    </oj-list-view>
+  </oj-sp-smart-filter-search>
+
+  <oj-sp-messages-toast id="submitProductMessageToast" primary-text="[[ $flow.variables.addProductMessage ]]">
+  </oj-sp-messages-toast>
+
+  <oj-sp-in-app-navigation id="in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12"
+    on-sp-selection-action="[[ $listeners.onNavigationSpSelection ]]"
+    selection="inventory" navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+  </oj-sp-in-app-navigation>
+</div>

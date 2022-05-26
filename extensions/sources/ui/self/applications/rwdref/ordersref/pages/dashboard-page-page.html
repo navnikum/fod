@@ -1,0 +1,95 @@
+<div class="oj-flex">
+    <style>
+    oj-sp-dashboard-panel .oj-sp-dashboard-panel-container {
+        background-color: white;
+    }
+    oj-sp-scoreboard .oj-sp-scoreboard-selected {
+        border-color: black;
+    }
+    </style>
+
+<oj-sp-dashboard-landing-page
+    id="oj-sp-dashboard-page-1"
+    page-title="Orders Analysis"
+    page-subtitle="Last Quarter"
+    primary-action="[[ $variables.primaryAction ]]"
+    on-sp-primary-action="[[$listeners.onPrimaryAction]]">
+    <oj-bind-if test="[[ $variables.numberOfKpiCards > 0 ]]">
+        <oj-sp-scoreboard id="oj-sp-scoreboard" slot="kpi"
+            data="[[ $variables.kpisADP ]]"
+            selection="{{ $variables.selectedKpi }}"
+            selection-mode="[[ $variables.selectionMode ]]">
+        </oj-sp-scoreboard>
+    </oj-bind-if>
+    <oj-switcher value="[[ $variables.dashboardGrids[ $variables.selectedKpi ] ]]">
+        <oj-defer slot="totalOrders">
+        <oj-sp-dashboard-grid layout="[[ $variables.layoutType ]]">
+            <oj-sp-dashboard-panel panel-title="Order Amount: Top 5 Product Categories">
+            <div style="width: 100%; height: 100%">
+                <oj-sp-analytics-canvas host="[[ $variables.oacHost ]]"
+                project-path="/@Catalog/shared/Katia/RDA Demo Scenario"
+                active-tab-id="2"
+                on-sp-data-action="[[$listeners.onDataAction]]" >
+                </oj-sp-analytics-canvas>
+            </div>
+            </oj-sp-dashboard-panel>
+            <oj-sp-dashboard-panel panel-title="Total Amount by Order Date" >
+            <div style="width: 100%; height: 100%">
+                <oj-sp-analytics-canvas host="[[ $variables.oacHost ]]"
+                project-path="/@Catalog/shared/Katia/RDA Demo Scenario"
+                active-tab-id="3"
+                on-sp-data-action="[[$listeners.onDataAction]]">
+                </oj-sp-analytics-canvas>
+            </div>
+            </oj-sp-dashboard-panel>
+            <oj-sp-dashboard-panel panel-title="Ordered vs. In Stock">
+            <div style="width: 100%; height: 100%">
+                <oj-sp-analytics-canvas host="[[ $variables.oacHost ]]"
+                project-path="/@Catalog/shared/Katia/RDA Demo Scenario"
+                active-tab-id="4"
+                on-sp-data-action="[[$listeners.onDataAction]]">
+                </oj-sp-analytics-canvas>
+            </div>
+            </oj-sp-dashboard-panel>
+        </oj-sp-dashboard-grid>
+        </oj-defer>
+        <oj-defer slot="totalItems">
+        <oj-sp-dashboard-grid layout="[[ $variables.layoutType ]]">
+            <oj-sp-dashboard-panel panel-title="Ordered Quantity vs. In Stock by Top 5 Product Categories">
+            <div style="width: 100%; height: 100%">
+                <oj-sp-analytics-canvas host="[[ $variables.oacHost ]]"
+                project-path="/@Catalog/shared/Katia/RDA Demo Scenario"
+                active-tab-id="6"
+                on-sp-data-action="[[$listeners.onDataAction]]" >
+                </oj-sp-analytics-canvas>
+            </div>
+            </oj-sp-dashboard-panel>
+            <oj-sp-dashboard-panel panel-title="Top 5 Product Categories by Quantity" >
+            <div style="width: 100%; height: 100%">
+                <oj-sp-analytics-canvas host="[[ $variables.oacHost ]]"
+                project-path="/@Catalog/shared/Katia/RDA Demo Scenario"
+                active-tab-id="7"
+                on-sp-data-action="[[$listeners.onDataAction]]">
+                </oj-sp-analytics-canvas>
+            </div>
+            </oj-sp-dashboard-panel>
+            <oj-sp-dashboard-panel panel-title="Items in Stock by Product Category">
+            <div style="width: 100%; height: 100%">
+                <oj-sp-analytics-canvas host="[[ $variables.oacHost ]]"
+                project-path="/@Catalog/shared/Katia/RDA Demo Scenario"
+                active-tab-id="8"
+                on-sp-data-action="[[$listeners.onDataAction]]">
+                </oj-sp-analytics-canvas>
+            </div>
+            </oj-sp-dashboard-panel>
+        </oj-sp-dashboard-grid>
+        </oj-defer>
+    </oj-switcher>
+</oj-sp-dashboard-landing-page>
+<oj-messages id="dashboardPageMsgs" messages="[[ $variables.notificationMessages ]]" position="{}" display="notification"></oj-messages>
+</div>
+<oj-sp-in-app-navigation id="fod-in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12"
+  selection="dashboard"
+  on-sp-selection-action="[[ $listeners.onFodInAppNavigationSpSelection ]]"
+  navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+</oj-sp-in-app-navigation>

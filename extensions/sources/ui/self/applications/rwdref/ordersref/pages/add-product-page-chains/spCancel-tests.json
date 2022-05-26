@@ -1,0 +1,18 @@
+{
+    "tests": {
+        "cancel": {
+            "expectations": [
+                {
+                    "actual": "$page.variables.cancel",
+                    "matcher": "to.equal",
+                    "expected": true
+                },
+                {
+                    "actual": "$actions.navigateToInventory.inputs.page",
+                    "matcher": "to.equal",
+                    "expected": "inventory"
+                }
+            ]
+        }
+    }
+   }

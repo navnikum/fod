@@ -1,0 +1,24 @@
+{
+  "root": "assignVariablesSupplierProductValueItem",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "oldValue": "any",
+        "value": "any"
+      }
+    }
+  },
+  "actions": {
+    "assignVariablesSupplierProductValueItem": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.supplierProductValueItem": {
+          "source": "{{ undefined }}"
+        }
+      }
+    }
+  }
+}

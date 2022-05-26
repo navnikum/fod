@@ -1,0 +1,79 @@
+<div class="oj-flex">
+
+    <oj-sp-messages-banner id="errorMessage" class="oj-flex-item oj-sm-12"
+        messages="[[ $page.variables.errorMessages ]]">
+    </oj-sp-messages-banner>
+
+    <div class="oj-flex-item oj-sm-12 oj-md-12">
+        <oj-sp-item-overview-page id="customer-overview-page" overview-expanded="[[$page.variables.overviewExpanded]]"
+            display-options.go-to-parent="false"
+            display-options.bidirectional-navigation="[[$page.variables.bidirectionalNavigation]]"
+            on-sp-overview-collapse="[[$listeners.onOjSpItemOverviewSpCollapse]]"
+            display-options.in-flow-back="[[ $variables.inFlowBack ]]">
+            <oj-sp-item-overview id="customer-overview" slot="overview" item-title="[[ $variables.customerName ]]"
+                expanded-state="[[ $page.variables.overviewExpanded ? 'expanded' : 'auto' ]]"
+                on-sp-expand="[[$listeners.onOjSpItemOverviewSpExpand]]" avatar="[[ $variables.avatar ]]">
+                <div slot="body">
+                    <oj-bind-if test="[[ $page.variables.hasCustomersErrorMessages ]]">
+                        <oj-sp-empty-state
+                            primary-text="[[ $application.translations.app.SERVER_RESPONSE_ERROR_SECONDARY_TEXT ]]">
+                        </oj-sp-empty-state>
+                    </oj-bind-if>
+                    <oj-bind-if test="[[ !$page.variables.hasCustomersErrorMessages ]]">
+                        <oj-dynamic-form id="customer-overview-detail"
+                          metadata="[[ $metadata.rraCustomersGetRraCustomersMetadata.provider ]]"
+                          layout="customerDetailsLayout" value="{{ $variables.rraCustomers }}"
+                          value-loading="[[ $variables.rraCustomersDetailFormLoadingStatus ]]"
+                          rendered-fields="{{ $variables.rraCustomersDetailFormRenderedFields }}"></oj-dynamic-form>
+                    </oj-bind-if>
+                </div>
+            </oj-sp-item-overview>
+
+            <oj-list-view id="customer-order-list" style="min-height: 100vh;" slot="main"
+              data="[[ $variables.orderListSDP ]]" scroll-policy-options.scroller="[[ document.documentElement ]]"
+              scroll-policy-options.fetch-size="12"
+              :aria-label="[[ $application.translations.app.CUSTOMER_ORDER_LIST ]]">
+                <template slot="noData">
+                    <oj-sp-empty-state primary-text="[[ $application.translations.app.ORDER_CUSTOMER_LOAD_ERROR_PRIMARY_TEXT ]]"
+                        secondary-text="[[ $application.translations.app.SERVER_RESPONSE_ERROR_SECONDARY_TEXT ]]">
+                    </oj-sp-empty-state>
+                </template>
+
+                <template slot="itemTemplate" data-oj-as="item">
+                    <oj-sp-list-item-template :id="[[ 'customer-order-list-template-' + item.data.OrderId ]]"
+                      display-options.badge-size="[[ $page.variables.configBadgeSize ]]"
+                      display-options.column-layout="[[ $page.variables.configColumnLayout ]]"
+                      selector.row-key="[[ item.data.OrderId ]]"
+                      badge="[[ $page.variables.configBadgePosition !== 'none' ? {
+                                          text: item.data.OrderStatus === 'PROCESSING' ? 'Processing' : (item.data.OrderStatus === 'DRAFT' ? 'Draft' : item.data.OrderStatus),
+                                          status: item.data.OrderStatus === 'PROCESSING' ? 'info' : 'default',
+                                          position: $page.variables.configBadgePosition
+                                        }: undefined]]"
+                      columns='[[ [{"overlineText":$application.translations.app.ORDER,"primaryText":item.data.OrderNumber,"secondaryText": $application.functions.formatDate(item.data.OrderDate)},{"overlineText":$application.translations.app.ORDER_TOTAL_AMOUNT,"primaryText": $application.functions.formatCurrency(item.data.CurrencyCode, item.data.TotalAmount) }] ]]'
+                      secondary-actions='{{ [{"id":"view-order","label": $application.translations.app.ORDERS_LIST_ITEM_VIEW_ORDER_OPTION, "icon":"oj-ux-ico-view", "display": "on"},{"id":"edit-order","label":$application.translations.app.ORDER_EDIT,"icon":"oj-ux-ico-pen","display":(item.data.OrderStatus === "PROCESSING" ? "disabled" : "on"), "disabled": (item.data.OrderStatus === "PROCESSING") },{"id":"delete-order","label":$application.translations.app.DELETE,"icon":"oj-ux-ico-trash","display":(item.data.OrderStatus === "PROCESSING" ? "disabled" : "on"), "disabled": item.data.OrderStatus === "PROCESSING"}] }}'
+                      on-sp-secondary-action="[[ $listeners.onSecondaryAction ]]" slot="itemTemplate">
+                    </oj-sp-list-item-template>
+                </template>
+            </oj-list-view>
+        </oj-sp-item-overview-page>
+    </div>
+
+    <!-- Dialogs -->
+    <oj-sp-message-dialog-destructive id="order-delete-conf-dialog"
+        primary-text="[[ $application.translations.format('app', 'ORDER_DELETE_CONF_MSG_PRIMARY', {orderNumber: $page.variables.currentItemOrderNumber}) ]]"
+        secondary-text=""
+        primary-action-label="[[ $application.translations.app.DELETE ]]"
+        on-oj-sp-delete-confirm="[[ $listeners.onDeleteOrder ]]"
+        open-dialog="false">
+    </oj-sp-message-dialog-destructive>
+    <oj-sp-in-app-navigation id="in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12" selection="manage-orders"
+      on-sp-selection-action="[[$listeners.onInAppNavigationSpSelection]]"
+      navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+    </oj-sp-in-app-navigation>
+    <!-------------->
+
+    <!-- Toast Messages -->
+    <oj-sp-messages-toast id="viewCustomerMessageToast" primary-text="[[ $page.variables.successMessage ]]">
+    </oj-sp-messages-toast>
+    <!-------------->
+</div>

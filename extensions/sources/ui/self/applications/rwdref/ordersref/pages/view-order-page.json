@@ -1,0 +1,255 @@
+{
+  "title": "[[ $application.translations.format('app','ORDER_VIEW_PAGE_TITLE', {orderNumber: ''}) ]]",
+  "description": "",
+  "variables": {
+    "defaultFields": {
+      "type": "string[]",
+      "defaultValue": [
+        "OrderId",
+        "OrderNumber",
+        "OrderDate",
+        "TotalAmount"
+      ]
+    },
+    "orderId": {
+      "type": "string",
+      "description": "",
+      "input": "fromUrl",
+      "defaultValue": "300100549826057"
+    },
+    "pageTitle": {
+      "type": "string",
+      "defaultValue": "[[ $application.translations.format('app', 'ORDER_VIEW_PAGE_TITLE', {orderNumber: $variables.rraOrders.OrderNumber || ''}) ]]"
+    },
+    "customerName": {
+      "type": "string",
+      "value": "",
+      "input": "none"
+    },
+    "contextualInfo": {
+      "type": "object[]",
+      "defaultValue": [
+        {
+          "label": "[[ $application.translations.format('app', 'CUSTOMER_PAGE_TITLE') ]]",
+          "value": "[[ $page.variables.customerName || '' ]]"
+        },
+        {
+          "label": "[[ $application.translations.format('app', 'VIEW_ORDER_CONTEXTUAL_INFO_DATE') ]]",
+          "value": "[[ $application.functions.formatDate($page.variables.rraOrders.OrderDate) ]]"
+        },
+        {
+          "label": "[[ $application.translations.format('app', 'ORDER_TOTAL_AMOUNT') ]]",
+          "value": "[[ $application.functions.formatCurrency($flow.constants.defaultCurrencyCode, $page.variables.rraOrders.TotalAmount ? $page.variables.rraOrders.TotalAmount : 0) ]]"
+        }
+      ]
+    },
+    "hasApiFetchError": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "errorMessages": {
+      "type": "vb/ArrayDataProvider"
+    },
+    "rraOrderLinesListSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/getall_rraOrders-RraOrderLines",
+        "keyAttributes": "OrderLineId",
+        "itemsPath": "items",
+        "responseType": "getallRraOrdersRraOrderLinesResponse",
+        "uriParameters": {
+          "rraOrders_Id": "{{ $variables.orderId }}",
+          "totalResults": true
+        }
+      }
+    },
+    "rraOrders": {
+      "type": "getRraOrdersResponse"
+    },
+    "rraOrdersDetailFormLoadingStatus": {
+      "type": "string",
+      "defaultValue": "pending"
+    },
+    "rraOrdersDetailFormRenderedFields": {
+      "type": "any[]",
+      "defaultValue": "[[ $variables.defaultFields ]]",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "loadRraOrdersChain",
+            "parameters": {
+              "fetchedFields": "[[ $variables.defaultFields.concat($variables.rraOrdersDetailFormRenderedFields) ]]",
+              "rraOrdersId": "[[ $page.variables.orderId ]]"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "rraOrdersGetallRraOrdersRraOrderLinesMetadata": {
+      "type": "vb/DynamicLayoutMetadataProviderDescriptor",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/getall_rraOrders-RraOrderLines",
+        "metadataPath": "items"
+      }
+    },
+    "rraOrdersGetRraOrdersMetadata": {
+      "type": "vb/DynamicLayoutMetadataProviderDescriptor",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraOrders/get_rraOrders"
+      }
+    }
+  },
+  "types": {
+    "@decorators.getallRraOrdersRraOrderLinesResponse": {
+      "endpoint": "getall_rraOrders-RraOrderLines",
+      "service": "oracle_atf_rwdrefUI:rraOrders",
+      "path": "response"
+    },
+    "@decorators.getRraOrdersResponse": {
+      "endpoint": "get_rraOrders",
+      "service": "oracle_atf_rwdrefUI:rraOrders",
+      "path": "response"
+    },
+    "getallRraOrdersRraOrderLinesResponse": {
+      "items": "object[]"
+    },
+    "getRraOrdersResponse": "object"
+  },
+  "chains": {},
+  "eventListeners": {
+    "ojSpGeneralDrawerTemplateSpClose": {
+      "chains": [
+        {
+          "chainId": "flow:closeDrawerActionChain"
+        }
+      ]
+    },
+    "ojSpGeneralDrawerTemplateSpNext": {
+      "chains": [
+        {
+          "chainId": "flow:nextItemOrderDrawerActionChain",
+          "parameters": {
+            "errorMessages": "{{ $variables.errorMessages }}"
+          }
+        }
+      ]
+    },
+    "ojSpGeneralDrawerTemplateSpPrevious": {
+      "chains": [
+        {
+          "chainId": "flow:previousItemOrderDrawerActionChain",
+          "parameters": {
+            "errorMessages": "{{ $variables.errorMessages }}"
+          }
+        }
+      ]
+    },
+    "onNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}"
+          }
+        }
+      ]
+    },
+    "onProductNumberClicked": {
+      "chains": [
+        {
+          "chainId": "productDrawerActionChain",
+          "parameters": {
+            "info": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "onOrderFormProductnumberselected": {
+      "chains": [
+        {
+          "chainId": "productDrawerActionChain",
+          "parameters": {
+            "info": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "onDrawerOpenedChanged": {
+      "chains": [
+        {
+          "chainId": "flow:drawerOpenedChangedActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "orderLinesTableProductNumberClick": {
+      "chains": [
+        {
+          "chainId": "TableProductNumberClickChain",
+          "parameters": {
+            "payload": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "vbBeforeExit": {
+      "chains": [
+        {
+          "chainId": "checkBeforeExitActionChain"
+        }
+      ]
+    },
+    "vbDataProviderNotification": {
+      "chains": [
+        {
+          "chainId": "vbDataProviderErrorActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-drawer-popup": {
+        "path": "ojs/ojdrawerpopup"
+      },
+      "oj-avatar": {
+        "path": "ojs/ojavatar"
+      },
+      "oj-dynamic-form": {
+        "path": "oj-dynamic/form/loader"
+      },
+      "oj-dynamic-table": {
+        "path": "oj-dynamic/table/loader"
+      },
+      "oj-label": {
+        "path": "ojs/ojlabel"
+      },
+      "oj-label-value": {
+        "path": "ojs/ojlabelvalue"
+      },
+      "oj-sp-general-drawer-template": {
+        "path": "oj-sp/general-drawer-template/loader"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-smart-filter-search": {
+        "path": "oj-sp/smart-filter-search/loader"
+      },
+      "oj-sp-messages-banner": {
+        "path": "oj-sp/messages-banner/loader"
+      },
+      "oj-sp-empty-state": {
+        "path": "oj-sp/empty-state/loader"
+      }
+    }
+  },
+  "events": {}
+}

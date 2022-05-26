@@ -1,0 +1,12 @@
+{
+  "root": "navigateToManageOrders",
+  "description": "Notifiy action is triggered",
+  "actions": {
+    "navigateToManageOrders": {
+      "module": "vb/action/builtin/navigateAction",
+      "parameters": {
+        "page": "manage-orders"
+      }
+    }
+  }
+}

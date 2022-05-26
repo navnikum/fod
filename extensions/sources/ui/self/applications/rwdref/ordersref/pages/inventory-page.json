@@ -1,0 +1,198 @@
+{
+  "title": "[[ $application.translations.format('app','INVENTORY_PAGE_TITLE') ]]",
+  "description": "",
+  "variables": {
+    "appliedFilters": {
+      "type": "filterChip[]",
+      "defaultValue": []
+    },
+    "appliedFiltersStr": {
+      "type": "string",
+      "input": "fromUrl",
+      "defaultValue": ""
+    },
+    "askHint": {
+      "type": "string",
+      "defaultValue": "[[ $application.translations.format('app', 'INVENTORY_SEARCH_ASK_HINT') ]]"
+    },
+    "expanded": {
+      "type": "string",
+      "defaultValue": "auto"
+    },
+    "goToParentOption": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "pageTitle": {
+      "type": "string",
+      "defaultValue": "[[ $application.translations.format('app','INVENTORY_PAGE_TITLE') ]]"
+    },
+    "searchResultsDP": {
+      "type": "oj-sp/data-provider/SmartSearchAndFilterDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fndRraProductSearch/SmartSearchSearch_rraProductSearch",
+        "options": {
+          "filterCriterion": {
+            "op": "$eq",
+            "value": {
+              "filters": "{{$page.variables.appliedFilters}}"
+            }
+          },
+          "parameters": {
+            "smartSearchName": "rraProductSearch"
+          },
+          "recentSearches": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraProductRecent/adv_save"
+          }
+        }
+      }
+    },
+    "searchSuggestionsDP": {
+      "type": "oj-sp/data-provider/SmartSuggestionChipsDataProvider",
+      "defaultValue": {
+        "dataProviders": {
+          "recentSearches": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraProductRecent/adv_search",
+            "uriParameters": {
+              "smartSearchName": "rraProductSearch"
+            }
+          },
+          "autocompleteSearch": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraProductAutocomplete/SmartSearchAutocomplete_rraProductSearch",
+            "uriParameters": {
+              "smartSearchName": "rraProductSearch"
+            }
+          },
+          "suggestionFiltersSearch": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraProductFilters/SmartSearchFilters_rraProductSearch",
+            "uriParameters": {
+              "smartSearchName": "rraProductSearch"
+            }
+          }
+        }
+      }
+    },
+    "suggestionFiltersDP": {
+      "type": "oj-sp/data-provider/SuggestionFiltersDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fndRraProductFilters/SmartSearchFilters_rraProductSearch",
+        "uriParameters": {
+          "smartSearchName": "rraProductSearch"
+        }
+      }
+    },
+    "showAllTotalCount": {
+      "type": "boolean",
+      "defaultValue": true
+    },
+    "subtitle": {
+      "type": "string"
+    }
+  },
+  "metadata": {
+    "filters": {
+      "type": "vb/DynamicLayoutMetadataProviderDescriptor",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fndRraProductFilters/SmartSearchFilters_rraProductSearch"
+      }
+    }
+  },
+  "types": {
+    "filterChip": {
+      "filter": "string",
+      "filterLabel": "string",
+      "dependencies": "string[]",
+      "label": "string",
+      "value": "any",
+      "count": "number"
+    }
+  },
+  "chains": {},
+  "eventListeners": {
+    "addProductButtonClick": {
+      "chains": [
+        {
+          "chainId": "addProductActionChain"
+        }
+      ]
+    },
+    "onNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}"
+          }
+        }
+      ]
+    },
+    "onOjSpGoToParent": {
+      "chains": [
+        {
+          "chainId": "goToParentActionChain",
+          "parameters": {}
+        }
+      ]
+    },
+    "onOjSpObjectCardClick": {
+      "chains": [
+        {
+          "chainId": "objectCardClickActionChain",
+          "parameters": {
+            "detail": "{{ $event.detail }}",
+            "key": "{{ $current.key }}",
+            "index": "{{ $current.index }}",
+            "current": "{{ $current }}"
+          }
+        }
+      ]
+    },
+    "onFiltersChanged": {
+      "chains": [
+        {
+          "chainId": "filterNavigateActionChain",
+          "parameters": {
+            "changeContext": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "vbAfterNavigate": {
+      "chains": [
+        {
+          "chainId": "afterNavigationActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "vbEnter": {
+      "chains": [
+        {
+          "chainId": "checkVbEnterActionChain",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-list-view": {
+        "path": "ojs/ojlistview"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-messages-toast": {
+        "path": "oj-sp/messages-toast/loader"
+      },
+      "oj-sp-object-card": {
+        "path": "oj-sp/object-card/loader"
+      },
+      "oj-sp-smart-filter-search": {
+        "path": "oj-sp/smart-filter-search/loader"
+      }
+    }
+  }
+}

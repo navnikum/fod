@@ -1,0 +1,26 @@
+{
+    "tests": {
+        "margin change": {
+            "context": {
+                "$variables.event": "[[ {\"value\": 0.2 } ]]",
+                "$page.variables.supplierProductValueItem": {
+                    "data": {
+                        "SupplierUnitPrice": 300
+                    }
+                }
+            },
+            "mocks": {
+                "callChainSetDirtyData": {
+                    "outcome": "success"
+                }
+            },
+            "expectations": [
+                {
+                    "actual": "$page.variables.productPrice",
+                    "matcher": "to.equal",
+                    "expected": 360
+                }
+            ]
+        }
+    }
+   }

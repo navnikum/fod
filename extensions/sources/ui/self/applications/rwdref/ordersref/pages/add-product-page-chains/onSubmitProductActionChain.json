@@ -1,0 +1,145 @@
+{
+  "description": "",
+  "root": "ifValid",
+  "actions": {
+
+    "callRestCreateRraGuidedProcess": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "oracle_atf_rwdrefUI:rraGuidedProcess/create_rraGuidedProcess",
+        "body": "{{ $page.variables.product }}"
+      },
+      "outcomes": {
+        "failure": "fireNotificationAddProductError",
+        "success": "resetVariablesGuidedProcess"
+      }
+    },
+    "assignVariablesProduct": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.product": {
+          "source": {
+            "BrandName": "{{ $page.variables.supplierProductValueItem?.data?.BrandName || 'Quantum' }}",
+            "Color": "{{ $page.variables.supplierProductValueItem?.data?.Color }}",
+            "CurrencyCode": "{{ $page.variables.supplierProductValueItem?.data?.CurrencyCode || 'USD' }}",
+            "Dimensions": "{{ $page.variables.supplierProductValueItem?.data?.Dimensions }}",
+            "ImageUrl": "{{ $page.variables.supplierProductValueItem?.data?.ImageUrl }}",
+            "PlaceOfManufacture": "{{ $page.variables.supplierProductValueItem?.data?.PlaceOfManufacture || 'China' }}",
+            "UnitPrice": "{{ $page.variables.productPrice }}",
+            "Weight": "{{ $page.variables.supplierProductValueItem?.data?.Weight }}",
+            "ProductName": "{{ $page.variables.productName }}",
+            "Description": "{{ $page.variables.productDescription }}",
+            "MinThresholdQty": "{{ $page.variables.productLowInStockThreshold }}",
+            "ProductActivationDate": "{{ $page.variables.productActivationDate }}",
+            "ProductCategoryId": "{{ $page.variables.categoryId }}",
+            "ProductNumber": "{{ $page.variables.supplierProductValueItem?.data?.ProductNumber }}",
+            "NumOfItems": "{{ $page.variables.productInitialOrderAmount }}",
+            "ReorderQty": "{{ $page.variables.productReorderAmount }}",
+            "ProductDeactivationDate": "{{ $page.variables.productDeactivationDate }}",
+            "RraSuppliersProducts": [
+              {
+                "SupplierId": "{{ $page.variables.supplierId }}",
+                "AvgLeadTimeDays": "{{ $page.variables.supplierProductValueItem?.data?.AvgLeadTimeDays || 5 }}",
+                "MinOrderQuantity": "{{ $page.variables.supplierProductValueItem?.data?.MinOrderQuantity }}",
+                "MsrpPrice": "{{ $page.variables.supplierProductValueItem?.data?.MsrpUnitPrice }}",
+                "SupplierPrice": "{{ $page.variables.supplierProductValueItem?.data?.SupplierUnitPrice }}",
+                "SupplierProductNumber": "{{ 'SUPR' + $page.variables.supplierProductValueItem?.data?.ProductNumber }}"
+              }
+            ]
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.RraSuppliersProducts": {
+              "source": "$source.RraSuppliersProducts",
+              "reset": "empty",
+              "auto": "always"
+            }
+          }
+        }
+      },
+      "outcomes": {
+        "success": "callRestCreateRraGuidedProcess"
+      },
+      "label": "Create guidedProcess request body"
+    },
+    "fireNotificationAddProductError": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestCreateRraGuidedProcess.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "resetVariablesProduct": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.product"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesProduct"
+      }
+    },
+    "navigateToInventory": {
+      "module": "vb/action/builtin/navigateAction",
+      "@dt": {
+        "targetType": "page"
+      },
+      "parameters": {
+        "page": "inventory",
+        "history": "push"
+      }
+
+    },
+    "ifValid": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $page.variables.valid === 'valid']]"
+      },
+      "outcomes": {
+        "true": "resetVariablesProduct",
+        "false": "callComponentValidationGroupShowMessages"
+      },
+      "label": "Check if Form is valid"
+    },
+    "callComponentValidationGroupShowMessages": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('validationGroup') }}",
+        "method": "showMessages"
+      },
+      "outcomes": {}
+    },
+    "assignVariablesAddProductMessage": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$flow.variables.addProductMessage": {
+          "source": "{{ $application.translations.format('app', 'ADD_PRODUCT_SUBMITTED_CONF_MSG') }}"
+        }
+      },
+      "label": "Save success message to add product toast message",
+      "outcomes": {
+        "success": "navigateToInventory"
+      }
+    },
+    "resetVariablesGuidedProcess": {
+      "module": "vb/action/builtin/resetVariablesAction",
+      "parameters": {
+        "variables": [
+          "$page.variables.product",
+          "$page.variables.categoryId",
+          "$page.variables.dirtyDataFlag",
+          "$flow.variables.addProductMessage"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesAddProductMessage"
+      }
+    }
+  },
+  "variables": {
+  }
+}

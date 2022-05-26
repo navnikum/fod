@@ -1,0 +1,84 @@
+<div class="oj-flex">
+  <oj-sp-smart-filter-search class="oj-flex-item oj-sm-12 oj-md-12" page-title="[[ $variables.pageTitle ]]"
+    display-options.go-to-parent="false">
+    <div slot="main" class="oj-sm-margin-8x-bottom">
+    <div class="oj-flex oj-sm-flex-direction-row oj-sm-justify-content-space-between oj-sm-padding-10x-top oj-sm-padding-8x-bottom">
+      <div class="oj-flex-item oj-sm-flex-initial oj-typography-subheading-sm">
+        <oj-bind-text value="[[ $application.translations.app.TRAINING_DETAILS_TODO ]]"></oj-bind-text>
+      </div>
+      <div class="oj-flex-item oj-sm-flex-initial oj-flex oj-flex oj-sm-flex-direction-column">
+        <div class="oj-sm-padding-2x-bottom">
+          <oj-bind-text
+            value=" [[ $application.translations.format('app', 'TRAINING_CARD_FOOTER', { completed: $variables.completedTasksCount, count: $variables.tasksCount }) ]]"></oj-bind-text>
+        </div>
+        <oj-progress-bar max="[[ $variables.tasksCount ]]" value="[[ $variables.completedTasksCount ]]">
+        </oj-progress-bar>
+      </div>
+    </div>
+    <oj-list-view data="[[ $variables.tasksSDP ]]" scroll-policy="loadMoreOnScroll"
+      scroll-policy-options.scroller="[[document.documentElement]]"
+      scroll-policy-options.fetch-size="10" :aria-label="[[ $application.translations.app.TRAINING_DETAILS_TODO ]]">
+      <template slot="itemTemplate" data-oj-as="task">
+        <li>
+          <oj-sp-expandable-list-item item-title="[[ task.data.TaskTitle ]]"
+            icon.class="[[task.data.UserTrainingTaskStatus == 'Completed' ? 'oj-ux-ico-check' : $variables.taskTypeIcon[(task.data.TaskType || 2)] ]]"
+            icon.alt-text='"[[ task.data.TaskTitle ]]"'
+            on-sp-before-detail-collapse="[[$listeners.ojSpExpandableListItemSpBeforeCollapseExpand]]"
+            on-sp-before-detail-expand="[[$listeners.ojSpExpandableListItemSpBeforeDetailExpand]]"
+            detail-actions='[[ [{"id":"done","label":[[ $application.translations.app.TRAINING_DETAIL_ACTIONS_LABEL ]],"display":task.data.UserTrainingTaskStatus == "Completed" ? "disabled": "on","type":"default"}] ]]'
+            on-sp-detail-action="[[$listeners.ojSpExpandableListItemSpDetailAction]]"
+            :id="[[ 'task_' + task.key ]]" expanded="{{ $variables.expandedState[$current.data.TrainingTaskId] }}"
+            :data-incomplete="[[ task.data.UserTrainingTaskStatus !== 'Completed']]">
+            <div class="oj-flex oj-sm-margin-2x-top oj-sm-margin-10x-bottom oj-sm-flex-direction-column">
+              <oj-bind-for-each data="[[ task.data.TaskBody ]]">
+                <template data-oj-as="element">
+                  <oj-bind-if test="[[ element.data.type === 'p' ]]">
+                    <p><oj-bind-text value="[[ element.data.text ]]"></oj-bind-text></p>
+                  </oj-bind-if>
+                  <oj-bind-if test="[[ element.data.type === 'h' ]]">
+                    <h5><oj-bind-text value="[[ element.data.text ]]"></oj-bind-text></h5>
+                  </oj-bind-if>
+                  <oj-bind-if test="[[ element.data.type === 'img' ]]">
+                    <p><img :src="[[ $flow.functions.toResourceUrl($application.path)(element.data.src) ]]" style="width: fit-content"/></p>
+                  </oj-bind-if>
+                  <oj-bind-if test="[[ element.data.type === 'ul' ]]">
+                    <p>
+                      <ul>
+                        <oj-bind-for-each data="[[ element.data.lis ]]">
+                          <template data-oj-as="liText">
+                            <li><oj-bind-text value="[[ liText.data ]]"></oj-bind-text></li>
+                          </template>
+                        </oj-bind-for-each>
+                      </ul>
+                    </p>
+                  </oj-bind-if>
+                  <oj-bind-if test="[[ element.data.type === 'ol' ]]">
+                    <p>
+                      <ol>
+                        <oj-bind-for-each data="[[ element.data.lis ]]">
+                          <template data-oj-as="liText">
+                            <li><oj-bind-text value="[[ liText.data ]]"></oj-bind-text></li>
+                          </template>
+                        </oj-bind-for-each>
+                      </ol>
+                    </p>
+                  </oj-bind-if>
+                  <oj-bind-if test="[[ element.data.type === 'a' ]]">
+                    <p>
+                      <a :href="[[ element.data.href ]]" target="_blank"><oj-bind-text value="[[ element.data.text ]]"></oj-bind-text></a>
+                    </p>
+                  </oj-bind-if>
+                </template>
+              </oj-bind-for-each>
+            </div>
+          </oj-sp-expandable-list-item>
+        </li>
+      </template>
+    </oj-list-view>
+    </div>
+  </oj-sp-smart-filter-search>
+  <oj-sp-in-app-navigation id="fod-in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12" selection="my-training"
+    on-sp-selection-action="[[$listeners.onNavigationSpSelection]]"
+    navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+  </oj-sp-in-app-navigation>
+</div>

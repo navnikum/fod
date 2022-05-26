@@ -1,0 +1,138 @@
+{
+  "title": "[[ $application.translations.format('app','WELCOME_PAGE_TITLE') ]]",
+  "description": "",
+  "variables": {
+    "illustrationBackground": {
+      "type": "string",
+      "defaultValue": "oj-ux-icon/illust-welcome-banner-bg-04.png"
+    },
+    "illustrationForeground": {
+      "type": "string",
+      "defaultValue": "oj-ux-icon/illust-welcome-banner-fg-04.png"
+    },
+    "errorMessages": {
+      "type": "vb/ArrayDataProvider"
+    },
+    "searchOrdersSDP": {
+      "type": "oj-sp/data-provider/SmartSearchAndFilterDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fndRraOrderSearch/SmartSearchSearch_rraOrderSearch",
+        "options": {
+          "filterCriterion": {
+            "op": "$eq",
+            "value": {
+              "filters": [
+                {
+                  "filter": "StatusLOV",
+                  "value": "DRAFT"
+                }
+              ]
+            }
+          },
+          "parameters": {
+            "smartSearchName": "rraOrderSearch"
+          },
+          "sortCriteria": [
+            {
+              "attribute": "OrderDate",
+              "direction": "descending"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "metadata": {},
+  "types": {
+    "@decorators.getall_rraOrders": {
+      "endpoint": "getall_rraOrders",
+      "service": "oracle_atf_rwdrefUI:rraOrders",
+      "path": "response"
+    },
+    "getall_rraOrders": {
+      "count": "number",
+      "hasMore": "boolean",
+      "items": [
+        {
+          "CurrencyCode": "string",
+          "CustomerFirstName": "string",
+          "CustomerLastName": "string",
+          "OrderId": "number",
+          "OrderNumber": "string",
+          "OrderStatus": "string",
+          "RraOrderLines": {
+            "items": [
+              {
+                "ImageUrl": "string",
+                "ProductName": "string"
+              }
+            ]
+          },
+          "TotalAmount": "number"
+        }
+      ]
+    }
+  },
+  "chains": {},
+  "eventListeners": {
+    "onNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}"
+          }
+        }
+      ]
+    },
+    "vbDataProviderNotification": {
+      "chains": [
+        {
+          "chainId": "vbDataProviderErrorActionChain",
+          "parameters": {
+            "data": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "onCreateOrderButtonOj": {
+      "chains": [
+        {
+          "chainId": "createOrderActionChain"
+        }
+      ]
+    },
+    "onOrderCardPrimaryAction": {
+      "chains": [
+        {
+          "chainId": "editOrderActionChain",
+          "parameters": {
+            "orderId": "{{ $event.detail.actionId }}"
+          }
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-button": {
+        "path": "ojs/ojbutton"
+      },
+      "oj-list-view": {
+        "path": "ojs/ojlistview"
+      },
+      "oj-sp-object-card": {
+        "path": "oj-sp/object-card/loader"
+      },
+      "oj-sp-welcome-page": {
+        "path": "oj-sp/welcome-page/loader"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-messages-banner": {
+        "path": "oj-sp/messages-banner/loader"
+      }
+    }
+  }
+}

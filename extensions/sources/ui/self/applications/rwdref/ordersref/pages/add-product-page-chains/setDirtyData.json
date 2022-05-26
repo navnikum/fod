@@ -1,0 +1,22 @@
+{
+  "root": "assignVariablesDirtyDataFlag",
+  "description": "",
+  "variables": {
+    "dirty": {
+      "type": "boolean",
+      "defaultValue": true,
+      "required": true,
+      "input": "fromCaller"
+    }
+  },
+  "actions": {
+    "assignVariablesDirtyDataFlag": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.dirtyDataFlag": {
+          "source": "{{ $variables.dirty }}"
+        }
+      }
+    }
+  }
+}

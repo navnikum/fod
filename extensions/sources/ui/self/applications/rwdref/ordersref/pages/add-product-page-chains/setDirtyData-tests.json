@@ -1,0 +1,16 @@
+{
+    "tests": {
+        "set dirty": {
+            "context": {
+                "$variables.dirty": true
+            },
+            "expectations": [
+                {
+                    "actual": "$page.variables.dirtyDataFlag",
+                    "matcher": "to.equal",
+                    "expected": true
+                }
+            ]
+        }
+    }
+   }

@@ -1,0 +1,428 @@
+{
+  "title": "[[ $application.translations.format('app','PRODUCT_DETAIL_PAGE_TITLE') ]]",
+  "description": "",
+  "variables": {
+    "animate": {
+      "type": "string",
+      "defaultValue": "auto"
+    },
+    "appliedFiltersOrder": {
+      "type": "filterChip",
+      "defaultValue": "[[ [{'filter': 'keyword','value': $page.variables.productNumber, 'label': $page.variables.productNumber},{'filter': 'keyword','value': 'PROCESSING', 'label': 'PROCESSING'}] ]]"
+    },
+    "appliedFilters": {
+      "type": "filterChip",
+      "defaultValue": "{{ $page.variables.appliedFiltersStr && $page.variables.appliedFiltersStr.length > 0 ? JSON.parse($page.variables.appliedFiltersStr) : [] }}"
+    },
+    "appliedFiltersStr": {
+      "type": "string",
+      "input": "fromUrl",
+      "defaultValue": "",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "updateAppliedFiltersActionChain",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "bidirectionalNavigation": {
+      "type": "boolean",
+      "defaultValue": false,
+      "input": "fromCaller"
+    },
+    "hasSupplierProductsErrorMessages": {
+      "type": "boolean",
+      "defaultValue": false
+    },
+    "itemSubtitle": {
+      "type": "string",
+      "defaultValue": "[[ $flow.variables.productDetail.products.ProductNumber ]]"
+    },
+    "itemTitle": {
+      "type": "string",
+      "defaultValue": "[[ $flow.variables.productDetail.products.ProductName ]]"
+    },
+    "nextStep": {
+      "type": "any",
+      "defaultValue": {}
+    },
+    "searchResultsDP": {
+      "type": "oj-sp/data-provider/SmartSearchAndFilterDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:fndRraOrderSearch/SmartSearchSearch_rraOrderSearch",
+        "options": {
+          "filterCriterion": {
+            "op": "$eq",
+            "value": {
+              "filters": "{{ $page.variables.appliedFiltersOrder }}"
+            }
+          },
+          "parameters": {
+            "smartSearchName": "rraOrderSearch"
+          },
+          "recentSearches": {
+            "endpoint": "oracle_atf_rwdrefUI:fndRraOrderRecent/adv_save"
+          }
+        }
+      }
+    },
+    "panelOneTitle": {
+      "type": "string",
+      "defaultValue": "[[ $application.translations.format('app','PRODUCT_DETAIL_PANEL1_TITLE') ]]"
+    },
+    "panelThreeTitle": {
+      "type": "string",
+      "defaultValue": "[[ $application.translations.format('app','ORDERS_PAGE_TITLE') ]]"
+    },
+    "panelTwoTitle": {
+      "type": "string",
+      "defaultValue": "[[ $application.translations.format('app','PRODUCT_DETAIL_PANEL2_TITLE') ]]"
+    },
+    "parentPage": {
+      "type": "string",
+      "input": "fromUrl"
+    },
+    "previousStep": {
+      "type": "any"
+    },
+    "productDetailRenderedFields": {
+      "type": "any[]",
+      "defaultValue": "[[ $flow.variables.productDetail.defaultFields.concat($flow.variables.productDetail.productsDetailFormRenderedFields) ]]",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "flow:loadRraProductsActionChain",
+            "parameters": {
+              "fetchedFields": "[[ $page.variables.productDetailRenderedFields ]]",
+              "rraProductsId": "[[ $page.variables.productId ]]",
+              "errorMessages": "{{ $variables.errorMessages }}"
+            }
+          }
+        ]
+      }
+    },
+    "productId": {
+      "type": "number",
+      "required": true,
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "flow:loadRraProductsActionChain",
+            "parameters": {
+              "fetchedFields": "[[ $page.variables.productDetailRenderedFields ]]",
+              "rraProductsId": "[[ $page.variables.productId ]]",
+              "errorMessages": "{{ $variables.errorMessages }}"
+            }
+          },
+          {
+            "chainId": "loadRraSupplierProductsDataActionChain"
+          }
+        ]
+      }
+    },
+    "productNumber": {
+      "type": "string",
+      "required": false,
+      "input": "none"
+    },
+    "rowIndex": {
+      "type": "number",
+      "input": "fromUrl",
+      "description": "Zero-based index referring to the current row",
+      "required": false,
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "fetchActionChain",
+            "parameters": {
+              "limit": 3,
+              "offset": "{{ $page.variables.rowIndex > 0 ? ($page.variables.rowIndex - 1) : 0 }}"
+            }
+          }
+        ]
+      }
+    },
+    "selectedPanel": {
+      "type": "number",
+      "input": "fromUrl"
+    },
+    "supplierAddress": {
+      "type": "string",
+      "defaultValue": "[[ $variables.supplierProductData ? (($variables.supplierProductData.AddressLine1 || '') + ' ' + ($variables.supplierProductData.AddressLine2 || '') + ' ' + ($variables.supplierProductData.City || '') + ' ' + ($variables.supplierProductData.State || '') + ' ' + ($variables.supplierProductData.PostalCode || '') + ' ' + ($variables.supplierProductData.Country || '')) : '' ]]"
+    },
+    "supplierProductData": {
+      "type": "get_rraSupplierProducts"
+    },
+    "totalOrders": {
+      "type": "number",
+      "defaultValue": 0
+    },
+    "errorMessages": {
+      "type": "vb/ArrayDataProvider"
+    }
+  },
+  "metadata": {
+    "dynamicContainerMetadata": {
+      "type": "vb/ContainerMetadataProviderDescriptor"
+    }
+  },
+  "layouts": {
+    "productDetailsLayout": {
+      "layoutType": "container",
+      "label": "Container Ruleset 1",
+      "rules": [
+        "productDetailsLayout-rule1"
+      ],
+      "layouts": {
+        "case1": {
+          "layoutType": "container",
+          "label": "Case 1",
+          "layout": {
+            "templateId": "productDetailsTmpl",
+            "sectionTemplateMap": {
+              "productItemOverviewPanel": "productItemOverviewPanel",
+              "supplierContactPanel": "supplierContactPanel",
+              "supplierProductPanel": "supplierProductPanel",
+              "orderListPanel": "orderListPanel"
+            },
+            "displayProperties": [
+              "supplierContactPanel",
+              "supplierProductPanel",
+              "orderListPanel"
+            ]
+          }
+        }
+      },
+      "description": "Ruleset for configuring foldout layout panels",
+      "extensible": "full"
+    },
+    "productDetailsLayout-rule1": {
+      "expression": "case1"
+    }
+  },
+  "templates": {
+    "productDetailsTmpl": {
+      "title": "Product Details Page",
+      "extensible": "byReference",
+      "@dt": {
+        "layout": "productDetailsLayout",
+        "type": "section"
+      },
+      "dependencies": [
+        "oj-dynamic/bind-section/loader",
+        "oj-sp/empty-state/loader"        ,
+        "oj-sp/foldout-panel/loader"        ,
+        "oj-sp/input-email/loader"        ,
+        "oj-sp/input-url/loader"        ,
+        "oj-sp/list-section/loader"        ,
+        "oj-sp/mini-card/loader"        ,
+        "oj-sp/summarizing-collection/loader"        ,
+        "ojs/ojformlayout"        ,
+        "ojs/ojinputtext"
+      ]
+    },
+    "productItemOverviewPanel": {
+      "title": "Product Item Overview",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "section",
+        "layout": "productDetailsLayout"
+      },
+      "dependencies": [
+        "oj-sp/vertical-overview/loader",
+        "oj-sp/empty-state/loader",
+        "oj-dynamic/form/loader"
+      ]
+    },
+    "supplierContactPanel": {
+      "title": "Product Details Panel",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "section",
+        "layout": "productDetailsLayout"
+      },
+      "dependencies": [
+        "oj-sp/foldout-panel/loader",
+        "oj-sp/empty-state/loader",
+        "oj-sp/input-email/loader",
+        "oj-sp/input-url/loader"        ,
+        "ojs/ojformlayout"        ,
+        "ojs/ojinputtext"
+      ]
+    },
+    "supplierProductPanel": {
+      "title": "Related Panel 2",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "section",
+        "layout": "productDetailsLayout"
+      },
+      "dependencies": [
+        "oj-sp/foldout-panel/loader",
+        "oj-sp/empty-state/loader",
+        "ojs/ojformlayout",
+        "ojs/ojinputtext"
+      ]
+    },
+    "orderListPanel": {
+      "title": "Order List Panel",
+      "description": "",
+      "extensible": "byReference",
+      "@dt": {
+        "type": "section",
+        "layout": "productDetailsLayout"
+      },
+      "dependencies": [
+        "oj-sp/mini-card/loader",
+        "oj-sp/summarizing-collection/loader",
+        "oj-sp/list-section/loader"
+      ]
+    }
+  },
+  "types": {
+    "@decorators.get_rraSupplierProducts": {
+      "endpoint": "get_rraSupplierProducts",
+      "service": "oracle_atf_rwdrefUI:rraSupplierProducts",
+      "path": "response"
+    },
+    "filterChip": {
+      "filter": "string",
+      "label": "string",
+      "value": "any"
+    },
+    "get_rraSupplierProducts": {
+      "AddressLine1": "string",
+      "AddressLine2": "string",
+      "AvgLeadTimeDays": "number",
+      "City": "string",
+      "ContactName": "string",
+      "Country": "string",
+      "EmailAddress": "string",
+      "MinOrderQuantity": "number",
+      "MsrpPrice": "number",
+      "Phone": "string",
+      "PostalCode": "string",
+      "RraSuppliers": {
+        "items": [
+          {
+            "SupplierNumber": "string"
+          }
+        ]
+      },
+      "State": "string",
+      "StockStatus": "string",
+      "SupplierName": "string",
+      "SupplierPrice": "number",
+      "SupplierProductNumber": "string",
+      "SupplierSiteName": "string",
+      "SupplierUrl": "string"
+    }
+  },
+  "chains": {},
+  "eventListeners": {
+    "inAppNavigationSpSelectionAction": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{$event.detail.currentId}}"
+          }
+        }
+      ]
+    },
+    "onOjSpSummarizingCollectionSpOverflow": {
+      "chains": [
+        {
+          "chainId": "ojSpSummarizingCollectionSpOverflowActionChain",
+          "parameters": {
+            "detail": "{{ $event.detail }}"
+          }
+        }
+      ]
+    },
+    "onSpNext": {
+      "chains": [
+        {
+          "chainId": "nextActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "onSpPrevious": {
+      "chains": [
+        {
+          "chainId": "previousActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "onUpdateFetchSize": {
+      "chains": [
+        {
+          "chainId": "updateFetchSizeActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    },
+    "vbEnter": {
+      "chains": [
+        {
+          "chainId": "firePageLayoutEventActionChain"
+        },
+        {
+          "chainId": "fetchActionChain",
+          "parameters": {
+            "limit": "{{ $page.variables.rowIndex ? 3 : 2 }}",
+            "offset": "{{ $page.variables.rowIndex ? ($page.variables.rowIndex - 1) : 0 }}"
+          }
+        },
+        {
+          "chainId": "subscribeForAfterFetchActionChain",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-dynamic-container": {
+        "path": "oj-dynamic/container/loader"
+      },
+      "oj-dynamic-form": {
+        "path": "oj-dynamic/form/loader"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-foldout-layout": {
+        "path": "oj-sp/foldout-layout/loader"
+      },
+      "oj-sp-foldout-panel": {
+        "path": "oj-sp/foldout-panel/loader"
+      },
+      "oj-sp-empty-state": {
+        "path": "oj-sp/empty-state/loader"
+      },
+      "oj-sp-messages-banner": {
+        "path": "oj-sp/messages-banner/loader"
+      },
+      "oj-sp-vertical-overview": {
+        "path": "oj-sp/vertical-overview/loader"
+      }
+    }
+  },
+  "routerFlow": "",
+  "events": {
+    "onUpdateFetchSize": {}
+  }
+}

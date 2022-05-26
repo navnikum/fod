@@ -1,0 +1,95 @@
+{
+  "root": "check",
+  "description": "",
+  "actions": {
+    "check": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "{{ !window.location.pathname.endsWith($application.currentPage.id) || $page.variables.cancel }}"
+      },
+      "outcomes": {
+        "true": "checkDirtyDataFlag"
+      }
+    },
+    "checkDirtyDataFlag": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "{{ $page.variables.dirtyDataFlag }}"
+      },
+      "outcomes": {
+        "true": "callOpenDialog"
+      }
+    },
+    "callOpenDialog": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "{{$page.functions}}",
+        "functionName": "checkWithUser",
+        "returnType": "string"
+      },
+      "outcomes": {
+        "success": "checkDialogResponse"
+      }
+    },
+    "checkDialogResponse": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "{{ $chain.results.callOpenDialog  === 'YES'}}"
+      },
+      "outcomes": {
+        "false": "checkCancelFlag",
+        "true": "continueNavigation"
+      }
+    },
+    "checkCancelFlag": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "{{ $page.variables.cancel }}"
+      },
+      "outcomes": {
+        "false": "stopNavigation",
+        "true": "resetCancelFlag"
+      }
+    },
+    "stopNavigation": {
+      "module": "vb/action/builtin/navigateToPageAction",
+      "parameters": {
+        "page": "[[ $application.currentPage.id ]]",
+        "params": {
+          "currentStep": "{{ $page.variables.currentStep }}",
+          "dirtyDataFlag": "{{ $page.variables.dirtyDataFlag }}"
+        },
+        "history": "push"
+      },
+      "outcomes": {
+        "success": "staySamePage"
+      }
+    },
+    "resetCancelFlag": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.cancel": {
+          "source": false
+        }
+      },
+      "outcomes": {
+        "success": "staySamePage"
+      }
+    },
+    "staySamePage": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ {\"cancelled\":true} }}"
+      }
+    },
+    "continueNavigation": {
+      "module": "vb/action/builtin/returnAction",
+      "parameters": {
+        "outcome": "success",
+        "payload": "{{ {\"cancelled\":false} }}"
+      }
+    }
+  },
+  "variables": {}
+}

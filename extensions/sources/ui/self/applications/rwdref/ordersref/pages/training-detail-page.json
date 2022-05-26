@@ -1,0 +1,150 @@
+{
+  "title": "",
+  "description": "",
+  "variables": {
+    "completedTasksCount": {
+      "type": "number",
+      "defaultValue": 0
+    },
+    "expandedState": {
+      "type": "object",
+      "defaultValue": {},
+      "persisted": "none"
+    },
+    "tasksSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "responseType": "getall_rraUserTrainings_RraTrainingTasks",
+        "itemsPath": "items",
+        "keyAttributes": "TrainingTaskId",
+        "fetchChainId": "getall_rraUserTrainings_RraTrainingTasksFetchActionChain"
+      }
+    },
+    "trainingKey": {
+      "type": "any",
+      "input": "fromUrl",
+      "required": true
+    },
+    "pageTitle": {
+      "type": "string",
+      "input": "fromUrl"
+    },
+    "tasksCount": {
+      "type": "number",
+      "defaultValue": 0
+    },
+    "taskTypeIcon": {
+      "type": "object",
+      "defaultValue": {
+        "0": "oj-ux-ico-external-link",
+        "1": "oj-ux-ico-documents",
+        "2": "oj-ux-ico-progress-list",
+        "3": "oj-ux-ico-add-edit-page",
+        "4": "oj-ux-ico-play",
+        "5": "oj-ux-ico-bag",
+        "PROMOTION": "oj-ux-ico-bullhorn",
+        "BULLETS": "oj-ux-ico-bullets",
+        "PROGRESSLIST": "oj-ux-ico-progress-list",
+        "ARTICLE": "oj-ux-ico-custom-article-header"
+      }
+    }
+  },
+  "metadata": {},
+  "types": {
+    "@decorators.getall_rraUserTrainings_RraTrainingTasks": {
+      "endpoint": "getall_rraUserTrainings-RraTrainingTasks",
+      "service": "oracle_atf_rwdrefUI:rraUserTrainings",
+      "path": "response"
+    },
+    "getall_rraUserTrainings_RraTrainingTasks": {
+      "items": [
+        {
+          "CompletedTasks": "number",
+          "IsParentCompleted": "string",
+          "PrereqTrainingTaskId": "number",
+          "RraUserTrainingTasks": {
+            "items": [
+              {
+                "Username": "string",
+                "UserTrainingTaskId": "number"
+              }
+            ]
+          },
+          "TaskBody": "string",
+          "TaskTitle": "string",
+          "TotalTasks": "number",
+          "TrainingId": "number",
+          "TrainingTaskId": "number",
+          "Username": "string",
+          "UserTrainingId": "number",
+          "UserTrainingTaskStatus": "string"
+        }
+      ]
+    }
+  },
+  "chains": {},
+  "eventListeners": {
+    "ojSpExpandableListItemSpBeforeDetailExpand": {
+      "chains": [
+        {
+          "chainId": "expandTaskActionChain",
+          "parameters": {
+            "itemKey": "{{ $current.key }}",
+            "expand": "{{ true }}"
+          }
+        }
+      ]
+    },
+    "ojSpExpandableListItemSpDetailAction": {
+      "chains": [
+        {
+          "chainId": "completeTaskActionChain",
+          "parameters": {
+            "taskStatus": "{{ \"Completed\" }}",
+            "data": "{{ $current.data }}"
+          }
+        }
+      ]
+    },
+    "ojSpExpandableListItemSpBeforeCollapseExpand": {
+      "chains": [
+        {
+          "chainId": "expandTaskActionChain",
+          "parameters": {
+            "expand": "{{ false }}",
+            "itemKey": "{{ $current.key }}"
+          }
+        }
+      ]
+    },
+    "onNavigationSpSelection": {
+      "chains": [
+        {
+          "chainId": "flow:navigationSelectionChangeActionChain",
+          "parameters": {
+            "itemId": "{{ $event.detail.currentId }}"
+          }
+        }
+      ]
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-list-view": {
+        "path": "ojs/ojlistview"
+      },
+      "oj-progress-bar": {
+        "path": "ojs/ojprogress-bar"
+      },
+      "oj-sp-expandable-list-item": {
+        "path": "oj-sp/expandable-list-item/loader"
+      },
+      "oj-sp-in-app-navigation": {
+        "path": "oj-sp/in-app-navigation/loader"
+      },
+      "oj-sp-smart-filter-search": {
+        "path": "oj-sp/smart-filter-search/loader"
+      }
+    }
+  }
+}

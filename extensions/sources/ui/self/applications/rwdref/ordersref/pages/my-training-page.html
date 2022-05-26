@@ -1,0 +1,38 @@
+<div class="oj-flex">
+    <oj-sp-smart-filter-search id="journey-search-filter" class="oj-flex-item oj-sm-12 oj-md-12"
+        page-title="{{ $page.variables.pageTitle }}"
+        display-options.go-to-parent="{{ $page.variables.goToParentOption }}">
+        <!--
+        smart-filters.expanded="{{ $page.variables.expanded}}" smart-filters.value="{{ $page.variables.appliedFilters}}"
+        smart-filters.ask-hint="{{ $page.variables.askHint}}"
+        smart-filters.results-data="[[ $page.variables.searchResultsDP ]]"
+        smart-filters.suggestions="[[ $page.variables.searchSuggestionsDP ]]"
+        show-all-total-count="[[$page.variables.showAllTotalCount]]"
+        -->
+        <oj-list-view id="journey-list" slot="main" data="[[ $variables.trainingsSDP ]]" display="card"
+          selection-mode="single" scroll-policy="loadMoreOnScroll" class="oj-flex-item"
+          scroll-policy-options.scroller="[[document.documentElement]]"
+          on-oj-item-action="[[$listeners.trainingListOjItemAction]]"
+          :aria-label="[[ $application.translations.app.TRAINING_LIST ]]">
+            <template slot="itemTemplate" data-oj-as="journey">
+                <li class="oj-sm-12 oj-md-6 oj-lg-4 oj-xl-3 oj-sm-margin-0">
+                    <oj-sp-image-card :id="[[ 'oj-sp-image-card-' + $current.index ]]"
+                        badge.text="[[ journey.data.UserTrainingStatus ]]"
+                        badge.status="[[ $page.functions.getJourneyBadgeStatus(journey.data.UserTrainingStatus) ]]"
+                        image-src="[[ $flow.functions.toResourceUrl($application.path)(journey.data.ImageUrl) ]]"
+                        image-ratio="16-9"
+                        primary-text="[[ journey.data.TrainingName ]]"
+                        secondary-text="[[ $application.functions.formatDate(journey.data.DueDate) ]]"
+                        footer-text.label="Tasks"
+                        footer-text.value="[[ $application.translations.format('app', 'TRAINING_CARD_FOOTER', { completed: journey.data.CompletedTasks, count: journey.data.TotalTasks }) ]]">
+                    </oj-sp-image-card>
+                </li>
+            </template>
+        </oj-list-view>
+    </oj-sp-smart-filter-search>
+
+    <oj-sp-in-app-navigation id="in-app-navigation" class="oj-flex-item oj-sm-12 oj-md-12" selection="my-training"
+      on-sp-selection-action="[[ $listeners.onInAppNavigationSpSelection ]]"
+      navigation-data="[[ $flow.variables.navigationItemsAdp ]]">
+    </oj-sp-in-app-navigation>
+</div>
