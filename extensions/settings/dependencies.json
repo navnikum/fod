@@ -1,0 +1,42 @@
+{
+  "component-dependencies": {
+    "oj-sp": {
+      "version": "2210.0.0-alpha.2.2",
+      "components": {
+        "input-address": "2210.0.0-alpha.2.2",
+        "input-phone-number": "2210.0.0-alpha.2.2",
+        "input-email": "2210.0.0-alpha.2.2",
+        "input-currency": "2210.0.0-alpha.2.2",
+        "attachments": "2210.0.0-alpha.2.2",
+        "guided-process": "2210.0.0-alpha.2.2",
+        "message-unsaved-changes": "2210.0.0-alpha.2.2",
+        "dashboard-grid": "2210.0.0-alpha.2.2",
+        "dashboard-landing-page": "2210.0.0-alpha.2.2",
+        "analytics-canvas": "2210.0.0-alpha.2.2",
+        "object-card": "2210.0.0-alpha.2.2",
+        "input-url": "2210.0.0-alpha.2.2",
+        "foldout-layout": "2210.0.0-alpha.2.2",
+        "in-app-navigation": "2210.0.0-alpha.2.2",
+        "general-drawer-template": "2210.0.0-alpha.2.2",
+        "dashboard-panel": "2210.0.0-alpha.2.2",
+        "smart-filter-search": "2210.0.0-alpha.2.2",
+        "empty-state": "2210.0.0-alpha.2.2",
+        "messages-banner": "2210.0.0-alpha.2.2",
+        "item-overview-page": "2210.0.0-alpha.2.2",
+        "simple-create-edit": "2210.0.0-alpha.2.2",
+        "message-dialog-general": "2210.0.0-alpha.2.2",
+        "message-dialog-destructive": "2210.0.0-alpha.2.2",
+        "messages-toast": "2210.0.0-alpha.2.2",
+        "image-card": "2210.0.0-alpha.2.2",
+        "foldout-panel": "2210.0.0-alpha.2.2",
+        "summarizing-collection": "2210.0.0-alpha.2.2",
+        "list-section": "2210.0.0-alpha.2.2",
+        "mini-card": "2210.0.0-alpha.2.2",
+        "vertical-overview": "2210.0.0-alpha.2.2",
+        "expandable-list-item": "2210.0.0-alpha.2.2",
+        "welcome-page": "2210.0.0-alpha.2.2",
+        "item-overview": "2210.0.0-alpha.2.2"
+      }
+    }
+  }
+}
