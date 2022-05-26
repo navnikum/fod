@@ -1,0 +1,114 @@
+{
+    "properties": {
+        "_dataProvider": "any",
+        "_initDataProvider": "any"
+    },
+    "constructor": {
+        "params": {
+            "options": {
+                "type": {
+                    "baseDataProvider": "any",
+                    "context": "any",
+                    "behavior": "any",
+                    "softContext": "any",
+                    "subject": "string",
+                    "provider": "any",
+                    "policyHint": "any",
+                    "maxSuggestions": "number",
+                    "keysDataType": "any"
+                },
+                "required": true
+            }
+        }
+    },
+    "methods": {
+        "containsKeys": {
+            "params": {
+                "parameters": {
+                    "type": "any",
+                    "required": true
+                }
+            },
+            "return": "any"
+        },
+        "fetchFirst": {
+            "params": {
+                "parameters": {
+                    "type": "any",
+                    "required": false
+                }
+            },
+            "return": "any"
+        },
+        "fetchByKeys": {
+            "params": {
+                "parameters": {
+                    "type": "any",
+                    "required": true
+                }
+            },
+            "return": "any"
+        },
+        "fetchByOffset": {
+            "params": {
+                "parameters": {
+                    "type": "any",
+                    "required": true
+                }
+            },
+            "return": "any"
+        },
+        "getCapability": {
+            "params": {
+                "capabilityName": {
+                    "type": "string",
+                    "required": true
+                }
+            },
+            "return": "any"
+        },
+        "getTotalSize": {
+            "params": {},
+            "return": "any"
+        },
+        "isEmpty": {
+            "params": {},
+            "return": "any"
+        },
+        "addEventListener": {
+            "params": {
+                "eventType": {
+                    "type": "string",
+                    "required": true
+                },
+                "listener": {
+                    "type": "any",
+                    "required": true
+                }
+            },
+            "return": "any"
+        },
+        "dispatchEvent": {
+            "params": {
+                "evt": {
+                    "type": "any",
+                    "required": true
+                }
+            },
+            "return": "boolean"
+        },
+        "removeEventListener": {
+            "params": {
+                "eventType": {
+                    "type": "string",
+                    "required": true
+                },
+                "listener": {
+                    "type": "any",
+                    "required": true
+                }
+            },
+            "return": "any"
+        }
+    }
+}

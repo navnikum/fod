@@ -1,0 +1,78 @@
+{
+  "id": "rwdref",
+  "description": "Redwood Demo Application",
+  "security": {
+    "access": {
+      "requiresAuthentication": true
+    }
+  },
+  "chains": {},
+  "requirejs": {
+    "paths": {
+    },
+    "bundles": {}
+  },
+  "services": {
+    "digitalAssistant-service": "oj-sp/spectra-shell/services/digitalAssistantSettings/openapi3.json"
+  },
+  "translations": {
+    "app": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  },
+  "types": {
+    "@decorators.get_rraCustomers": {
+      "endpoint": "get_rraCustomers",
+      "service": "oracle_atf_rwdrefUI:rraCustomers",
+      "path": "response"
+    },
+    "get_rraCustomers": {
+      "CustomerId": "number",
+      "EmailAddress": "string",
+      "FirstName": "string",
+      "LastName": "string",
+      "Phone": "string",
+      "PrimaryBillingAddressId": "number",
+      "PrimaryShippingAddressId": "number",
+      "ShippingAddressCity": "string",
+      "ShippingAddressCountry": "string",
+      "ShippingAddressLine1": "string",
+      "ShippingAddressLine2": "string",
+      "ShippingAddressState": "string",
+      "ShippingPostalCode": "string"
+    },
+    "smartplatform/provider/SuggestionsInstanceDataProvider": {
+      "label": "smartplatform provider Suggestions Instance Data Provider",
+      "constructorType": "vb/InstanceFactory",
+      "iconClass": "",
+      "typedef": "resources/typedefs/smartplatform/provider/SuggestionsInstanceDataProvider.json"
+    }
+  },
+  "variables": {},
+  "flows": {
+    "redwood": "oj-sp/spectra-shell/flows/redwood",
+    "redwoodHome": "oj-sp/spectra-shell/flows/redwoodHome"
+  },
+  "imports": {
+    "components": {
+      "oj-validation-base": {
+        "path": "ojs/ojvalidation-base"
+      },
+      "oj-validation-datetime": {
+        "path": "ojs/ojvalidation-datetime"
+      },
+      "oj-validation-number": {
+        "path": "ojs/ojvalidation-number"
+      }
+    },
+    "css": [
+      "/resources/css/app.css"
+    ]
+  },
+  "unifiedAppSettings": {
+    "displayName": "Redwood Reference Application",
+    "pillarTheme": "ocean",
+    "pillarThemeMode": "mixed"
+  },
+  "defaultFlow": "ordersref"
+}

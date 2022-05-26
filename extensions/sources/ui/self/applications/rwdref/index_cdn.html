@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html class="oj-html" dir="<!-- dir -->" lang="<!-- locale -->">
+
+<head>
+  <title>Fusion Order Demo</title>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <link rel="preconnect" href="https://static.oracle.com">
+  <link rel="preconnect" href="https://static-stage.oracle.com">
+  <!-- userPrefs -->
+  <!-- vb:inject id="headContent" theme="resources/css/dt.theme.redwood" -->
+  <link type="text/css" rel="stylesheet" href="%BASE_URL%/resources/css/app.css" />
+  <!-- visualBuilderApplcoreHeadContent -->
+  <!-- vb:inject id="pwa" -->
+  <script>
+    window.faConfig = window.faConfig || {};
+    window.faConfig.REMOTE_BUNDLES = true;
+    window.vbInitConfig = window.vbInitConfig || {};
+    window.vbInitConfig.BASE_URL = '%BASE_URL%';
+  </script>
+</head>
+
+<body>
+  <oj-module config="[[vbApplication]]"></oj-module>
+  <!-- visualBuilderScripts -->
+  <!-- CSRFToken -->
+</body>
+
+</html>
