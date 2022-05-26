@@ -1,0 +1,163 @@
+{
+  "title": "",
+  "description": "",
+  "translations": {
+    "app": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  },
+  "eventListeners": {
+    "fragmentInfoIdNameValueAction": {
+      "chains": [
+        {
+          "chainId": "selectCustomerValueActionChain",
+          "parameters": {
+            "event": "{{ $event }}"
+          }
+        }
+      ]
+    }
+  },
+  "events": {
+    "customerselected": {
+      "propagationBehavior": "container",
+      "payloadType": {
+        "customerData": "object"
+      }
+    }
+  },
+  "imports": {
+    "components": {
+      "oj-form-layout": {
+        "path": "ojs/ojformlayout"
+      },
+      "oj-highlight-text": {
+        "path": "ojs/ojhighlighttext"
+      },
+      "oj-input-text": {
+        "path": "ojs/ojinputtext"
+      },
+      "oj-list-item-layout": {
+        "path": "ojs/ojlistitemlayout"
+      },
+      "oj-list-view": {
+        "path": "ojs/ojlistview"
+      },
+      "oj-select-single": {
+        "path": "ojs/ojselectsingle"
+      },
+      "oj-sp-input-email": {
+        "path": "oj-sp/input-email/loader"
+      },
+      "oj-sp-input-phone-number": {
+        "path": "oj-sp/input-phone-number/loader"
+      }
+    }
+  },
+  "metadata": {},
+  "types": {
+    "@decorators.getall_rraCustomers": {
+      "endpoint": "getall_rraCustomers",
+      "service": "oracle_atf_rwdrefUI:rraCustomers",
+      "path": "response"
+    },
+    "getall_rraCustomers": {
+      "items": [
+        {
+          "CustomerId": "number",
+          "CustomerNumber": "string",
+          "EmailAddress": "string",
+          "FirstName": "string",
+          "LastName": "string",
+          "Phone": "string",
+          "PrimaryBillingAddressId": "number",
+          "PrimaryShippingAddressId": "number",
+          "ShippingAddressCity": "string",
+          "ShippingAddressCountry": "string",
+          "ShippingAddressLine1": "string",
+          "ShippingAddressLine2": "string",
+          "ShippingAddressState": "string",
+          "ShippingPostalCode": "string"
+        }
+      ]
+    },
+    "@decorators.get_rraCustomers": {
+      "endpoint": "get_rraCustomers",
+      "service": "oracle_atf_rwdrefUI:rraCustomers",
+      "path": "response"
+    },
+    "get_rraCustomers": {
+      "CustomerId": "number",
+      "EmailAddress": "string",
+      "FirstName": "string",
+      "LastName": "string",
+      "Phone": "string",
+      "PrimaryBillingAddressId": "number",
+      "PrimaryShippingAddressId": "number",
+      "ShippingAddressCity": "string",
+      "ShippingAddressCountry": "string",
+      "ShippingAddressLine1": "string",
+      "ShippingAddressLine2": "string",
+      "ShippingAddressState": "string",
+      "ShippingPostalCode": "string"
+    },
+    "smartplatform/provider/SuggestionsInstanceDataProvider": {
+      "label": "smartplatform provider Suggestions Instance Data Provider",
+      "constructorType": "vb/InstanceFactory",
+      "iconClass": "",
+      "typedef": "resources/typedefs/smartplatform/provider/SuggestionsInstanceDataProvider.json"
+    }
+  },
+  "variables": {
+    "customersTextFilterAttrs": {
+      "type": "string[]",
+      "defaultValue": [
+        "CustomerName",
+        "Phone",
+        "EmailAddress"
+      ]
+    },
+    "customersSDP": {
+      "type": "vb/ServiceDataProvider",
+      "defaultValue": {
+        "endpoint": "oracle_atf_rwdrefUI:rraCustomers/getall_rraCustomers",
+        "responseType": "getall_rraCustomers",
+        "itemsPath": "items",
+        "keyAttributes": "CustomerId",
+        "transforms": {
+          "request": {
+            "filter": "{{ $fragment.functions.smartSearchProcessTextFilter($variables.customersTextFilterAttrs) }}"
+          }
+        },
+        "uriParameters": {
+          "onlyData": true
+        }
+      }
+    },
+    "customerSuggestionsDP": {
+      "type": "smartplatform/provider/SuggestionsInstanceDataProvider",
+      "constructorParams": [
+        {
+          "baseDataProvider": "{{ $variables.customersSDP }}",
+          "context": {},
+          "subject": "fscmRestApi::getall_rraCustomers::CustomerId",
+          "provider": "ai"
+        }
+      ]
+    },
+    "selectedCustomerItem": {
+      "type": "get_rraCustomers",
+      "onValueChanged": {
+        "chains": [
+          {
+            "chainId": "selectedCustomerChangedActionChain",
+            "parameters": {
+              "event": "{{ $event }}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "referenceable": "self"
+}

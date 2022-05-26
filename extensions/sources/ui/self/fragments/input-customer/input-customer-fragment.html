@@ -1,0 +1,41 @@
+<oj-form-layout max-columns="3" direction="column">
+  <oj-select-single :id="[[ $fragment.info.id + '-name' ]]"
+    label-hint="[[ $translations.app.ORDER_CUSTOMER_NAME ]]"
+    data="[[ $variables.customerSuggestionsDP.instance ]]" value-item="{{ $variables.selectedCustomerItem }}"
+    item-text="[[ $fragment.functions.getCustomerName ]]" required="true"
+    on-oj-value-action="[[$listeners.fragmentInfoIdNameValueAction]]">
+    <template slot="collectionTemplate" data-oj-as="collection">
+      <oj-list-view class="oj-select-results" gridlines.item="hidden" selection-mode="single" data="[[collection.data]]"
+        selected="[[collection.selected]]" current-item="{{collection.currentRow.rowKey}}"
+        on-oj-item-action="[[collection.handleRowAction]]" slot="collectionTemplate">
+        <template slot="itemTemplate" data-oj-as="item">
+          <li :class="[[ $fragment.functions.getSuggestionLineClass(item) ]]"
+            style="position: relative; border-top-width: 0px">
+            <oj-list-item-layout>
+              <span class="oj-typography-body-md oj-text-color-primary">
+                    <oj-highlight-text text="[[ $fragment.functions.getCustomerName(item) ]]"
+                        match-text="[[collection.searchText]]">
+                    </oj-highlight-text>
+                </span>
+            </oj-list-item-layout>
+            <div :style="[[ $fragment.functions.getSuggestionStyle(item) ]]">
+            </div>
+          </li>
+        </template>
+      </oj-list-view>
+    </template>
+  </oj-select-single>
+  <oj-bind-if test="[[ $variables.selectedCustomerItem?.data ]]">
+    <oj-sp-input-phone-number
+      :id="[[ $fragment.info.id + '-phone' ]]"
+      value="[[ $variables.selectedCustomerItem.data && $variables.selectedCustomerItem.data.Phone ? { subscriberNumber: $variables.selectedCustomerItem.data.Phone } : undefined ]]"
+      label-hint="[[ $translations.app.ORDER_CUSTOMER_PHONE ]]"
+      readonly="true">
+    </oj-sp-input-phone-number>
+
+    <oj-sp-input-email label-hint="[[ $translations.app.ORDER_CUSTOMER_EMAIL ]]"
+      :id="[[ $fragment.info.id + '-email' ]]" readonly="true"
+      value="[[ $variables.selectedCustomerItem.data ? $variables.selectedCustomerItem.data.EmailAddress : '' ]]">
+    </oj-sp-input-email>
+  </oj-bind-if>
+</oj-form-layout>

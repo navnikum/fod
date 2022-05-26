@@ -1,0 +1,21 @@
+<oj-form-layout max-columns="3" direction="column" readonly="true">
+    <oj-input-text
+        label-hint="[[ $translations.app.ORDER_CUSTOMER_NAME ]]"
+        :id="[[ $fragment.info.id + '-name' ]]"
+        :aria-label="[[ $translations.app.ORDER_CUSTOMER_NAME ]]"
+        value="[[ $variables.name || '' ]]"
+    >
+    </oj-input-text>
+    <oj-sp-input-phone-number
+        :id="[[ $fragment.info.id + '-phone' ]]"
+        value="[[ $variables.phone ? { subscriberNumber: $variables.phone } : undefined ]]"
+        label-hint="[[ $translations.app.ORDER_CUSTOMER_PHONE ]]"
+        readonly="true"
+    >
+    </oj-sp-input-phone-number>
+
+    <oj-sp-input-email label-hint="[[ $translations.app.ORDER_CUSTOMER_EMAIL ]]"
+      :id="[[ $fragment.info.id + '-email' ]]" readonly="true"
+      value="[[ $variables.email || '' ]]">
+    </oj-sp-input-email>
+</oj-form-layout>

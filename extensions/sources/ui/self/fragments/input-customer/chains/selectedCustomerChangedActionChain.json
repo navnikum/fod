@@ -1,0 +1,28 @@
+{
+  "root": "fireEventCustomerSelected",
+  "description": "",
+  "variables": {
+    "event": {
+      "required": false,
+      "input": "fromCaller",
+      "type": {
+        "oldValue": "object",
+        "value": {
+            "data": "any"
+          },
+        "diff": "object"
+      }
+    }
+  },
+  "actions": {
+    "fireEventCustomerSelected": {
+      "module": "vb/action/builtin/fireCustomEventAction",
+      "parameters": {
+        "name": "customerselected",
+        "payload": {
+          "customerData": "{{ $variables.event.value.data }}"
+        }
+      }
+    }
+  }
+}

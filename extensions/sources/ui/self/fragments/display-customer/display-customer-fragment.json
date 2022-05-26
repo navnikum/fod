@@ -1,0 +1,47 @@
+{
+  "title": "",
+  "description": "",
+  "translations": {
+    "app": {
+      "path": "faResourceBundle/nls/oracle.apps.fnd.applcore.rra.strings"
+    }
+  },
+  "eventListeners": {},
+  "events": {},
+  "imports": {
+    "components": {
+      "oj-form-layout": {
+        "path": "ojs/ojformlayout"
+      },
+      "oj-input-text": {
+        "path": "ojs/ojinputtext"
+      },
+      "oj-sp-input-email": {
+        "path": "oj-sp/input-email/loader"
+      },
+      "oj-sp-input-phone-number": {
+        "path": "oj-sp/input-phone-number/loader"
+      }
+    }
+  },
+  "metadata": {},
+  "types": {},
+  "variables": {
+    "email": {
+      "type": "string",
+      "required": false,
+      "input": "fromCaller"
+    },
+    "name": {
+      "type": "string",
+      "required": false,
+      "input": "fromCaller"
+    },
+    "phone": {
+      "type": "string",
+      "required": false,
+      "input": "fromCaller"
+    }
+  },
+  "referenceable": "self"
+}

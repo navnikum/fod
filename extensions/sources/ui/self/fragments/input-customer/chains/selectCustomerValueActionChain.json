@@ -1,0 +1,23 @@
+{
+  "description": "",
+  "root": "callFunctionLovHandleValueAction",
+  "actions": {
+    "callFunctionLovHandleValueAction": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "seedSuggestions",
+        "params": [
+          "{{ $variables.event }}"
+        ]
+      }
+    }
+  },
+  "variables": {
+    "event": {
+      "type": "any",
+      "required": true,
+      "input": "fromCaller"
+    }
+  }
+}
